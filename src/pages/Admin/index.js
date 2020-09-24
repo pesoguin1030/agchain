@@ -1,8 +1,8 @@
 import React from 'react'
 
 
-function Home(props){
+function Admin(props){
     return <div />
 }
 
-export default Home
+export default Admin

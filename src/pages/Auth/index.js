@@ -1,8 +1,8 @@
 import React from 'react'
 
 
-function Home(props){
+function Auth(props){
     return <div />
 }
 
-export default Home
+export default Auth

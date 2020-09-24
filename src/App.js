@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
 } from "react-router-dom";
+import {authContext} from './contexts/authContext';
 import Home from './pages/Home'
 import { DropdownCard, DropdownItem, DropdownMenu, DropdownList } from './components/Dropdown';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
@@ -106,15 +107,15 @@ const Header=()=>(
           <div id="navBar" className="collapse navbar-collapse">
             <ul className="navbar-nav">
             <li className="navbar-nav-item">
-                <Link className="nav-link">農產品介紹</Link>
+                <Link to="/shop" className="nav-link">農產品介紹</Link>
               </li>
               <li className="navbar-nav-item">
-                <Link className=" nav-link">區塊鏈溯源</Link>
+                <Link to="/dapp" className="nav-link">區塊鏈溯源</Link>
               </li>
               <li className="navbar-nav-last-item">
-                <a className="btn btn-sm btn-success transition-3d-hover" href="https://themes.getbootstrap.com/product/front-multipurpose-responsive-template/" target="_blank">
+                <Link to="/admin" className="btn btn-sm btn-success transition-3d-hover">
                   開始使用
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -179,96 +180,6 @@ const Footer=()=>(
                 <img className="dropdown-item-icon" src="https://upload.wikimedia.org/wikipedia/commons/7/72/Flag_of_the_Republic_of_China.svg" alt="United States Flag" />
                 <span>台灣</span>
               </a>
-
-              <div id="footerCountry" className="hs-unfold-content dropdown-menu dropdown-card dropdown-menu-md-right dropdown-menu-bottom w-100 w-sm-auto mb-0">
-                <div className="card">
-                  <div className="card-body">
-                    <h5>Front available in</h5>
-                    <div className="row">
-                      <div className="col-6">
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/au.svg" alt="Australia Flag"/>
-                          Australia
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/at.svg" alt="Austria Flag"/>
-                          Austria
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/be.svg" alt="Belgium Flag"/>
-                          Belgium
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/ca.svg" alt="Canada Flag"/>
-                          Canada
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/dk.svg" alt="Denmark Flag" />
-                          Denmark
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/fi.svg" alt="Finland Flag"/>
-                          Finland
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/fr.svg" alt="France Flag"/>
-                          France
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/de.svg" alt="Germany Flag"/>
-                          Germany
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/nl.svg" alt="Netherlands Flag"/>
-                          Netherlands
-                        </a>
-                      </div>
-                      <div className="col-6">
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/nz.svg" alt="New Zealand Flag"/>
-                          New Zealand
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/no.svg" alt="Norway Flag"/>
-                          Norway
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/pt.svg" alt="PortugalPREVIEW Flag"/>
-                          Portugal
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/sg.svg" alt="Singapore Flag"/>
-                          Singapore
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/es.svg" alt="Spain Flag"/>
-                          Spain
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/se.svg" alt="Sweden Flag"/>
-                          Sweden
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/ch.svg" alt="Switzerland Flag"/>
-                          Switzerland
-                        </a>
-                        <a className="nav-link" href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/gb.svg" alt="United Kingdom Flag"/>
-                          UK
-                        </a>
-                        <a className="nav-link active " href="#">
-                          <img className="max-w-3rem mr-1" src="../../assets/vendor/flag-icon-css/flags/4x3/us.svg" alt="United States Flag"/>
-                          US
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <a className="card-footer border-0 card-bg-light" href="#">
-                    <span className="d-block text-muted mb-1">More countries coming soon.</span>
-                    <span className="d-block font-size-1">Signup to get notified <i className="fas fa-angle-right fa-sm ml-1"></i></span>
-                  </a>
-                </div>
-              </div>
             </div>
           </li>
         </ul>
@@ -319,16 +230,40 @@ const Footer=()=>(
 )
 
 function App() {
-  return (
-    <Router>
+  // Global state
+  const [authState, authDispatch] = useReducer(
+    (prevState, action)=>{
+      switch(action){
+        case "LOGIN":
+          return
+        default:
+          return
+      }
+    },{
+      user: null,
 
+    }
+  )
+  // Setup
+  useEffect(()=>{
+    const bootstrapAsync=async()=>{
+      const authToken=localStorage.getItem("AUTH_TOKEN")
+      if(authToken)
+    }
+  })
+  return (
+    <authContext.Provider value={authState}>
+    <Router>
     <Header />
     <Switch>
-          <Route path="/"><Shop /></Route>
           <Route path="/"><Home /></Route>
+          <Route path="/shop"><Shop /></Route>
+          <Route path="/dapp"><Dapp /></Route>
+          <Route path="/admin"><Admin /></Route>
     </Switch>
     <Footer />
     </Router>
+    </authContext.Provider>
   );
 }
 
