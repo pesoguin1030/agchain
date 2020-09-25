@@ -1,8 +1,5 @@
 import React, { useState } from 'react'
 import { motion } from "framer-motion"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-
 
 const DropdownItem=(props)=>(
     <a {...props} className="dropdown-item" />
@@ -56,7 +53,7 @@ function DropdownMenu(props){
             }
             {
                 props.icon?
-                <a className=" btn btn-xs btn-icon btn-ghost-secondary"
+                <a className="btn btn-xs btn-icon btn-ghost-secondary"
                 onClick={()=>setIsOpen(prev=>!prev)}
                 onMouseEnter={()=>setIsOpen(true)}
                 onMouseLeave={()=>setIsOpen(false)}
