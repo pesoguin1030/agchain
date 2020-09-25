@@ -5,16 +5,22 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import {authContext} from './contexts/authContext';
+import { AuthContext } from './appContext';
+
 import Home from './pages/Home'
 import { DropdownCard, DropdownItem, DropdownMenu, DropdownList } from './components/Dropdown';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card } from 'react-bootstrap';
 import Shop from './pages/Shop';
+import request from './utils/request';
+import Dapp from './pages/Dapp';
+import Admin from './pages/Admin';
+import { MegaMenu, MegaMenuItem } from './components/MegaMenu';
+
 
 const Header=()=>(
-  <header id="header" className="header">
+<header id="header" className="header">
   <div className="header-section">
   <div className="container header-hide-content pt-2">
   <div className="d-flex align-items-center">
@@ -74,6 +80,11 @@ const Header=()=>(
                 <a className="js-hs-unfold-invoker btn btn-icon btn-xs btn-ghost-secondary"
                    >
                   <i className="fas fa-user-circle"></i>
+              <AuthContext.Consumer>
+                {
+                  ({user})=>user?<span>{user}</span>:null
+                }
+              </AuthContext.Consumer>
                 </a>
               </div>
             </li>
@@ -107,11 +118,11 @@ const Header=()=>(
           <div id="navBar" className="collapse navbar-collapse">
             <ul className="navbar-nav">
             <li className="navbar-nav-item">
-                <Link to="/shop" className="nav-link">農產品介紹</Link>
+                <Link to="/shop" className="nav-link">農夫市集</Link>
               </li>
-              <li className="navbar-nav-item">
-                <Link to="/dapp" className="nav-link">區塊鏈溯源</Link>
-              </li>
+              <MegaMenu title="區塊鏈服務">
+                <MegaMenuItem icon="/assets/svg/icons/icon-54.svg" to="/dapp" title="產品履歷" />
+              </MegaMenu>
               <li className="navbar-nav-last-item">
                 <Link to="/admin" className="btn btn-sm btn-success transition-3d-hover">
                   開始使用
@@ -233,7 +244,12 @@ function App() {
   // Global state
   const [authState, authDispatch] = useReducer(
     (prevState, action)=>{
-      switch(action){
+      switch(action.type){
+        case "RESTORE":
+          return {
+            ...prevState,
+            user: action.user
+          }
         case "LOGIN":
           return
         default:
@@ -248,11 +264,19 @@ function App() {
   useEffect(()=>{
     const bootstrapAsync=async()=>{
       const authToken=localStorage.getItem("AUTH_TOKEN")
-      if(authToken)
+      if(authToken){
+        // Set the token globally
+        request.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
+        const { data }=await request.get('/users')
+        authDispatch({
+          type: "RESTORE",
+          user: data
+        })
+      }
     }
   })
   return (
-    <authContext.Provider value={authState}>
+    <AuthContext.Provider value={authState}>
     <Router>
     <Header />
     <Switch>
@@ -263,7 +287,7 @@ function App() {
     </Switch>
     <Footer />
     </Router>
-    </authContext.Provider>
+    </AuthContext.Provider>
   );
 }
 
