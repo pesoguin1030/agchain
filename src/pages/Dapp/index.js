@@ -1,8 +1,7 @@
-import React from 'react'
+import React from "react";
 
-
-function Dapp(props){
-    return <div />
+function Dapp(props) {
+  return <div />;
 }
 
-export default Dapp
+export default Dapp;

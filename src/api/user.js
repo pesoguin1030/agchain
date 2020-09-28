@@ -1,7 +1,12 @@
-import axios from 'axios'
-import api from '../constants/api'
+import request from "../utils/request";
 
-const fetchUser=async()=>{
-    const { data } = await axios.get(`${api.SERVER_URL}/users/`)
+const fetchUser = async () => {
+  try {
+    const { data } = await request.get("users/");
+    return data;
+  } catch (err) {
+    return err;
+  }
+};
 
-}
+export { fetchUser };

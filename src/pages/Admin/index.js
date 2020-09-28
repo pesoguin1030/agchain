@@ -1,8 +1,7 @@
-import React from 'react'
+import React from "react";
 
-
-function Admin(props){
-    return <div />
+function Admin(props) {
+  return <div />;
 }
 
-export default Admin
+export default Admin;
