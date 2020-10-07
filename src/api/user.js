@@ -9,4 +9,16 @@ const fetchUser = async () => {
   }
 };
 
-export { fetchUser };
+const defaultSignIn = async ({ username, password }) => {
+  try {
+    const { data } = await request.post("users/signin", {
+      username,
+      password,
+    });
+    return data;
+  } catch (err) {
+    return err;
+  }
+};
+
+export { fetchUser, defaultSignIn };
