@@ -12,8 +12,8 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 
 // Stylesheets management
-import "@fortawesome/fontawesome-svg-core";
-import "@fortawesome/fontawesome-free/css/all.css";
+import "@fontawesome/fontawesome-svg-core";
+import "@fontawesome/fontawesome-free/css/all.css";
 import "./themes/default.css";
 
 function App() {
