@@ -1,5 +1,10 @@
 import React, { useReducer, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import { AuthContext } from "./appContext";
 import Home from "./pages/Home";
 import request from "./utils/request";
@@ -12,9 +17,10 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 
 // Stylesheets management
-import "@fontawesome/fontawesome-svg-core";
-import "@fontawesome/fontawesome-free/css/all.css";
+import "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-free/css/all.css";
 import "./themes/default.css";
+import storage from "./utils/storage";
 
 function App() {
   // Auth
@@ -22,13 +28,28 @@ function App() {
     (prevState, action) => {
       switch (action.type) {
         case "RESTORE":
+          request.defaults.headers.common.Authorization = `Bearer ${action.accessToken}`;
+          storage.setAccessToken(action.accessToken);
           return {
             ...prevState,
             user: action.user,
+            accessToken: action.accessToken,
           };
         case "LOGIN":
+          request.defaults.headers.common.Authorization = `Bearer ${action.accessToken}`;
+          storage.setAccessToken(action.accessToken);
           return {
             ...prevState,
+            user: action.user,
+            accessToken: action.accessToken,
+          };
+        case "LOGOUT":
+          request.defaults.headers.common.Authorization = ``;
+          storage.clear();
+          return {
+            ...prevState,
+            user: null,
+            accessToken: null,
           };
         default:
           return {
@@ -38,37 +59,48 @@ function App() {
     },
     {
       user: null,
+      accessToken: null,
     }
   );
   // Setup
   useEffect(() => {
     const bootstrapAsync = async () => {
-      const authToken = localStorage.getItem("AUTH_TOKEN");
-      if (authToken) {
+      const accessToken = storage.getAccessToken();
+      if (accessToken) {
         // Set the token globally
-        request.defaults.headers.common.Authorization = `Bearer ${authToken}`;
+        request.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
         // Validate token
-        const user = await fetchUser();
-        authDispatch({
-          type: "RESTORE",
-          user: user,
-        });
+        try {
+          const user = await fetchUser();
+          authDispatch({
+            type: "RESTORE",
+            user: user,
+            accessToken: accessToken,
+          });
+        } catch (error) {
+          console.error("Invalid token");
+        }
       }
     };
     bootstrapAsync();
   });
   return (
-    <AuthContext.Provider value={authState}>
+    <AuthContext.Provider
+      value={{
+        authState,
+        authDispatch,
+      }}
+    >
       <Router>
         <Switch>
           <Route path="/dapp">
             <Dapp />
           </Route>
           <Route path="/admin">
-            <Admin />
+            {authState.user ? <Admin /> : <Redirect to="/login" />}
           </Route>
           <Route path="/login">
-            <Login />
+            {authState.user ? <Redirect to="/" /> : <Login />}
           </Route>
           <Route path="/signup">
             <Signup />

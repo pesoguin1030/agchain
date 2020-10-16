@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Modify server url here
-const request = axios.create({ baseURL: "https://app.freshio.me/" });
+const request = axios.create({ baseURL: "https://app.freshio.me" });
 
 request.interceptors.response.use(
   (response) => response,

@@ -2,7 +2,7 @@ import request from "../utils/request";
 
 const fetchUser = async () => {
   try {
-    const { data } = await request.get("users/");
+    const { data } = await request.get("/users/");
     return data;
   } catch (err) {
     return err;
@@ -11,7 +11,7 @@ const fetchUser = async () => {
 
 const defaultSignIn = async ({ username, password }) => {
   try {
-    const { data } = await request.post("users/signin", {
+    const { data } = await request.post("/users/signin", {
       username,
       password,
     });
@@ -21,4 +21,18 @@ const defaultSignIn = async ({ username, password }) => {
   }
 };
 
-export { fetchUser, defaultSignIn };
+const oauthSignIn = async ({ provider, oauthId, name, email }) => {
+  try {
+    const { data } = await request.post("/users/oauth", {
+      provider,
+      oauthId,
+      name,
+      email,
+    });
+    return data;
+  } catch (err) {
+    return err;
+  }
+};
+
+export { fetchUser, defaultSignIn, oauthSignIn };

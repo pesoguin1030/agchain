@@ -1,7 +1,8 @@
 import React from "react";
 
 const AuthContext = React.createContext({
-  user: {},
+  state: {},
+  reducer: () => {},
 }); // Create a context object
 
 const ThemeContext = React.createContext({

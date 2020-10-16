@@ -1,21 +1,36 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import * as firebase from "firebase";
+import { oauthSignIn } from "../../api/user";
+import { AuthContext } from "../../appContext";
 
 function Login(props) {
+  const { authDispatch } = useContext(AuthContext);
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
+
   const googleSignIn = () => {
     let provider = new firebase.auth.GoogleAuthProvider();
     firebase
       .auth()
       .signInWithPopup(provider)
-      .then(function (result) {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        var token = result.credential.accessToken;
-        // The signed-in user info.
-        var user = result.user;
-        // ...
-        console.log(result);
+      .then(async ({ user }) => {
+        try {
+          const { access_token } = await oauthSignIn({
+            provider: "google",
+            name: user.displayName,
+            oauthId: user.uid,
+            email: user.email,
+          });
+          authDispatch({
+            type: "LOGIN",
+            user: user,
+            accessToken: access_token,
+          });
+        } catch (error) {
+          console.error(error);
+        }
       })
-      .catch(function (error) {
+      .catch((error) => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -24,8 +39,28 @@ function Login(props) {
         // The firebase.auth.AuthCredential type that was used.
         var credential = error.credential;
         // ...
+        console.error(error);
       });
   };
+
+  const defaultSignIn = async () => {
+    try {
+      const { access_token } = await oauthSignIn({
+        username,
+        password,
+      });
+      authDispatch({
+        type: "LOGIN",
+        user: {
+          name: username,
+        },
+        accessToken: access_token,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <main id="content" role="main" class="main">
       <div class="container py-5 py-sm-7">
@@ -69,6 +104,8 @@ function Login(props) {
                     </label>
 
                     <input
+                      value={username}
+                      onChange={setUsername}
                       type="email"
                       class="form-control"
                       name="email"
@@ -99,6 +136,8 @@ function Login(props) {
 
                     <div class="input-group input-group-merge">
                       <input
+                        value={password}
+                        onChange={setPassword}
                         type="password"
                         class="js-toggle-password form-control"
                         name="password"
@@ -141,7 +180,11 @@ function Login(props) {
                       </label>
                     </div>
                   </div>
-                  <button type="submit" class="btn btn-block btn-primary">
+                  <button
+                    type="submit"
+                    onClick={defaultSignIn}
+                    class="btn btn-block btn-primary"
+                  >
                     登入
                   </button>
                 </form>
