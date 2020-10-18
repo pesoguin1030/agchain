@@ -36,6 +36,7 @@ function App() {
             accessToken: action.accessToken,
           };
         case "LOGIN":
+          console.log(action.user)
           request.defaults.headers.common.Authorization = `Bearer ${action.accessToken}`;
           storage.setAccessToken(action.accessToken);
           return {

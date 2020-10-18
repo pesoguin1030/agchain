@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import * as firebase from "firebase";
-import { oauthSignIn } from "../../api/user";
+import { oauthSignIn, emailSignIn } from "../../api/user";
 import { AuthContext } from "../../appContext";
 
 function Login(props) {
@@ -45,7 +45,7 @@ function Login(props) {
 
   const defaultSignIn = async () => {
     try {
-      const { access_token } = await oauthSignIn({
+      const { access_token } = await emailSignIn({
         username,
         password,
       });

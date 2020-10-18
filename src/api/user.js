@@ -9,7 +9,7 @@ const fetchUser = async () => {
   }
 };
 
-const defaultSignIn = async ({ username, password }) => {
+const emailSignIn = async ({ username, password }) => {
   try {
     const { data } = await request.post("/users/signin", {
       username,
@@ -35,4 +35,4 @@ const oauthSignIn = async ({ provider, oauthId, name, email }) => {
   }
 };
 
-export { fetchUser, defaultSignIn, oauthSignIn };
+export { fetchUser, emailSignIn, oauthSignIn };
