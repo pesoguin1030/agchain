@@ -1,11 +1,11 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from "react-router-dom";
-import { AuthContext } from "./appContext";
+import { AuthContext, CartContext } from "./appContext";
 import Home from "./pages/Home";
 import request from "./utils/request";
 import Dapp from "./pages/Dapp";
@@ -36,7 +36,6 @@ function App() {
             accessToken: action.accessToken,
           };
         case "LOGIN":
-          console.log(action.user)
           request.defaults.headers.common.Authorization = `Bearer ${action.accessToken}`;
           storage.setAccessToken(action.accessToken);
           return {
@@ -63,9 +62,13 @@ function App() {
       accessToken: null,
     }
   );
+  // Shopping cart
+  const [cart, setCart] = useState([]);
+
   // Setup
   useEffect(() => {
     const bootstrapAsync = async () => {
+      // Auth
       const accessToken = storage.getAccessToken();
       if (accessToken) {
         // Set the token globally
@@ -82,9 +85,19 @@ function App() {
           console.error("Invalid token");
         }
       }
+      // Shopping cart
+      const cart = storage.getShoppingCart();
+      if (cart) {
+        setCart(cart);
+      }
     };
     bootstrapAsync();
-  });
+  }, []);
+
+  useEffect(() => {
+    if (cart.lenth !== 0) storage.setShoppingCart(cart);
+  }, [cart]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -92,27 +105,29 @@ function App() {
         authDispatch,
       }}
     >
-      <Router>
-        <Switch>
-          <Route path="/dapp">
-            <Dapp />
-          </Route>
-          <Route path="/admin">
-            {authState.user ? <Admin /> : <Redirect to="/login" />}
-          </Route>
-          <Route path="/login">
-            {authState.user ? <Redirect to="/" /> : <Login />}
-          </Route>
-          <Route path="/signup">
-            <Signup />
-          </Route>
-          <Route path="/">
-            <Header />
-            <Home />
-            <Footer />
-          </Route>
-        </Switch>
-      </Router>
+      <CartContext.Provider value={{ cartState: cart, cartDispatch: setCart }}>
+        <Router>
+          <Switch>
+            <Route path="/dapp">
+              <Dapp />
+            </Route>
+            <Route path="/admin">
+              {authState.user ? <Admin /> : <Redirect to="/login" />}
+            </Route>
+            <Route path="/login">
+              {authState.user ? <Redirect to="/" /> : <Login />}
+            </Route>
+            <Route path="/signup">
+              <Signup />
+            </Route>
+            <Route path="/">
+              <Header />
+              <Home />
+              <Footer />
+            </Route>
+          </Switch>
+        </Router>
+      </CartContext.Provider>
     </AuthContext.Provider>
   );
 }

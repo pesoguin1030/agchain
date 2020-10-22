@@ -28,6 +28,7 @@ const DropdownCard = (props) => (
     className={`hs-unfold-content dropdown-menu dropdown-card ${
       props.position ? `dropdown-menu-${props.position}` : null
     }`}
+    style={props.style}
   >
     <div className={`card ${props.className || ""}`} />
     {props.children}
@@ -44,7 +45,6 @@ function DropdownMenu(props) {
             className="dropdown-nav-link dropdown-toggle d-flex align-items-center"
             onClick={() => setIsOpen((prev) => !prev)}
             onMouseEnter={() => setIsOpen(true)}
-            onMouseLeave={() => setIsOpen(false)}
           >
             <span className="d-inline-block d-sm-none">{props.title}</span>
             <span className="d-none d-sm-inline-block">{props.title}</span>
@@ -55,14 +55,15 @@ function DropdownMenu(props) {
             className="btn btn-xs btn-icon btn-ghost-secondary"
             onClick={() => setIsOpen((prev) => !prev)}
             onMouseEnter={() => setIsOpen(true)}
-            onMouseLeave={() => setIsOpen(false)}
           >
             {props.icon}
           </a>
         ) : null}
-        {React.Children.map(props.children, (child) =>
-          React.cloneElement(child, { isOpen })
-        )}
+        <div onMouseLeave={() => setIsOpen(false)}>
+          {React.Children.map(props.children, (child) =>
+            React.cloneElement(child, { isOpen })
+          )}
+        </div>
       </div>
     </div>
   );

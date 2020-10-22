@@ -30,7 +30,6 @@ const MegaMenu = ({ children, title }) => {
       <a
         onClick={() => setIsOpen((prev) => !prev)}
         onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
         className="nav-link nav-link-toggle"
       >
         {title}
@@ -41,6 +40,7 @@ const MegaMenu = ({ children, title }) => {
           open: { opacity: 1, y: 0, display: "block" },
           closed: { opacity: 0, y: 10, display: "none" },
         }}
+        onMouseLeave={() => setIsOpen(false)}
         transition={{ duration: 0.3 }}
         style={{
           minWidth: 330,

@@ -17,58 +17,58 @@ const Footer = () => (
           </div>
         </div>
         <div className="col-6 col-md-4 col-lg-3 ml-lg-auto mb-5 mb-lg-0">
-          <h5>Account</h5>
+          <h5>使用者相關</h5>
           <ul className="nav nav-sm nav-x-0 flex-column">
             <li className="nav-item">
               <a className="nav-link" href="#">
-                Placing an order
+                訂購紀錄
               </a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#">
-                Shipping options
+                運送方案
               </a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#">
-                Tracking a package
+                追蹤包裹
               </a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#">
-                Country availability
+                運送區域
               </a>
             </li>
           </ul>
         </div>
         <div className="col-6 col-md-4 col-lg-3 mb-5 mb-lg-0">
-          <h5>Company</h5>
+          <h5>平台相關</h5>
           <ul className="nav nav-sm nav-x-0 flex-column">
             <li className="nav-item">
               <a className="nav-link" href="#">
-                Financing
+                支付選項
               </a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#">
-                Recycling
+                運送時效
               </a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#">
-                Return policy
+                退款政策
               </a>
             </li>
           </ul>
         </div>
         <div className="col-md-4 col-lg-2 mb-5 mb-lg-0">
-          <h5>Our Location</h5>
+          <h5>所在地</h5>
           <ul className="nav nav-sm nav-x-0 flex-column">
             <li className="nav-item">
               <a className="nav-link" href="../help-desk/index.html">
                 <span className="media align-items-center">
                   <i className="fas fa-info-circle mr-2" />
-                  <span className="media-body">Help</span>
+                  <span className="media-body">幫助</span>
                 </span>
               </a>
             </li>
@@ -76,7 +76,7 @@ const Footer = () => (
               <a className="nav-link" href="#">
                 <span className="media align-items-center">
                   <i className="fas fa-user-circle mr-2" />
-                  <span className="media-body">Your Account</span>
+                  <span className="media-body">會員</span>
                 </span>
               </a>
             </li>
@@ -128,12 +128,12 @@ const Footer = () => (
           <ul className="nav nav-sm justify-content-md-end">
             <li className="nav-item">
               <a className="nav-link pl-0" href="../pages/privacy.html">
-                Privacy &amp; policy
+                隱私權保護政策
               </a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="../pages/terms.html">
-                Terms &amp; conditions
+                使用條款
               </a>
             </li>
           </ul>

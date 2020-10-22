@@ -3,14 +3,20 @@ import React from "react";
 const AuthContext = React.createContext({
   state: {},
   reducer: () => {},
-}); // Create a context object
+});
+
+const CartContext = React.createContext({
+  cartState: [],
+  cartDispatch: () => {},
+});
 
 const ThemeContext = React.createContext({
   style: {},
-}); // Create a context object
+});
 
 export {
   AuthContext,
   ThemeContext,
+  CartContext,
   // Export it so it can be used by other Components
 };
