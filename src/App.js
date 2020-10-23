@@ -87,7 +87,8 @@ function App() {
       }
       // Shopping cart
       const cart = storage.getShoppingCart();
-      if (cart) {
+      console.log("GET", cart);
+      if (Array.isArray(cart)) {
         setCart(cart);
       }
     };
@@ -95,7 +96,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (cart.lenth !== 0) storage.setShoppingCart(cart);
+    if (cart.length !== 0) {
+      console.log("SET", cart);
+      storage.setShoppingCart(cart);
+    }
   }, [cart]);
 
   return (

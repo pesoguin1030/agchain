@@ -127,70 +127,76 @@ const Header = () => {
                     <DropdownCard
                       position="right"
                       style={{
-                        zIndex: 999,
+                        pointerEvents: "auto",
                         minWidth: 275,
                         textAlign: "center",
                       }}
                     >
-                      <Card.Body>
-                        {cartState.length === 0 ? (
-                          <div
-                            style={{
-                              minWidth: 150,
-                              textAlign: "center",
-                            }}
-                          >
-                            <figure className="max-w-9rem mx-auto mb-3">
-                              <img
-                                className="img-fluid"
-                                src="../../assets/svg/illustrations/empty-cart.svg"
-                                alt="SVG"
-                              />
-                            </figure>
-                            <span className="d-block">你的購物車是空的</span>
-                          </div>
-                        ) : (
-                          <ListGroup variant="flush">
-                            {cartState.map(({ id, name, price, img }) => (
-                              <ListGroup.Item key={id}>
-                                <Container>
-                                  <Row>
-                                    <Col sm={2}>
-                                      <img
-                                        style={{
-                                          margin: "0.25rem",
-                                          width: "1.25rem",
-                                        }}
-                                        src={img}
-                                        alt="SVG"
-                                      />
-                                    </Col>
-                                    <Col sm={8} style={{ padding: "0.25rem" }}>
-                                      {`${name} `}
-                                      <strong class="text-dark">{`$${price}`}</strong>
-                                    </Col>
-                                    <Col sm={2}>
-                                      <a
-                                        className="btn btn-icon btn-ghost-secondary"
-                                        onClick={() =>
-                                          cartDispatch((prev) =>
-                                            prev.filter((el) => el.id !== id)
-                                          )
-                                        }
+                      <Card style={{ width: "18rem" }}>
+                        <Card.Body>
+                          {cartState.length === 0 ? (
+                            <div
+                              style={{
+                                zIndex: 999,
+                                minWidth: 150,
+                                textAlign: "center",
+                              }}
+                            >
+                              <figure className="max-w-9rem mx-auto mb-3">
+                                <img
+                                  className="img-fluid"
+                                  src="../../assets/svg/illustrations/empty-cart.svg"
+                                  alt="SVG"
+                                />
+                              </figure>
+                              <span className="d-block">你的購物車是空的</span>
+                            </div>
+                          ) : (
+                            <ListGroup variant="flush">
+                              {cartState.map(({ id, name, price, img }) => (
+                                <ListGroup.Item key={id}>
+                                  <Container>
+                                    <Row>
+                                      <Col sm={2}>
+                                        <img
+                                          style={{
+                                            margin: "0.25rem",
+                                            width: "1.25rem",
+                                          }}
+                                          src={img}
+                                          alt="SVG"
+                                        />
+                                      </Col>
+                                      <Col
+                                        sm={8}
+                                        style={{ padding: "0.25rem" }}
                                       >
-                                        <i className="fas fa-trash" />
-                                      </a>
-                                    </Col>
-                                  </Row>
-                                </Container>
-                              </ListGroup.Item>
-                            ))}
-                          </ListGroup>
-                        )}
-                      </Card.Body>
-                      <Card.Footer>
-                        <small>當地直送免費</small>
-                      </Card.Footer>
+                                        {`${name} `}
+                                        <strong class="text-dark">{`$${price}`}</strong>
+                                      </Col>
+                                      <Col sm={2}>
+                                        <a
+                                          className="btn btn-icon btn-ghost-secondary"
+                                          onClick={() =>
+                                            cartDispatch((prev) =>
+                                              prev.filter((el) => el.id !== id)
+                                            )
+                                          }
+                                        >
+                                          <i className="fas fa-trash" />
+                                        </a>
+                                      </Col>
+                                    </Row>
+                                  </Container>
+                                </ListGroup.Item>
+                              ))}
+                            </ListGroup>
+                          )}
+                        </Card.Body>
+                        <Card.Footer>
+                          <small>當地直送免費</small>
+                        </Card.Footer>
+                      </Card>
                     </DropdownCard>
                   </DropdownMenu>
                 </li>

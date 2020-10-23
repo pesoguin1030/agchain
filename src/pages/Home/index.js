@@ -17,15 +17,13 @@ function Home(props) {
     handleFetchProducts();
   }, []);
 
-  const renderProductCard = (product) => {};
-
   return (
     <main id="content" role="main">
       <div class="container space-top-lg-3 space-bottom-lg-2">
         <div class="row justify-content-lg-between align-items-lg-center">
           <div class="col-lg-5 order-lg-2 mb-9 mb-lg-0">
             <div class="mb-5">
-              <h1>可信賴溯源農產品</h1>
+              <h1>信賴溯源農產品</h1>
               <p>
                 結合物聯網，將生產到運送的紀錄交由區塊鏈技術進行驗證，提高食品安全透明度。
               </p>
@@ -131,7 +129,10 @@ function Home(props) {
         </div>
         <div className="row mx-n2 mx-sm-n3 mb-3">
           {products.map(({ id, name, description, price, photo_url }) => (
-            <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
+            <div
+              key={id}
+              className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
+            >
               <ProductCard
                 key={id}
                 title={name}
