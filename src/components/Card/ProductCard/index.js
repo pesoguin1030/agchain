@@ -3,7 +3,15 @@ import React from "react";
 const ProductCard = ({ img, title, description, price, onAddToCart }) => (
   <div className="card border shadow-none text-center h-100">
     <div className="position-relative">
-      <img className="card-img-top" src={img} alt="Image Description" />
+      <img
+        className="card-img-top"
+        style={{
+          minHeight: 180,
+          objectFit: "contain",
+        }}
+        src={img}
+        alt="商品圖片"
+      />
 
       <div className="position-absolute top-0 left-0 pt-3 pl-3">
         <span className="badge badge-success badge-pill">新上市</span>

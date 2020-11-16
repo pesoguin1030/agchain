@@ -134,7 +134,7 @@ const Header = () => {
                     >
                       <Card style={{ width: "18rem" }}>
                         <Card.Body>
-                          {cartState.length === 0 ? (
+                          {!cartState || cartState.length === 0 ? (
                             <div
                               style={{
                                 zIndex: 999,
@@ -157,24 +157,39 @@ const Header = () => {
                                 <ListGroup.Item key={id}>
                                   <Container>
                                     <Row>
-                                      <Col sm={2}>
+                                      <Col
+                                        className="my-auto"
+                                        sm={2}
+                                        style={{
+                                          padding: 0,
+                                        }}
+                                      >
                                         <img
                                           style={{
-                                            margin: "0.25rem",
-                                            width: "1.25rem",
+                                            width: 24,
+                                            height: "auto",
+                                            objectFit: "fill",
                                           }}
+                                          className="img-fluid"
                                           src={img}
                                           alt="SVG"
                                         />
                                       </Col>
-                                      <Col
-                                        sm={8}
-                                        style={{ padding: "0.25rem" }}
-                                      >
-                                        {`${name} `}
-                                        <strong class="text-dark">{`$${price}`}</strong>
+                                      <Col sm={8} className="my-auto">
+                                        <span>
+                                          {`${name} `}
+                                          <small>
+                                            <strong class="text-dark">{`$${price}`}</strong>
+                                          </small>
+                                        </span>
                                       </Col>
-                                      <Col sm={2}>
+                                      <Col
+                                        sm={2}
+                                        className="my-auto"
+                                        style={{
+                                          padding: 0,
+                                        }}
+                                      >
                                         <a
                                           className="btn btn-icon btn-ghost-secondary"
                                           onClick={() =>
@@ -194,7 +209,23 @@ const Header = () => {
                           )}
                         </Card.Body>
                         <Card.Footer>
-                          <small>當地直送免費</small>
+                          <Container>
+                            <Row>
+                              <Col>
+                                <small>當地直送免費</small>
+                              </Col>
+                              {cartState && cartState.length > 0 ? (
+                                <Col>
+                                  <Link
+                                    to="/shop/cart"
+                                    className="btn btn-xs btn-primary btn-block btn-pill transition-3d-hover"
+                                  >
+                                    前往購物車
+                                  </Link>
+                                </Col>
+                              ) : null}
+                            </Row>
+                          </Container>
                         </Card.Footer>
                       </Card>
                     </DropdownCard>

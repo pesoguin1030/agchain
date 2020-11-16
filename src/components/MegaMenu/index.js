@@ -26,10 +26,17 @@ const MegaMenuItem = ({ to, children, icon, title, description }) => {
 const MegaMenu = ({ children, title }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <li className="hs-has-mega-menu navbar-nav-item">
+    <li
+      onMouseLeave={() => {
+        setIsOpen(false);
+      }}
+      className="hs-has-mega-menu navbar-nav-item"
+    >
       <a
         onClick={() => setIsOpen((prev) => !prev)}
-        onMouseEnter={() => setIsOpen(true)}
+        onMouseEnter={() => {
+          setIsOpen(true);
+        }}
         className="nav-link nav-link-toggle"
       >
         {title}
@@ -37,15 +44,18 @@ const MegaMenu = ({ children, title }) => {
       <motion.div
         animate={isOpen ? "open" : "closed"}
         variants={{
-          open: { opacity: 1, y: 0, display: "block" },
-          closed: { opacity: 0, y: 10, display: "none" },
+          open: { opacity: 1, y: 0, visibility: "visible" },
+          closed: { opacity: 0, y: 10, visibility: "hidden" },
         }}
-        onMouseLeave={() => setIsOpen(false)}
+        onMouseLeave={() => {
+          setIsOpen(false);
+        }}
         transition={{ duration: 0.3 }}
         style={{
           minWidth: 330,
           left: "auto",
           right: 0,
+          display: "block",
         }}
         className="hs-mega-menu dropdown-menu hs-mega-menu-desktop-lg hs-position-right"
       >
