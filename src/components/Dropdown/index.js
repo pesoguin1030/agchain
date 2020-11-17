@@ -20,11 +20,13 @@ const DropdownList = (props) => (
 
 const DropdownCard = (props) => (
   <motion.div
-    onMouseLeave={() => props.setIsOpen(false)}
+    onMouseLeave={() => {
+      props.setIsOpen(false);
+    }}
     animate={props.isOpen ? "open" : "closed"}
     variants={{
-      open: { opacity: 1, y: 0 },
-      closed: { opacity: 0, y: 10 },
+      open: { opacity: 1, y: 0, visibility: "visible" },
+      closed: { opacity: 0, y: 10, visibility: "hidden" },
     }}
     transition={{ duration: 0.3 }}
     className={`hs-unfold-content dropdown-menu dropdown-card ${

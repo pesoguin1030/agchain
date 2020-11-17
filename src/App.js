@@ -21,6 +21,7 @@ import "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "./themes/default.css";
 import storage from "./utils/storage";
+import ShoppingCart from "./pages/Shop/cart";
 
 function App() {
   // Auth
@@ -63,7 +64,7 @@ function App() {
     }
   );
   // Shopping cart
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(null);
 
   // Setup
   useEffect(() => {
@@ -87,17 +88,17 @@ function App() {
       }
       // Shopping cart
       const cart = storage.getShoppingCart();
-      console.log("GET", cart);
       if (Array.isArray(cart)) {
         setCart(cart);
+      } else {
+        setCart([]);
       }
     };
     bootstrapAsync();
   }, []);
 
   useEffect(() => {
-    if (cart.length !== 0) {
-      console.log("SET", cart);
+    if (cart) {
       storage.setShoppingCart(cart);
     }
   }, [cart]);
@@ -126,7 +127,14 @@ function App() {
             </Route>
             <Route path="/">
               <Header />
-              <Home />
+              <Switch>
+                <Route exact path="/">
+                  <Home />
+                </Route>
+                <Route path="/shop/cart">
+                  <ShoppingCart />
+                </Route>
+              </Switch>
               <Footer />
             </Route>
           </Switch>
