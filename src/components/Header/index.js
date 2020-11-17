@@ -119,7 +119,7 @@ const Header = () => {
                     </a>
                   </div>
                 </li>
-                {/* Shopping Cart */}
+                {/* Shopping Cart 
                 <li className="list-inline-item">
                   <DropdownMenu
                     icon={<FontAwesomeIcon icon={faShoppingCart} />}
@@ -200,6 +200,7 @@ const Header = () => {
                     </DropdownCard>
                   </DropdownMenu>
                 </li>
+                */}
                 {/* Account */}
                 <li className="list-inline-item">
                   <div className="hs-unfold">
