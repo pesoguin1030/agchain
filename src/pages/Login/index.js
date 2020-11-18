@@ -56,6 +56,7 @@ function Login(props) {
         },
         accessToken: access_token,
       });
+      console.log(access_token);
     } catch (error) {
       console.error(error);
     }
@@ -103,8 +104,10 @@ function Login(props) {
                   </label>
 
                   <input
-                    value={username}
-                    onChange={setUsername}
+                    default-value={username}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                    }}
                     type="email"
                     class="form-control"
                     name="email"
@@ -135,8 +138,10 @@ function Login(props) {
 
                   <div class="input-group input-group-merge">
                     <input
-                      value={password}
-                      onChange={setPassword}
+                      default-value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
                       type="password"
                       class="js-toggle-password form-control"
                       name="password"
@@ -177,7 +182,6 @@ function Login(props) {
                   </div>
                 </div>
                 <button
-                  type="submit"
                   onClick={defaultSignIn}
                   class="btn btn-block btn-primary"
                 >
