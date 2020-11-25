@@ -113,7 +113,8 @@ function App() {
       <CartContext.Provider value={{ cartState: cart, cartDispatch: setCart }}>
         <Router>
           <Switch>
-            <Route path="/dapp/:uuid/:serial_num" component={Dapp} />
+            {/* <Route path="/dapp/:uuid/:serial_num" component={Dapp} /> */}
+            <Route path="/dapp/:trace_param" component={Dapp} />
             <Route path="/admin">
               {authState.user ? <Admin /> : <Redirect to="/login" />}
             </Route>

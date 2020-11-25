@@ -152,55 +152,6 @@ const query = async (cropId) => {
   }
 };
 
-async function getData(farmID) {
-  // const userToken = await AsyncStorage.getItem('access_token');
-  var userToken =
-    "NWM5ZTZkYTQtOTExZi00MzY5LWFiMjYtYzkxN2IzYjNjMWEwZWJlMTBkMDUtMmY4Ni00OGQ2LWEwZGQtZTQ4MGY3MzM0ZWU5MzlkMzdlZjktZTgzNC00NGIxLTk3YmItNTY5YWZiNDMzZTZhYjQwYzRiYjAtNzJiMi00YmE3LTg3NjYtNGM4NTk5ZDA0MDVj";
-  try {
-    // res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
-    const response = await axios.get(`${server_url}/farms/farmIntro`, {
-      params: {
-        // farm_id: currentPackage.farm_id || currentPackage.product.farm_id,
-        farm_id: farmID,
-      },
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    });
-    const {
-      data: { items },
-    } = response;
-    // console.log(response);
-
-    if (items) {
-      console.log(items);
-      // setAddress(items.farm_address);
-      // setSpecial([items.farm_special]);
-      // setPhone(items.farm_phone);
-      // setIntro(items.farm_intro);
-      // setLink1(items.farm_picture);
-      // setLinkList([
-      //   {uri: items.farm_picture},
-      //   {uri: items.farm_picture2},
-      //   {uri: items.farm_picture3},
-      // ]);
-      // setName(items.farm_name);
-    }
-    console.log("items");
-    console.log(items);
-    return items;
-  } catch (error) {
-    alert("無法取得農場資訊，請稍後再試");
-    // error.response undefined
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.log(error.request);
-    return false;
-  }
-  // setLoading(false);
-}
-
 async function getTraceData(package_uuid, serial_number) {
   try {
     const response = await axios.get(`${server_url}/dapp`, {
@@ -226,15 +177,14 @@ function Dapp(props) {
   const [photoUrl, setPhotoUrl] = useState("");
 
   useEffect(() => {
-    const package_uuid = props.match.params.uuid;
-    const serial_number = props.match.params.serial_num; // for package_item
-    // console.log(props.match);
+    // const package_uuid = props.match.params.uuid;
+    // const serial_number = props.match.params.serial_num; // for package_item
+    const package_uuid = props.match.params.trace_param.split("_")[0];
+    const serial_number = props.match.params.trace_param.split("_")[1]; // for package_item
     console.log("uuid: " + package_uuid);
     console.log("pkg_item serial num: " + serial_number);
+
     // 去server端抓資料
-    // const {farm_intro} = getTraceData(package_uuid, serial_number)
-    // console.log(farm_intro);  // empty
-    // setFarmIntro(farm_intro)
     getTraceData(package_uuid, serial_number).then((data) => {
       const { photo_url, farm_intro, certificate_filename_arr } = data;
       setFarmIntro(farm_intro);
@@ -245,8 +195,6 @@ function Dapp(props) {
     query(149).then(function (data) {
       setCultivationRecord(data);
     });
-
-    console.log(farmIntro); // undefined   async?
   }, []);
 
   // useEffect(() => {
