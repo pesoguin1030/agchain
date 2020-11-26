@@ -175,7 +175,7 @@ function Dapp(props) {
   const [cultivationRecord, setCultivationRecord] = useState([]);
   const [farmIntro, setFarmIntro] = useState([]);
   const [photoUrl, setPhotoUrl] = useState("");
-
+  const [farmPic, setFarmPic] = useState([]);
   useEffect(() => {
     // const package_uuid = props.match.params.uuid;
     // const serial_number = props.match.params.serial_num; // for package_item
@@ -188,6 +188,7 @@ function Dapp(props) {
     getTraceData(package_uuid, serial_number).then((data) => {
       const { photo_url, farm_intro, certificate_filename_arr } = data;
       setFarmIntro(farm_intro);
+      setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
       setPhotoUrl(photo_url);
     });
 
@@ -197,6 +198,14 @@ function Dapp(props) {
     });
   }, []);
 
+  function getPropertyByRegex(obj, propName) {
+    var re = new RegExp("^" + propName + "(\\[\\d*\\])?$"),
+      key;
+    var objs = [];
+    for (key in obj) if (re.test(key) && obj[key] != null) objs.push(obj[key]);
+    return objs;
+    // return null; // put your default "not found" return value here
+  }
   // useEffect(() => {
   //   if (cultivationRecord.length !== 0) {
   //     console.log("SET", cultivationRecord);
@@ -226,11 +235,25 @@ function Dapp(props) {
           <div>{JSON.stringify(cultivationRecord)}</div>
         </div>
 
-        <div className="container space-2 space-lg-3">
+        <div
+          className="container space-2 space-lg-3"
+          style={{ margin: "auto", textAlign: "center" }}
+        >
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>農場資訊</h2>
           </div>
-          <div>{JSON.stringify(farmIntro)}</div>
+          {farmPic.map((pic) => {
+            return <img src={pic} />;
+          })}
+          <p>{farmIntro["farm_intro"]}</p>
+          <ul style={{ listStyleType: "none" }}>
+            <li>
+              <span>地址:{farmIntro["farm_address"]}</span>
+            </li>
+            <li>
+              <span>電話:{}</span>
+            </li>
+          </ul>
         </div>
 
         <div className="container space-2 space-lg-3">
