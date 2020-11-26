@@ -6,6 +6,9 @@ import Footer from "../../../src/components/Footer";
 
 import axios from "axios";
 // let server_url = "https://app.freshio.me";
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+
 let server_url = "http://localhost:4000";
 
 const httpProvider = ethers.getDefaultProvider("goerli");
@@ -176,6 +179,7 @@ function Dapp(props) {
   const [farmIntro, setFarmIntro] = useState([]);
   const [photoUrl, setPhotoUrl] = useState("");
   const [farmPic, setFarmPic] = useState([]);
+  const [certificate_file_arr, setCertificate_file_arr] = useState([]);
   useEffect(() => {
     // const package_uuid = props.match.params.uuid;
     // const serial_number = props.match.params.serial_num; // for package_item
@@ -189,6 +193,7 @@ function Dapp(props) {
       const { photo_url, farm_intro, certificate_filename_arr } = data;
       setFarmIntro(farm_intro);
       setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
+      setCertificate_file_arr(certificate_filename_arr);
       setPhotoUrl(photo_url);
     });
 
@@ -204,7 +209,6 @@ function Dapp(props) {
     var objs = [];
     for (key in obj) if (re.test(key) && obj[key] != null) objs.push(obj[key]);
     return objs;
-    // return null; // put your default "not found" return value here
   }
   // useEffect(() => {
   //   if (cultivationRecord.length !== 0) {
@@ -251,7 +255,7 @@ function Dapp(props) {
               <span>地址:{farmIntro["farm_address"]}</span>
             </li>
             <li>
-              <span>電話:{}</span>
+              <span>電話:{farmIntro["farm_phone"]}</span>
             </li>
           </ul>
         </div>
@@ -260,7 +264,17 @@ function Dapp(props) {
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>檢驗證書</h2>
           </div>
-          <img src="https://app.freshio.me/photos/certificates/user-12-1602049831747.jpg" />
+          {/* <img src="https://app.freshio.me/photos/certificates/user-12-1602049831747.jpg" /> */}
+          {certificate_file_arr.map((cerftificate_file) => {
+            return (
+              <div style={{ margin: "auto" }}>
+                <img
+                  src={`https://app.freshio.me/photos/certificates/${cerftificate_file}`}
+                  style={{ width: "70%", height: "70%" }}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
       <Footer />
