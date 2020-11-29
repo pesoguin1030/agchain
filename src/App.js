@@ -113,9 +113,6 @@ function App() {
       <CartContext.Provider value={{ cartState: cart, cartDispatch: setCart }}>
         <Router>
           <Switch>
-            <Route path="/dapp">
-              <Dapp />
-            </Route>
             <Route path="/admin">
               {authState.user ? <Admin /> : <Redirect to="/login" />}
             </Route>
@@ -130,6 +127,9 @@ function App() {
               <Switch>
                 <Route exact path="/">
                   <Home />
+                </Route>
+                <Route path="/dapp">
+                  <Dapp />
                 </Route>
                 <Route path="/shop/cart">
                   <ShoppingCart />
