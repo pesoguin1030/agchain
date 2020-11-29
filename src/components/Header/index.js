@@ -14,6 +14,7 @@ import { SidebarFooter, Sidebar, SidebarContent } from "../Sidebar";
 import { AuthContext, CartContext } from "../../appContext";
 import * as firebase from "firebase";
 import { oauthSignIn, emailSignIn } from "../../api/user";
+import storage from "../../utils/storage";
 
 const Header = () => {
   const { authState, authDispatch } = useContext(AuthContext);
@@ -71,6 +72,7 @@ const Header = () => {
         },
         accessToken: access_token,
       });
+      console.log(access_token);
       setIsSidebarVisible(false);
     } catch (error) {
       console.error(error);
@@ -246,7 +248,7 @@ const Header = () => {
                             marginLeft: "0.375rem",
                           }}
                         >
-                          {authState.user.displayName}
+                          {authState.user}
                         </span>
                       ) : null}
                     </a>
@@ -331,276 +333,285 @@ const Header = () => {
         onClose={() => setIsSidebarVisible(false)}
       >
         <SidebarContent>
-          <form className="js-validate" novalidate="novalidate">
-            <div
-              id="login"
-              data-hs-show-animation-target-group="idForm"
-              style={{
-                animationDuration: "400ms",
-              }}
-            >
-              <div className="text-center mb-7">
-                <h3 className="mb-0">會員登入</h3>
-                <p>登入以使用功能</p>
-              </div>
-              <div className="js-form-message mb-4">
-                <label className="input-label">電子信箱</label>
-                <div className="input-group input-group-sm mb-2">
-                  <input
-                    type="email"
-                    onChange={setUsername}
-                    className="form-control"
-                    name="email"
-                    id="signinEmail"
-                    placeholder="Email"
-                    aria-label="Email"
-                    required=""
-                    data-msg="Please enter a valid email address."
-                  />
+          // Expecting to create personal profile Sidebar
+          {false ? ( //(storage.getAccessToken)
+            <h1> {authState.user} </h1>
+          ) : (
+            <div>
+              <div
+                id="login"
+                data-hs-show-animation-target-group="idForm"
+                style={{
+                  animationDuration: "400ms",
+                }}
+              >
+                <div className="text-center mb-7">
+                  <h3 className="mb-0">會員登入</h3>
+                  <p>登入以使用功能</p>
                 </div>
-              </div>
-              <div className="js-form-message mb-3">
-                <label className="input-label">密碼</label>
-                <div className="input-group input-group-sm mb-2">
-                  <input
-                    type="password"
-                    onChange={setPassword}
-                    className="form-control"
-                    name="password"
-                    id="signinPassword"
-                    placeholder="Password"
-                    aria-label="Password"
-                    required=""
-                    data-msg="Your password is invalid. Please try again."
-                  />
+                <div className="js-form-message mb-4">
+                  <label className="input-label">電子信箱</label>
+                  <div className="input-group input-group-sm mb-2">
+                    <input
+                      type="email"
+                      onChange={(e) => {
+                        setUsername(e.target.value);
+                      }}
+                      className="form-control"
+                      name="email"
+                      id="signinEmail"
+                      placeholder="Email"
+                      aria-label="Email"
+                      required=""
+                      data-msg="Please enter a valid email address."
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="d-flex justify-content-end mb-4">
-                <a
-                  className="js-animation-link small link-underline"
-                  href="javascript:;"
-                  data-hs-show-animation-options='{
+                <div className="js-form-message mb-3">
+                  <label className="input-label">密碼</label>
+                  <div className="input-group input-group-sm mb-2">
+                    <input
+                      type="password"
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
+                      className="form-control"
+                      name="password"
+                      id="signinPassword"
+                      placeholder="Password"
+                      aria-label="Password"
+                      required=""
+                      data-msg="Your password is invalid. Please try again."
+                    />
+                  </div>
+                </div>
+                <div className="d-flex justify-content-end mb-4">
+                  <a
+                    className="js-animation-link small link-underline"
+                    href="javascript:;"
+                    data-hs-show-animation-options='{
                          "targetSelector": "#forgotPassword",
                          "groupName": "idForm",
                          "animationType": "css-animation",
                          "animationIn": "slideInUp",
                          "duration": 400
                       //  }'
-                  data-hs-show-animation-link-group="idForm"
-                >
-                  忘記密碼？
-                </a>
-              </div>
-              <div className="mb-3">
-                <button
-                  onClick={defaultSignIn}
-                  className="btn btn-sm btn-primary btn-block"
-                >
-                  登入
-                </button>
-              </div>
-              <div className="text-center mb-3">
-                <span className="divider divider-xs divider-text">或是</span>
-              </div>
-              <a
-                className="btn btn-sm btn-ghost-secondary btn-block mb-2"
-                onClick={googleSignIn}
-              >
-                <span className="d-flex justify-content-center align-items-center">
-                  <img
-                    className="mr-2"
-                    src="/assets/img/160x160/img17.png"
-                    alt="Image Description"
-                    width="14"
-                    height="14"
-                  />
-                  使用Google帳號
-                </span>
-              </a>
-              <div className="text-center">
-                <span className="small text-muted">還不是會員？</span>
+                    data-hs-show-animation-link-group="idForm"
+                  >
+                    忘記密碼？
+                  </a>
+                </div>
+                <div className="mb-3">
+                  <button
+                    onClick={defaultSignIn}
+                    className="btn btn-sm btn-primary btn-block"
+                  >
+                    登入
+                  </button>
+                </div>
+                <div className="text-center mb-3">
+                  <span className="divider divider-xs divider-text">或是</span>
+                </div>
                 <a
-                  className="js-animation-link small font-weight-bold"
-                  href="javascript:;"
-                  data-hs-show-animation-options='{
+                  className="btn btn-sm btn-ghost-secondary btn-block mb-2"
+                  onClick={googleSignIn}
+                >
+                  <span className="d-flex justify-content-center align-items-center">
+                    <img
+                      className="mr-2"
+                      src="/assets/img/160x160/img17.png"
+                      alt="Image Description"
+                      width="14"
+                      height="14"
+                    />
+                    使用Google帳號
+                  </span>
+                </a>
+                <div className="text-center">
+                  <span className="small text-muted">還不是會員？</span>
+                  <a
+                    className="js-animation-link small font-weight-bold"
+                    href="signup"
+                    data-hs-show-animation-options='{
                          "targetSelector": "#signup",
                          "groupName": "idForm",
                          "animationType": "css-animation",
                          "animationIn": "slideInUp",
                          "duration": 400
                        }'
-                  data-hs-show-animation-link-group="idForm"
-                >
-                  註冊
-                </a>
-              </div>
-            </div>
-            <div
-              id="signup"
-              style={{
-                display: "none",
-                opacity: 0,
-                animationDuration: "400ms",
-              }}
-              data-hs-show-animation-target-group="idForm"
-            >
-              <div className="text-center mb-7">
-                <h3 className="mb-0">Create your account</h3>
-                <p>Fill out the form to get started.</p>
-              </div>
-              <div className="js-form-message mb-4">
-                <label className="input-label">Email</label>
-                <div className="input-group input-group-sm mb-2">
-                  <input
-                    type="email"
-                    className="form-control"
-                    name="email"
-                    id="signupEmail"
-                    placeholder="Email"
-                    aria-label="Email"
-                    required=""
-                    data-msg="Please enter a valid email address."
-                  />
+                    data-hs-show-animation-link-group="idForm"
+                  >
+                    註冊
+                  </a>
                 </div>
               </div>
-              <div className="js-form-message mb-4">
-                <label className="input-label">Password</label>
-                <div className="input-group input-group-sm mb-2">
-                  <input
-                    type="password"
-                    className="form-control"
-                    name="password"
-                    id="signupPassword"
-                    placeholder="Password"
-                    aria-label="Password"
-                    required=""
-                    data-msg="Your password is invalid. Please try again."
-                  />
-                </div>
-              </div>
-              <div className="js-form-message mb-4">
-                <label className="input-label">Confirm Password</label>
-                <div className="input-group input-group-sm mb-2">
-                  <input
-                    type="password"
-                    className="form-control"
-                    name="confirmPassword"
-                    id="signupConfirmPassword"
-                    placeholder="Confirm Password"
-                    aria-label="Confirm Password"
-                    required=""
-                    data-msg="Password does not match the confirm password."
-                  />
-                </div>
-              </div>
-              <div className="mb-3">
-                <button
-                  type="submit"
-                  className="btn btn-sm btn-primary btn-block"
-                >
-                  Sign Up
-                </button>
-              </div>
-
-              <div className="text-center mb-3">
-                <span className="divider divider-xs divider-text">OR</span>
-              </div>
-
-              <a
-                className="btn btn-sm btn-ghost-secondary btn-block mb-2"
-                href="#"
+              <div
+                id="signup"
+                style={{
+                  display: "none",
+                  opacity: 0,
+                  animationDuration: "400ms",
+                }}
+                data-hs-show-animation-target-group="idForm"
               >
-                <span className="d-flex justify-content-center align-items-center">
-                  <img
-                    className="mr-2"
-                    src="/assets/img/160x160/img17.png"
-                    alt="Image Description"
-                    width="14"
-                    height="14"
-                  />
-                  Sign Up with Google
-                </span>
-              </a>
+                <div className="text-center mb-7">
+                  <h3 className="mb-0">Create your account</h3>
+                  <p>Fill out the form to get started.</p>
+                </div>
+                <div className="js-form-message mb-4">
+                  <label className="input-label">Email</label>
+                  <div className="input-group input-group-sm mb-2">
+                    <input
+                      type="email"
+                      className="form-control"
+                      name="email"
+                      id="signupEmail"
+                      placeholder="Email"
+                      aria-label="Email"
+                      required=""
+                      data-msg="Please enter a valid email address."
+                    />
+                  </div>
+                </div>
+                <div className="js-form-message mb-4">
+                  <label className="input-label">Password</label>
+                  <div className="input-group input-group-sm mb-2">
+                    <input
+                      type="password"
+                      className="form-control"
+                      name="password"
+                      id="signupPassword"
+                      placeholder="Password"
+                      aria-label="Password"
+                      required=""
+                      data-msg="Your password is invalid. Please try again."
+                    />
+                  </div>
+                </div>
+                <div className="js-form-message mb-4">
+                  <label className="input-label">Confirm Password</label>
+                  <div className="input-group input-group-sm mb-2">
+                    <input
+                      type="password"
+                      className="form-control"
+                      name="confirmPassword"
+                      id="signupConfirmPassword"
+                      placeholder="Confirm Password"
+                      aria-label="Confirm Password"
+                      required=""
+                      data-msg="Password does not match the confirm password."
+                    />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <button
+                    type="submit"
+                    className="btn btn-sm btn-primary btn-block"
+                  >
+                    Sign Up
+                  </button>
+                </div>
 
-              <div className="text-center">
-                <span className="small text-muted">
-                  Already have an account?
-                </span>
+                <div className="text-center mb-3">
+                  <span className="divider divider-xs divider-text">OR</span>
+                </div>
+
                 <a
-                  className="js-animation-link small font-weight-bold"
-                  href="javascript:;"
-                  data-hs-show-animation-options='{
+                  className="btn btn-sm btn-ghost-secondary btn-block mb-2"
+                  href="#"
+                >
+                  <span className="d-flex justify-content-center align-items-center">
+                    <img
+                      className="mr-2"
+                      src="/assets/img/160x160/img17.png"
+                      alt="Image Description"
+                      width="14"
+                      height="14"
+                    />
+                    Sign Up with Google
+                  </span>
+                </a>
+
+                <div className="text-center">
+                  <span className="small text-muted">
+                    Already have an account?
+                  </span>
+                  <a
+                    className="js-animation-link small font-weight-bold"
+                    href="javascript:;"
+                    data-hs-show-animation-options='{
                          "targetSelector": "#login",
                          "groupName": "idForm",
                          "animationType": "css-animation",
                          "animationIn": "slideInUp",
                          "duration": 400
                        }'
-                  data-hs-show-animation-link-group="idForm"
-                >
-                  Sign In
-                </a>
-              </div>
-            </div>
-            <div
-              id="forgotPassword"
-              style={{
-                display: "none",
-                opacity: 0,
-                animationuration: "400ms",
-              }}
-              data-hs-show-animation-target-group="idForm"
-            >
-              <div className="text-center mb-7">
-                <h3 className="mb-0">Recover password</h3>
-                <p>Instructions will be sent to you.</p>
-              </div>
-              <div className="js-form-message">
-                <label className="sr-only" for="recoverEmail">
-                  Your email
-                </label>
-                <div className="input-group input-group-sm mb-2">
-                  <input
-                    type="email"
-                    className="form-control"
-                    name="email"
-                    id="recoverEmail"
-                    placeholder="Your email"
-                    aria-label="Your email"
-                    required=""
-                    data-msg="Please enter a valid email address."
-                  />
+                    data-hs-show-animation-link-group="idForm"
+                  >
+                    Sign In
+                  </a>
                 </div>
               </div>
-              <div className="mb-3">
-                <button
-                  type="submit"
-                  className="btn btn-sm btn-primary btn-block"
-                >
-                  Recover Password
-                </button>
-              </div>
-              <div className="text-center mb-4">
-                <span className="small text-muted">
-                  Remember your password?
-                </span>
-                <a
-                  className="js-animation-link small font-weight-bold"
-                  href="javascript:;"
-                  data-hs-show-animation-options='{
+              <div
+                id="forgotPassword"
+                style={{
+                  display: "none",
+                  opacity: 0,
+                  animationuration: "400ms",
+                }}
+                data-hs-show-animation-target-group="idForm"
+              >
+                <div className="text-center mb-7">
+                  <h3 className="mb-0">Recover password</h3>
+                  <p>Instructions will be sent to you.</p>
+                </div>
+                <div className="js-form-message">
+                  <label className="sr-only" for="recoverEmail">
+                    Your email
+                  </label>
+                  <div className="input-group input-group-sm mb-2">
+                    <input
+                      type="email"
+                      className="form-control"
+                      name="email"
+                      id="recoverEmail"
+                      placeholder="Your email"
+                      aria-label="Your email"
+                      required=""
+                      data-msg="Please enter a valid email address."
+                    />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <button
+                    type="submit"
+                    className="btn btn-sm btn-primary btn-block"
+                  >
+                    Recover Password
+                  </button>
+                </div>
+                <div className="text-center mb-4">
+                  <span className="small text-muted">
+                    Remember your password?
+                  </span>
+                  <a
+                    className="js-animation-link small font-weight-bold"
+                    href="javascript:;"
+                    data-hs-show-animation-options='{
                          "targetSelector": "#login",
                          "groupName": "idForm",
                          "animationType": "css-animation",
                          "animationIn": "slideInUp",
                          "duration": 400
                        }'
-                  data-hs-show-animation-link-group="idForm"
-                >
-                  Login
-                </a>
+                    data-hs-show-animation-link-group="idForm"
+                  >
+                    Login
+                  </a>
+                </div>
               </div>
             </div>
-          </form>
+          )}
         </SidebarContent>
         <SidebarFooter>
           <ul className="nav nav-sm">
