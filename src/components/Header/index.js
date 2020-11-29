@@ -87,14 +87,24 @@ const Header = () => {
             <div className="d-flex align-items-center">
               {/*  Language */}
               <DropdownMenu title="語言">
-                <DropdownList>
+                <DropdownList
+                  style={{
+                    zIndex: 999,
+                    pointerEvents: "auto",
+                  }}
+                >
                   <DropdownItem>繁體中文</DropdownItem>
                 </DropdownList>
               </DropdownMenu>
               <div className="ml-auto">
                 {/* Jump to */}
                 <DropdownMenu className="d-sm-none mr-2" title="跳轉">
-                  <DropdownList>
+                  <DropdownList
+                    style={{
+                      zIndex: 999,
+                      pointerEvents: "auto",
+                    }}
+                  >
                     <DropdownItem>幫助</DropdownItem>
                     <DropdownItem>聯絡資訊</DropdownItem>
                   </DropdownList>
@@ -121,7 +131,7 @@ const Header = () => {
                     </a>
                   </div>
                 </li>
-                {/* Shopping Cart 
+                {/* Shopping Cart */}
                 <li className="list-inline-item">
                   <DropdownMenu
                     icon={<FontAwesomeIcon icon={faShoppingCart} />}
@@ -155,58 +165,62 @@ const Header = () => {
                             </div>
                           ) : (
                             <ListGroup variant="flush">
-                              {cartState.map(({ id, name, price, img }) => (
-                                <ListGroup.Item key={id}>
-                                  <Container>
-                                    <Row>
-                                      <Col
-                                        className="my-auto"
-                                        sm={2}
-                                        style={{
-                                          padding: 0,
-                                        }}
-                                      >
-                                        <img
+                              {cartState.map(
+                                ({ id, name, price, img }, index) => (
+                                  <ListGroup.Item key={index}>
+                                    <Container>
+                                      <Row>
+                                        <Col
+                                          className="my-auto"
+                                          sm={2}
                                           style={{
-                                            width: 24,
-                                            height: "auto",
-                                            objectFit: "fill",
+                                            padding: 0,
                                           }}
-                                          className="img-fluid"
-                                          src={img}
-                                          alt="SVG"
-                                        />
-                                      </Col>
-                                      <Col sm={8} className="my-auto">
-                                        <span>
-                                          {`${name} `}
-                                          <small>
-                                            <strong class="text-dark">{`$${price}`}</strong>
-                                          </small>
-                                        </span>
-                                      </Col>
-                                      <Col
-                                        sm={2}
-                                        className="my-auto"
-                                        style={{
-                                          padding: 0,
-                                        }}
-                                      >
-                                        <a
-                                          className="btn btn-icon btn-ghost-secondary"
-                                          onClick={() =>
-                                            cartDispatch((prev) =>
-                                              prev.filter((el) => el.id !== id)
-                                            )
-                                          }
                                         >
-                                          <i className="fas fa-trash" />
-                                        </a>
-                                      </Col>
-                                    </Row>
-                                  </Container>
-                                </ListGroup.Item>
-                              ))}
+                                          <img
+                                            style={{
+                                              width: 24,
+                                              height: "auto",
+                                              objectFit: "fill",
+                                            }}
+                                            className="img-fluid"
+                                            src={img}
+                                            alt="SVG"
+                                          />
+                                        </Col>
+                                        <Col sm={8} className="my-auto">
+                                          <span>
+                                            {`${name} `}
+                                            <small>
+                                              <strong className="text-dark">{`$${price}`}</strong>
+                                            </small>
+                                          </span>
+                                        </Col>
+                                        <Col
+                                          sm={2}
+                                          className="my-auto"
+                                          style={{
+                                            padding: 0,
+                                          }}
+                                        >
+                                          <a
+                                            className="btn btn-icon btn-ghost-secondary"
+                                            onClick={() =>
+                                              cartDispatch((prev) =>
+                                                prev.filter(
+                                                  (el) => el.id !== id
+                                                )
+                                              )
+                                            }
+                                          >
+                                            <i className="fas fa-trash" />
+                                          </a>
+                                        </Col>
+                                      </Row>
+                                    </Container>
+                                  </ListGroup.Item>
+                                )
+                              )}
                             </ListGroup>
                           )}
                         </Card.Body>
@@ -233,25 +247,36 @@ const Header = () => {
                     </DropdownCard>
                   </DropdownMenu>
                 </li>
-                */}
                 {/* Account */}
                 <li className="list-inline-item">
                   <div className="hs-unfold">
-                    <a
-                      className="btn btn-xs btn-ghost-secondary"
-                      onClick={() => setIsSidebarVisible(true)}
-                    >
-                      <i className="fas fa-user-circle" />
-                      {authState.user ? (
-                        <span
+                    {authState.user ? (
+                      <DropdownMenu title={authState.user.name}>
+                        <DropdownList
                           style={{
-                            marginLeft: "0.375rem",
+                            zIndex: 999,
+                            pointerEvents: "auto",
                           }}
                         >
-                          {authState.user}
-                        </span>
-                      ) : null}
-                    </a>
+                          <DropdownItem
+                            onClick={() =>
+                              authDispatch({
+                                type: "LOGOUT",
+                              })
+                            }
+                          >
+                            登出
+                          </DropdownItem>
+                        </DropdownList>
+                      </DropdownMenu>
+                    ) : (
+                      <a
+                        className="btn btn-xs btn-ghost-secondary"
+                        onClick={() => setIsSidebarVisible(true)}
+                      >
+                        <i className="fas fa-user-circle" />
+                      </a>
+                    )}
                   </div>
                 </li>
               </ul>
@@ -333,7 +358,6 @@ const Header = () => {
         onClose={() => setIsSidebarVisible(false)}
       >
         <SidebarContent>
-          // Expecting to create personal profile Sidebar
           {false ? ( //(storage.getAccessToken)
             <h1> {authState.user} </h1>
           ) : (
@@ -388,7 +412,6 @@ const Header = () => {
                 <div className="d-flex justify-content-end mb-4">
                   <a
                     className="js-animation-link small link-underline"
-                    href="javascript:;"
                     data-hs-show-animation-options='{
                          "targetSelector": "#forgotPassword",
                          "groupName": "idForm",
@@ -538,7 +561,6 @@ const Header = () => {
                   </span>
                   <a
                     className="js-animation-link small font-weight-bold"
-                    href="javascript:;"
                     data-hs-show-animation-options='{
                          "targetSelector": "#login",
                          "groupName": "idForm",
@@ -566,9 +588,7 @@ const Header = () => {
                   <p>Instructions will be sent to you.</p>
                 </div>
                 <div className="js-form-message">
-                  <label className="sr-only" for="recoverEmail">
-                    Your email
-                  </label>
+                  <label className="sr-only">Your email</label>
                   <div className="input-group input-group-sm mb-2">
                     <input
                       type="email"
@@ -596,7 +616,6 @@ const Header = () => {
                   </span>
                   <a
                     className="js-animation-link small font-weight-bold"
-                    href="javascript:;"
                     data-hs-show-animation-options='{
                          "targetSelector": "#login",
                          "groupName": "idForm",

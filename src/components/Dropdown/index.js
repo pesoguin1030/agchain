@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-const DropdownItem = (props) => <a {...props} className="dropdown-item" />;
+const DropdownItem = (props) => (
+  <a {...props} href="#" className="dropdown-item" />
+);
 
 const DropdownList = (props) => (
   <motion.div
+    style={props.style}
     onMouseLeave={() => props.setIsOpen(false)}
     animate={props.isOpen ? "open" : "closed"}
     variants={{
-      open: { opacity: 1, y: 0 },
-      closed: { opacity: 0, y: 10 },
+      open: { opacity: 1, y: 0, visibility: "visible" },
+      closed: { opacity: 0, y: 10, visibility: "hidden" },
     }}
     transition={{ duration: 0.3 }}
-    className="hs-unfold-content dropdown-menu"
+    className={`hs-unfold-content dropdown-menu
+    ${!props.isOpen ? `hs-unfold-content-hidden` : ""}
+    `}
   >
     {props.children}
   </motion.div>
@@ -31,7 +36,8 @@ const DropdownCard = (props) => (
     transition={{ duration: 0.3 }}
     className={`hs-unfold-content dropdown-menu dropdown-card ${
       props.position ? `dropdown-menu-${props.position}` : ""
-    } ${!props.isOpen ? `hs-unfold-content-hidden` : ""}`}
+    }
+    `}
     style={props.style}
   >
     {props.children}
@@ -41,7 +47,11 @@ const DropdownCard = (props) => (
 function DropdownMenu(props) {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className={`hs-unfold ${props.className || ""}`}>
+    <div
+      className={`hs-unfold ${props.className || ""}
+    ${!props.isOpen ? `hs-unfold-content-hidden` : ""}
+    `}
+    >
       {props.title ? (
         <a
           className="dropdown-nav-link dropdown-toggle d-flex align-items-center"

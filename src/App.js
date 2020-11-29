@@ -41,7 +41,7 @@ function App() {
           storage.setAccessToken(action.accessToken);
           return {
             ...prevState,
-            user: action.user.name,
+            user: action.user,
             accessToken: action.accessToken,
           };
         case "LOGOUT":
@@ -77,7 +77,6 @@ function App() {
         // Validate token
         try {
           const user = await fetchUser(accessToken);
-          console.log(user);
           authDispatch({
             type: "RESTORE",
             user: user,
