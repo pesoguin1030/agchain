@@ -15,7 +15,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-
+import Shop from "./pages/Shop";
 // Stylesheets management
 import "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-free/css/all.css";
@@ -131,6 +131,9 @@ function App() {
               <Switch>
                 <Route exact path="/">
                   <Home />
+                </Route>
+                <Route exact path="/shop">
+                  <Shop />
                 </Route>
                 <Route path="/shop/cart">
                   <ShoppingCart />
