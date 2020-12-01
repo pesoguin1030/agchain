@@ -43,7 +43,7 @@ function ShoppingCart(props) {
     Object.keys(item_and_amount).map((key) => {
       let item = {};
       item["amount"] = item_and_amount[key];
-      item["destination"] = "清華大學台達館"; //之後要改
+      item["destination"] = 1; //之後要改，這裡是destination_id 之後要先找destination資料表抓出id再丟
       item["productId"] = JSON.parse(key)["id"];
       orders.push(item);
     });
@@ -62,8 +62,6 @@ function ShoppingCart(props) {
           </div>
           {
             cartempty
-              ? null
-              : cartempty
               ? null
               : Object.keys(item_and_amount).map((key) => {
                   const { id, name, price, img } = JSON.parse(key);
