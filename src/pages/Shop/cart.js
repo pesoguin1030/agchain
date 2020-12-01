@@ -1,24 +1,38 @@
 import React, { useState, useContext, useEffect } from "react";
 import { CartContext } from "../../appContext";
+import { createOrder } from "../../api/order";
+import storage from "../../utils/storage";
+import { counter } from "@fortawesome/fontawesome-svg-core";
 
 function ShoppingCart(props) {
   const { cartState, cartDispatch } = useContext(CartContext);
   const [cartempty, setCartEmpty] = useState(true);
-  const [item_and_price, setItem_and_price] = useState({});
+  const [item_and_amount, setItem_and_amount] = useState();
   useEffect(() => {
     setCartEmpty(!cartState || cartState.length === 0);
+    setItem_and_amount();
 
-    if (!(!cartState || cartState.length === 0)) {
-      console.log(cartState);
-    }
     return () => {
       // cleanup
     };
   }, [cartState]);
 
-  const createOrder = () => {
-    alert("hi");
+  const countItem = () => {
+    var counter = {};
+    cartState.forEach(function (obj) {
+      var key = JSON.stringify(obj);
+      counter[key] = (counter[key] || 0) + 1;
+    });
+    return counter;
   };
+
+  const handleItem = () => {
+    let orders = countItem();
+    console.log("-------", orders);
+    let accessToken = storage.getAccessToken();
+    // createOrder(orders,accessToken)
+  };
+
   return (
     <div class="container space-1 space-md-2">
       <div class="row">
@@ -27,82 +41,83 @@ function ShoppingCart(props) {
             <h1 class="h3 mb-0">購物車</h1>
             <span>{cartempty ? null : cartState.length} 產品</span>
           </div>
-          {cartempty
-            ? null
-            : cartState.map(({ id, name, price, img }) => {
-                //  console.log("----",typeof(img));
-                return (
-                  <div class="border-bottom pb-5 mb-5">
-                    <div class="media">
-                      <div class="max-w-15rem w-100 mr-3">
-                        <img class="img-fluid" src={img} alt={img} />
-                      </div>
-                      <div class="media-body">
-                        <div class="row">
-                          <div class="col-md-7 mb-3 mb-md-0">
-                            <a class="h5 d-block" href="#">
-                              {name}
-                            </a>
+          {
+            cartempty
+              ? null
+              : cartState.map(({ id, name, price, img }) => {
+                  console.log("----", item_and_amount);
+                  return (
+                    <div class="border-bottom pb-5 mb-5">
+                      <div class="media">
+                        <div class="max-w-15rem w-100 mr-3">
+                          <img class="img-fluid" src={img} alt={img} />
+                        </div>
+                        <div class="media-body">
+                          <div class="row">
+                            <div class="col-md-7 mb-3 mb-md-0">
+                              <a class="h5 d-block" href="#">
+                                {name}
+                              </a>
 
-                            <div class="d-block d-md-none">
+                              <div class="d-block d-md-none">
+                                <span class="h5 d-block mb-1">{price}</span>
+                              </div>
+                            </div>
+
+                            <div class="col-md-3">
+                              <div class="row">
+                                <div class="col-auto">
+                                  <select
+                                    class="custom-select custom-select-sm w-auto mb-3"
+                                    // onChange={}
+                                  >
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                  </select>
+                                </div>
+
+                                <div class="col-auto">
+                                  <a
+                                    class="d-block text-body font-size-1 mb-1"
+                                    href="javascript:;"
+                                  >
+                                    <i class="far fa-trash-alt text-hover-primary mr-1"></i>
+                                    <span class="font-size-1 text-hover-primary">
+                                      Remove
+                                    </span>
+                                  </a>
+
+                                  <a
+                                    class="d-block text-body font-size-1"
+                                    href="javascript:;"
+                                  >
+                                    <i class="far fa-heart text-hover-primary mr-1"></i>
+                                    <span class="font-size-1 text-hover-primary">
+                                      Save for later
+                                    </span>
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="col-4 col-md-2 d-none d-md-inline-block text-right">
                               <span class="h5 d-block mb-1">{price}</span>
                             </div>
-                          </div>
-
-                          <div class="col-md-3">
-                            <div class="row">
-                              <div class="col-auto">
-                                <select
-                                  class="custom-select custom-select-sm w-auto mb-3"
-                                  // onChange={}
-                                >
-                                  <option value="1">1</option>
-                                  <option value="2">2</option>
-                                  <option value="3">3</option>
-                                  <option value="4">4</option>
-                                  <option value="5">5</option>
-                                  <option value="6">6</option>
-                                  <option value="7">7</option>
-                                  <option value="8">8</option>
-                                  <option value="9">9</option>
-                                  <option value="10">10</option>
-                                </select>
-                              </div>
-
-                              <div class="col-auto">
-                                <a
-                                  class="d-block text-body font-size-1 mb-1"
-                                  href="javascript:;"
-                                >
-                                  <i class="far fa-trash-alt text-hover-primary mr-1"></i>
-                                  <span class="font-size-1 text-hover-primary">
-                                    Remove
-                                  </span>
-                                </a>
-
-                                <a
-                                  class="d-block text-body font-size-1"
-                                  href="javascript:;"
-                                >
-                                  <i class="far fa-heart text-hover-primary mr-1"></i>
-                                  <span class="font-size-1 text-hover-primary">
-                                    Save for later
-                                  </span>
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div class="col-4 col-md-2 d-none d-md-inline-block text-right">
-                            <span class="h5 d-block mb-1">{price}</span>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })
-              // console.log(cartState)
+                  );
+                })
+            // console.log(cartState)
           }
           <div class="d-sm-flex justify-content-end">
             <a class="font-weight-bold" href="classic.html">
@@ -199,7 +214,7 @@ function ShoppingCart(props) {
                 <div class="col px-1 my-1">
                   <button
                     class="btn btn-primary btn-block btn-pill transition-3d-hover"
-                    onClick={createOrder}
+                    onClick={handleItem}
                   >
                     結帳
                   </button>
