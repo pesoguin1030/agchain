@@ -61,7 +61,7 @@ const ProductCard = ({ img, title, description, price, onAddToCart }) => (
           <span>5</span>
         </a>
       </div>
-      {/*
+
       <button
         type="button"
         onClick={onAddToCart}
@@ -69,7 +69,6 @@ const ProductCard = ({ img, title, description, price, onAddToCart }) => (
       >
         加入購物車
       </button>
-      */}
     </div>
   </div>
 );

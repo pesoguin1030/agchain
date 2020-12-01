@@ -3,34 +3,53 @@ import { CartContext } from "../../appContext";
 import { createOrder } from "../../api/order";
 import storage from "../../utils/storage";
 import { counter } from "@fortawesome/fontawesome-svg-core";
+import { fetchUser } from "../../api/user";
 
 function ShoppingCart(props) {
   const { cartState, cartDispatch } = useContext(CartContext);
   const [cartempty, setCartEmpty] = useState(true);
-  const [item_and_amount, setItem_and_amount] = useState();
+  const [item_and_amount, setItem_and_amount] = useState({});
   useEffect(() => {
     setCartEmpty(!cartState || cartState.length === 0);
-    setItem_and_amount();
-
+    if (!(!cartState || cartState.length === 0)) {
+      setItem_and_amount(countItem(cartState));
+    }
     return () => {
       // cleanup
     };
   }, [cartState]);
 
-  const countItem = () => {
+  const countItem = (arr) => {
     var counter = {};
-    cartState.forEach(function (obj) {
+    arr.forEach(function (obj) {
       var key = JSON.stringify(obj);
       counter[key] = (counter[key] || 0) + 1;
     });
     return counter;
   };
 
-  const handleItem = () => {
-    let orders = countItem();
-    console.log("-------", orders);
-    let accessToken = storage.getAccessToken();
-    // createOrder(orders,accessToken)
+  const countBill = () => {
+    let total_bill = 0;
+    Object.keys(item_and_amount).map((key) => {
+      let num = item_and_amount[key];
+      let price = JSON.parse(key)["price"];
+      total_bill += num * price;
+    });
+    return total_bill;
+  };
+
+  const handleItem = async () => {
+    let orders = [];
+    Object.keys(item_and_amount).map((key) => {
+      let item = {};
+      item["amount"] = item_and_amount[key];
+      item["destination"] = "清華大學台達館"; //之後要改
+      item["productId"] = JSON.parse(key)["id"];
+      orders.push(item);
+    });
+    const user = await fetchUser(storage.getAccessToken());
+    const orderNumber = await createOrder(orders, storage.getAccessToken());
+    console.log("orderNumber:", orderNumber);
   };
 
   return (
@@ -44,8 +63,11 @@ function ShoppingCart(props) {
           {
             cartempty
               ? null
-              : cartState.map(({ id, name, price, img }) => {
-                  console.log("----", item_and_amount);
+              : cartempty
+              ? null
+              : Object.keys(item_and_amount).map((key) => {
+                  const { id, name, price, img } = JSON.parse(key);
+                  const num = item_and_amount[key];
                   return (
                     <div class="border-bottom pb-5 mb-5">
                       <div class="media">
@@ -71,8 +93,8 @@ function ShoppingCart(props) {
                                     class="custom-select custom-select-sm w-auto mb-3"
                                     // onChange={}
                                   >
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
+                                    <option value={{ num }}>{num}</option>
+                                    {/* <option value="2">2</option>
                                     <option value="3">3</option>
                                     <option value="4">4</option>
                                     <option value="5">5</option>
@@ -80,7 +102,7 @@ function ShoppingCart(props) {
                                     <option value="7">7</option>
                                     <option value="8">8</option>
                                     <option value="9">9</option>
-                                    <option value="10">10</option>
+                                    <option value="10">10</option> */}
                                   </select>
                                 </div>
 
@@ -109,7 +131,7 @@ function ShoppingCart(props) {
                             </div>
 
                             <div class="col-4 col-md-2 d-none d-md-inline-block text-right">
-                              <span class="h5 d-block mb-1">{price}</span>
+                              <span class="h5 d-block mb-1">{price * num}</span>
                             </div>
                           </div>
                         </div>
@@ -122,7 +144,7 @@ function ShoppingCart(props) {
           <div class="d-sm-flex justify-content-end">
             <a class="font-weight-bold" href="classic.html">
               <i class="fas fa-angle-left fa-xs mr-1"></i>
-              Continue shopping
+              繼續購物
             </a>
           </div>
         </div>
@@ -138,7 +160,9 @@ function ShoppingCart(props) {
                     {<span>{cartempty ? null : cartState.length} 產品</span>}
                   </span>
                   <div class="media-body text-right">
-                    <span class="text-dark font-weight-bold">$73.98</span>
+                    <span class="text-dark font-weight-bold">
+                      {countBill()}
+                    </span>
                   </div>
                 </div>
 
@@ -196,17 +220,11 @@ function ShoppingCart(props) {
                   </div>
                 </div>
               </div>
-              <div class="media align-items-center mb-3">
-                <span class="d-block font-size-1 mr-3">Estimated tax</span>
-                <div class="media-body text-right">
-                  <span class="text-dark font-weight-bold">--</span>
-                </div>
-              </div>
 
               <div class="media align-items-center mb-3">
                 <span class="d-block font-size-1 mr-3">Total</span>
                 <div class="media-body text-right">
-                  <span class="text-dark font-weight-bold">$73.98</span>
+                  <span class="text-dark font-weight-bold">{countBill()}</span>
                 </div>
               </div>
 
