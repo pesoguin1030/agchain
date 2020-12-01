@@ -41,7 +41,7 @@ function App() {
           storage.setAccessToken(action.accessToken);
           return {
             ...prevState,
-            user: action.user.name,
+            user: action.user,
             accessToken: action.accessToken,
           };
         case "LOGOUT":
@@ -77,7 +77,6 @@ function App() {
         // Validate token
         try {
           const user = await fetchUser(accessToken);
-          console.log(user);
           authDispatch({
             type: "RESTORE",
             user: user,
@@ -114,9 +113,6 @@ function App() {
       <CartContext.Provider value={{ cartState: cart, cartDispatch: setCart }}>
         <Router>
           <Switch>
-            <Route path="/dapp">
-              <Dapp />
-            </Route>
             <Route path="/admin">
               {authState.user ? <Admin /> : <Redirect to="/login" />}
             </Route>
@@ -134,6 +130,9 @@ function App() {
                 </Route>
                 <Route exact path="/shop">
                   <Shop />
+                </Route>
+                <Route path="/dapp">
+                  <Dapp />
                 </Route>
                 <Route path="/shop/cart">
                   <ShoppingCart />

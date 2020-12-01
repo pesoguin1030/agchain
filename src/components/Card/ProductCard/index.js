@@ -52,15 +52,16 @@ const ProductCard = ({ img, title, description, price, onAddToCart }) => (
       <div className="mb-3">
         <a className="d-inline-flex align-items-center small" href="#">
           <div className="text-warning mr-2">
-            <i className="far fa-star text-muted"></i>
-            <i className="far fa-star text-muted"></i>
-            <i className="far fa-star text-muted"></i>
-            <i className="far fa-star text-muted"></i>
-            <i className="far fa-star text-muted"></i>
+            <i className="fa fa-star "></i>
+            <i className="fa fa-star"></i>
+            <i className="fa fa-star"></i>
+            <i className="fa fa-star"></i>
+            <i className="fa fa-star"></i>
           </div>
-          <span>0</span>
+          <span>5</span>
         </a>
       </div>
+      {/*
       <button
         type="button"
         onClick={onAddToCart}
@@ -68,6 +69,7 @@ const ProductCard = ({ img, title, description, price, onAddToCart }) => (
       >
         加入購物車
       </button>
+      */}
     </div>
   </div>
 );
