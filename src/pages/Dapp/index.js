@@ -275,19 +275,23 @@ function Dapp(props) {
             <h2>農場資訊</h2>
           </div>
           <div className="row">
-            <div className="col-sm-6 col-lg-6 px-2 px-sm-3 mb-3 mb-sm-5">
+            <div className="col-sm-6 col-md-6 col-lg-6 px-2 px-sm-3 mb-3 mb-sm-5 px-3">
               {farmPic.map((pic, index) => {
                 return <img src={pic} className="responsive-img" key={index} />;
               })}
             </div>
-            <div className="col-sm-6 col-lg-6 px-2 px-sm-3 mb-3 mb-sm-5">
-              <p>{farmIntro["farm_intro"]}</p>
-              <ul style={{ listStyleType: "none" }}>
+            <div className="col-sm-6 col-md-6 col-lg-6 px-2 px-sm-3 mb-3 mb-sm-5 px-5">
+              <p style={{ letterSpacing: "0.2rem" }}>
+                {farmIntro["farm_intro"]}
+              </p>
+              <ul style={{ listStyleType: "none", textAlign: "left" }}>
                 <li>
-                  <span>地址:{farmIntro["farm_address"]}</span>
+                  <i className="fas fa-map-marked-alt"></i>
+                  <span className="mx-2">{farmIntro["farm_address"]}</span>
                 </li>
                 <li>
-                  <span>電話:{farmIntro["farm_phone"]}</span>
+                  <i className="fas fa-phone-square-alt"></i>
+                  <span className="mx-2">{farmIntro["farm_phone"]}</span>
                 </li>
               </ul>
             </div>
@@ -306,9 +310,9 @@ function Dapp(props) {
                   key={index}
                 >
                   <CertificateCard
+                    idx={index}
                     img={`https://app.freshio.me/photos/certificates/${cerftificate.filename}`}
                     title={`${cerftificate.title}`}
-                    onClickToZoomIn={() => console.log("AAA")}
                   />
                 </div>
               );
