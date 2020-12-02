@@ -30,30 +30,45 @@ import React from "react";
 
 // item 包含 icon, title, description
 const ListItem = (items) => {
-  return items.map((item) => {
+  return items.map((item, index) => {
     return (
-      <li class="step-item">
-        <div class="step-content-wrapper">
-          <div class="step-avatar">
+      <li className="step-item" key={index}>
+        <div className="step-content-wrapper">
+          <span className="step-icon step-icon-soft-primary">
             <img
-              class="step-avatar-img"
+              className="step-avatar-img"
               src={item.icon}
               alt="Image Description"
             />
-          </div>
-          <div class="step-content">
+          </span>
+          <div className="step-content">
             <h4>{item.title}</h4>
-            <p class="text-body">{item.description}</p>
+            <p className="text-body">{item.description}</p>
           </div>
         </div>
       </li>
+      // <li className="step-item">
+      //   <div className="step-content-wrapper">
+      //     <div className="step-avatar">
+      //       <img
+      //         className="step-avatar-img"
+      //         src={item.icon}
+      //         alt="Image Description"
+      //       />
+      //     </div>
+      //     <div className="step-content">
+      //       <h4>{item.title}</h4>
+      //       <p className="text-body">{item.description}</p>
+      //     </div>
+      //   </div>
+      // </li>
     );
   });
 };
 
 const TimeLine = ({ items }) => {
   // console.log(items);
-  return <ul class="step">{ListItem(items)}</ul>;
+  return <ul className="step step-md">{ListItem(items)}</ul>;
 };
 
 export default TimeLine;

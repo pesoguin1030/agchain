@@ -247,15 +247,12 @@ function Dapp(props) {
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>生產履歷</h2>
           </div>
-          {/* <div className="mr-md-auto ml-md-auto">
-            <TimeLine items={cultivationRecord}/>
-          </div> */}
-          <div class="row">
-            <div class="col-sm-4"></div>
-            <div class="col-sm-4">
+          <div className="row">
+            <div className="col-sm-4"></div>
+            <div className="col-sm-4">
               <TimeLine items={cultivationRecord} />
             </div>
-            <div class="col-sm-4"></div>
+            <div className="col-sm-4"></div>
           </div>
         </div>
 
@@ -263,13 +260,13 @@ function Dapp(props) {
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>農場資訊</h2>
           </div>
-          <div class="row">
-            <div class="col-sm-6 col-lg-6 px-2 px-sm-3 mb-3 mb-sm-5">
-              {farmPic.map((pic) => {
-                return <img src={pic} className="responsive-img" />;
+          <div className="row">
+            <div className="col-sm-6 col-lg-6 px-2 px-sm-3 mb-3 mb-sm-5">
+              {farmPic.map((pic, index) => {
+                return <img src={pic} className="responsive-img" key={index} />;
               })}
             </div>
-            <div class="col-sm-6 col-lg-6 px-2 px-sm-3 mb-3 mb-sm-5">
+            <div className="col-sm-6 col-lg-6 px-2 px-sm-3 mb-3 mb-sm-5">
               <p>{farmIntro["farm_intro"]}</p>
               <ul style={{ listStyleType: "none" }}>
                 <li>
@@ -288,9 +285,12 @@ function Dapp(props) {
             <h2>檢驗證書</h2>
           </div>
           <div className="row mx-n2 mx-sm-n3 mb-3">
-            {certificate_filename_arr.map((cerftificate) => {
+            {certificate_filename_arr.map((cerftificate, index) => {
               return (
-                <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
+                <div
+                  className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
+                  key={index}
+                >
                   <CertificateCard
                     img={`https://app.freshio.me/photos/certificates/${cerftificate.filename}`}
                     title={`${cerftificate.title}`}
