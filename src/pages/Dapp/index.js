@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
+import moment from "moment";
 
 import Header from "../../../src/components/Header";
 import Footer from "../../../src/components/Footer";
+import CertificateCard from "../../../src/components/CertificateCard";
+import TimeLine from "../../../src/components/TimeLine";
 
 import axios from "axios";
+import { Reorder } from "@material-ui/icons";
 // let server_url = "https://app.freshio.me";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
-
 let server_url = "http://localhost:4000";
 
 const httpProvider = ethers.getDefaultProvider("goerli");
@@ -179,27 +180,48 @@ function Dapp(props) {
   const [farmIntro, setFarmIntro] = useState([]);
   const [photoUrl, setPhotoUrl] = useState("");
   const [farmPic, setFarmPic] = useState([]);
-  const [certificate_file_arr, setCertificate_file_arr] = useState([]);
+  const [certificateArr, setCertificateArr] = useState([]);
+  const [certificate_filename_arr, setcertificate_filename_arr] = useState([]);
+
   useEffect(() => {
-    // const package_uuid = props.match.params.uuid;
-    // const serial_number = props.match.params.serial_num; // for package_item
     const package_uuid = props.match.params.trace_param.split("_")[0];
-    const serial_number = props.match.params.trace_param.split("_")[1]; // for package_item
+    const serial_number = String(props.match.params.trace_param.split("_")[1]); // for package_item
     console.log("uuid: " + package_uuid);
     console.log("pkg_item serial num: " + serial_number);
 
     // 去server端抓資料
     getTraceData(package_uuid, serial_number).then((data) => {
-      const { photo_url, farm_intro, certificate_filename_arr } = data;
+      const { crop_id, photo_url, farm_intro, certificate_filename_arr } = data;
       setFarmIntro(farm_intro);
       setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
-      setCertificate_file_arr(certificate_filename_arr);
+      setcertificate_filename_arr(certificate_filename_arr);
+      // ({title: item.title, filename: item.filename})
       setPhotoUrl(photo_url);
-    });
 
-    // cropID => type = number   140 150 141 144 145 149...
-    query(149).then(function (data) {
-      setCultivationRecord(data);
+      // 田間紀錄
+      query(crop_id).then(function (data) {
+        var cultivation_records = data.map((record) => {
+          var icon_path = "../../assets/img/cultivation";
+          switch (record.action) {
+            case "播種測試":
+              icon_path = "../../assets/img/cultivation/sow.png";
+              break;
+            case "施肥":
+              icon_path = "../../assets/img/cultivation/fertilize.png";
+              break;
+
+            default:
+              icon_path = "../../assets/img/100x100/img3.jpg";
+              break;
+          }
+          return {
+            icon: icon_path,
+            title: record.action,
+            description: moment.unix(record.timestamp).format("YYYY-MM-DD"),
+          };
+        });
+        setCultivationRecord(cultivation_records);
+      });
     });
   }, []);
 
@@ -210,17 +232,6 @@ function Dapp(props) {
     for (key in obj) if (re.test(key) && obj[key] != null) objs.push(obj[key]);
     return objs;
   }
-  // useEffect(() => {
-  //   if (cultivationRecord.length !== 0) {
-  //     console.log("SET", cultivationRecord);
-  //   }
-  // }, [cultivationRecord]);
-
-  // useEffect(() => {
-  //   if (farmIntro.length !== 0) {
-  //     console.log("SET", farmIntro);
-  //   }
-  // }, [farmIntro]);
 
   return (
     <main id="content" role="main">
@@ -229,52 +240,66 @@ function Dapp(props) {
         <div className="container space-2 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>出貨前照片</h2>
+            <img src={photoUrl} className="responsive-img mt-2" />
           </div>
-          <img src={photoUrl} />
         </div>
         <div className="container space-2 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>生產履歷</h2>
           </div>
-          <div>{JSON.stringify(cultivationRecord)}</div>
+          {/* <div className="mr-md-auto ml-md-auto">
+            <TimeLine items={cultivationRecord}/>
+          </div> */}
+          <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+              <TimeLine items={cultivationRecord} />
+            </div>
+            <div class="col-sm-4"></div>
+          </div>
         </div>
 
-        <div
-          className="container space-2 space-lg-3"
-          style={{ margin: "auto", textAlign: "center" }}
-        >
+        <div className="container space-2 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>農場資訊</h2>
           </div>
-          {farmPic.map((pic) => {
-            return <img src={pic} />;
-          })}
-          <p>{farmIntro["farm_intro"]}</p>
-          <ul style={{ listStyleType: "none" }}>
-            <li>
-              <span>地址:{farmIntro["farm_address"]}</span>
-            </li>
-            <li>
-              <span>電話:{farmIntro["farm_phone"]}</span>
-            </li>
-          </ul>
+          <div class="row">
+            <div class="col-sm-6 col-lg-6 px-2 px-sm-3 mb-3 mb-sm-5">
+              {farmPic.map((pic) => {
+                return <img src={pic} className="responsive-img" />;
+              })}
+            </div>
+            <div class="col-sm-6 col-lg-6 px-2 px-sm-3 mb-3 mb-sm-5">
+              <p>{farmIntro["farm_intro"]}</p>
+              <ul style={{ listStyleType: "none" }}>
+                <li>
+                  <span>地址:{farmIntro["farm_address"]}</span>
+                </li>
+                <li>
+                  <span>電話:{farmIntro["farm_phone"]}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
         <div className="container space-2 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>檢驗證書</h2>
           </div>
-          {/* <img src="https://app.freshio.me/photos/certificates/user-12-1602049831747.jpg" /> */}
-          {certificate_file_arr.map((cerftificate_file) => {
-            return (
-              <div style={{ margin: "auto" }}>
-                <img
-                  src={`https://app.freshio.me/photos/certificates/${cerftificate_file}`}
-                  style={{ width: "70%", height: "70%" }}
-                />
-              </div>
-            );
-          })}
+          <div className="row mx-n2 mx-sm-n3 mb-3">
+            {certificate_filename_arr.map((cerftificate) => {
+              return (
+                <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
+                  <CertificateCard
+                    img={`https://app.freshio.me/photos/certificates/${cerftificate.filename}`}
+                    title={`${cerftificate.title}`}
+                    onClickToZoomIn={() => console.log("AAA")}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
       <Footer />

@@ -25209,3 +25209,7 @@ a:hover .text-hover-primary {
 /*------------------------------------
   File for your custom SCSS style
 ------------------------------------*/
+.responsive-img {
+  max-width: 100%;
+  height: auto;
+}
