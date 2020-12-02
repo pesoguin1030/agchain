@@ -138,6 +138,14 @@ function App() {
                   <ShoppingCart />
                 </Route>
               </Switch>
+              <Route
+                exact
+                path="/shop/order"
+                render={() =>
+                  (window.location =
+                    "https://dev.to/mxdavis/redirecting-to-an-external-url-within-react-router-3nf1")
+                }
+              />
               <Footer />
             </Route>
           </Switch>

@@ -4,11 +4,14 @@ import { createOrder } from "../../api/order";
 import storage from "../../utils/storage";
 import { counter } from "@fortawesome/fontawesome-svg-core";
 import { fetchUser } from "../../api/user";
+import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 function ShoppingCart(props) {
   const { cartState, cartDispatch } = useContext(CartContext);
   const [cartempty, setCartEmpty] = useState(true);
   const [item_and_amount, setItem_and_amount] = useState({});
+  const [jump, setJump] = useState(false);
   useEffect(() => {
     setCartEmpty(!cartState || cartState.length === 0);
     if (!(!cartState || cartState.length === 0)) {
@@ -47,9 +50,12 @@ function ShoppingCart(props) {
       item["productId"] = JSON.parse(key)["id"];
       orders.push(item);
     });
-    const user = await fetchUser(storage.getAccessToken());
-    const orderNumber = await createOrder(orders, storage.getAccessToken());
-    console.log("orderNumber:", orderNumber);
+    setJump(true);
+    // return <Redirect to='/login/'/>
+    // return <Redirect to='https://colorlib.com/wp/free-bootstrap-ecommerce-website-templates/'/>
+    // const user = await fetchUser(storage.getAccessToken());
+    // const orderNumber = await createOrder(orders, storage.getAccessToken());
+    // console.log("orderNumber:", orderNumber);
   };
 
   return (
@@ -248,6 +254,7 @@ function ShoppingCart(props) {
                   </button>
                 </div>
               </div>
+              {jump ? <Redirect to="/shop/order" /> : null}
             </div>
           </div>
         </div>
