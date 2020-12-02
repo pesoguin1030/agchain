@@ -19,49 +19,49 @@ function Home(props) {
 
   return (
     <main id="content" role="main">
-      <div class="container space-top-lg-3 space-bottom-lg-2">
-        <div class="row justify-content-lg-between align-items-lg-center">
-          <div class="col-lg-5 order-lg-2 mb-9 mb-lg-0">
-            <div class="mb-5">
+      <div className="container space-top-lg-3 space-bottom-lg-2">
+        <div className="row justify-content-lg-between align-items-lg-center">
+          <div className="col-lg-5 order-lg-2 mb-9 mb-lg-0">
+            <div className="mb-5">
               <h1>信賴溯源農產品</h1>
               <p>
                 結合物聯網，將生產到運送的紀錄交由區塊鏈技術進行驗證，提高食品安全透明度。
               </p>
             </div>
 
-            <h3 class="mb-3">下載到手機</h3>
-            <a class="btn btn-icon btn-light rounded-circle mr-2" href="#">
-              <i class="fab fa-apple"></i>
+            <h3 className="mb-3">下載到手機</h3>
+            <a className="btn btn-icon btn-light rounded-circle mr-2" href="#">
+              <i className="fab fa-apple"></i>
             </a>
             <a
-              class="btn btn-icon btn-indigo rounded-circle"
+              className="btn btn-icon btn-indigo rounded-circle"
               target="_blank"
               href="https://play.google.com/store/apps/details?id=com.agril&hl=zh_TW"
             >
-              <i class="fab fa-google-play"></i>
+              <i className="fab fa-google-play"></i>
             </a>
           </div>
 
-          <div class="col-lg-6 order-lg-1">
+          <div className="col-lg-6 order-lg-1">
             <div
-              class="position-relative max-w-50rem mx-auto"
+              className="position-relative max-w-50rem mx-auto"
               data-aos="fade-up"
             >
-              <div class="device device-iphone-x w-75 mx-auto">
+              <div className="device device-iphone-x w-75 mx-auto">
                 <img
-                  class="device-iphone-x-frame"
+                  className="device-iphone-x-frame"
                   src="/assets/svg/components/iphone-x.svg"
                   alt="Image Description"
                 />
                 <img
-                  class="device-iphone-x-screen"
+                  className="device-iphone-x-screen"
                   src="/assets/img/407x867/agchain1.png"
                   alt="Image Description"
                 />
               </div>
-              <div class="position-absolute bottom-0 right-0 max-w-50rem w-100 z-index-n1 mx-auto">
+              <div className="position-absolute bottom-0 right-0 max-w-50rem w-100 z-index-n1 mx-auto">
                 <img
-                  class="img-fluid"
+                  className="img-fluid"
                   src="/assets/svg/components/abstract-shapes-3.svg"
                   alt="Image Description"
                 />

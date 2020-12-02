@@ -76,7 +76,7 @@ function App() {
         request.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
         // Validate token
         try {
-          const user = await fetchUser();
+          const user = await fetchUser(accessToken);
           authDispatch({
             type: "RESTORE",
             user: user,
@@ -129,6 +129,9 @@ function App() {
               <Switch>
                 <Route exact path="/">
                   <Home />
+                </Route>
+                <Route path="/dapp">
+                  <Dapp />
                 </Route>
                 <Route path="/shop/cart">
                   <ShoppingCart />

@@ -1,8 +1,8 @@
 import request from "../utils/request";
 
-const fetchUser = async () => {
+const fetchUser = async (accessToken) => {
   try {
-    const { data } = await request.get("/users/");
+    const { data } = await request.get(`/users/info`);
     return data;
   } catch (err) {
     return err;
@@ -11,7 +11,7 @@ const fetchUser = async () => {
 
 const emailSignIn = async ({ username, password }) => {
   try {
-    const { data } = await request.post("/users/signin", {
+    const { data } = await request.post(`/users/signin`, {
       username,
       password,
     });
