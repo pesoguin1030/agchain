@@ -5,7 +5,7 @@ const GiftCard = ({ data, onPressLike }) => {
 
   return (
     <div>
-      <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9 mt-2">
+      <div className="w-md-80 w-lg-40 text-center mx-md-auto mt-5">
         <button
           id="btnTrigger"
           type="button"
