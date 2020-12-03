@@ -67,7 +67,7 @@ const ListItem = (items) => {
 };
 
 const TimeLine = ({ items }) => {
-  // console.log(items);
+  // 目前預設橫式 在寬度小於md(786px?)時會轉成直式
   return <ul className="step step-md">{ListItem(items)}</ul>;
 };
 

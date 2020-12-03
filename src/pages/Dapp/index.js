@@ -176,14 +176,14 @@ async function getTraceData(package_uuid, serial_number) {
 }
 
 function Dapp(props) {
-  const [cultivationRecord, setCultivationRecord] = useState([]);
-  const [farmIntro, setFarmIntro] = useState([]);
-  const [photoUrl, setPhotoUrl] = useState("");
-  const [farmPic, setFarmPic] = useState([]);
-  const [certificateArr, setCertificateArr] = useState([]);
-  const [certificate_filename_arr, setcertificate_filename_arr] = useState([]);
+  const [cultivationRecord, setCultivationRecord] = useState([]); // 田間紀錄
+  const [farmIntro, setFarmIntro] = useState([]); // 農場介紹
+  const [farmPic, setFarmPic] = useState([]); // 農場照片(1~3張?)
+  const [photoUrl, setPhotoUrl] = useState(""); // 出貨前照片
+  const [certificate_filename_arr, setcertificate_filename_arr] = useState([]); // 檢驗證書
 
   useEffect(() => {
+    // 從url取得溯源參數
     const package_uuid = props.match.params.trace_param.split("_")[0];
     const serial_number = String(props.match.params.trace_param.split("_")[1]); // for package_item
     console.log("uuid: " + package_uuid);
@@ -191,15 +191,21 @@ function Dapp(props) {
 
     // 去server端抓資料
     getTraceData(package_uuid, serial_number).then((data) => {
-      const { crop_id, photo_url, farm_intro, certificate_filename_arr } = data;
+      const {
+        order_num,
+        crop_id,
+        photo_url,
+        farm_intro,
+        certificate_filename_arr,
+      } = data;
       setFarmIntro(farm_intro);
       setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
       setcertificate_filename_arr(certificate_filename_arr);
-      // ({title: item.title, filename: item.filename})
       setPhotoUrl(photo_url);
 
       // 田間紀錄
       query(crop_id).then(function (data) {
+        // 轉換成{icon, title, description}的形式，方便用timeline顯示
         var cultivation_records = data.map((record) => {
           var icon_path = "../../assets/img/cultivation";
           switch (record.action) {
@@ -211,7 +217,7 @@ function Dapp(props) {
               break;
 
             default:
-              icon_path = "../../assets/img/100x100/img3.jpg";
+              icon_path = "../../assets/img/cultivation/018-shovel.jpg";
               break;
           }
           return {
@@ -254,7 +260,11 @@ function Dapp(props) {
         <div className="container space-2 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>出貨前照片</h2>
-            <img src={photoUrl} className="responsive-img mt-2" />
+            {photoUrl !== null ? (
+              <img src={photoUrl} className="responsive-img mt-2" />
+            ) : (
+              <p>無法取得出貨前照片</p>
+            )}
           </div>
         </div>
         <div className="container space-2 space-lg-3">
@@ -264,7 +274,11 @@ function Dapp(props) {
           <div className="row">
             <div className="col-sm-4"></div>
             <div className="col-sm-4">
-              <TimeLine items={cultivationRecord} />
+              {cultivationRecord !== null || cultivationRecord.length !== 0 ? (
+                <TimeLine items={cultivationRecord} />
+              ) : (
+                <p>無相關田間紀錄</p>
+              )}
             </div>
             <div className="col-sm-4"></div>
           </div>
@@ -303,20 +317,24 @@ function Dapp(props) {
             <h2>檢驗證書</h2>
           </div>
           <div className="row mx-n2 mx-sm-n3 mb-3">
-            {certificate_filename_arr.map((cerftificate, index) => {
-              return (
-                <div
-                  className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
-                  key={index}
-                >
-                  <CertificateCard
-                    idx={index}
-                    img={`https://app.freshio.me/photos/certificates/${cerftificate.filename}`}
-                    title={`${cerftificate.title}`}
-                  />
-                </div>
-              );
-            })}
+            {certificate_filename_arr.length > 0 ? (
+              certificate_filename_arr.map((cerftificate, index) => {
+                return (
+                  <div
+                    className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
+                    key={index}
+                  >
+                    <CertificateCard
+                      idx={index}
+                      img={`https://app.freshio.me/photos/certificates/${cerftificate.filename}`}
+                      title={`${cerftificate.title}`}
+                    />
+                  </div>
+                );
+              })
+            ) : (
+              <p>無相關證書</p>
+            )}
           </div>
         </div>
       </div>
