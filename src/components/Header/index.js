@@ -258,6 +258,14 @@ const Header = () => {
                             pointerEvents: "auto",
                           }}
                         >
+                          <DropdownItem>
+                            <i className="fas fa-user-circle" />
+                          </DropdownItem>
+                          <DropdownItem
+                          //  onClick
+                          >
+                            <a href="/order">我的訂單</a>
+                          </DropdownItem>
                           <DropdownItem
                             onClick={() =>
                               authDispatch({

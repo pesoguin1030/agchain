@@ -18,6 +18,8 @@ import Login from "./pages/Login";
 import NotFound from "./pages/Exception/404";
 import storage from "./utils/storage";
 import ShoppingCart from "./pages/Shop/cart";
+import Shop from "./pages/Shop";
+import Order from "./pages/Order";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -120,15 +122,21 @@ function App() {
             <Route path="/login">
               {authState.user ? <Redirect to="/" /> : <Login />}
             </Route>
-            <Route path="/signup">
+            <Route exact path="/signup">
               <Signup />
             </Route>
-
+            <Route path="/order">
+              <Header />
+              <Order />
+            </Route>
             <Route path="/">
               <Header />
               <Switch>
                 <Route exact path="/">
                   <Home />
+                </Route>
+                <Route exact path="/shop">
+                  <Shop />
                 </Route>
                 <Route path="/dapp/:traceID">
                   <Dapp />
@@ -140,6 +148,14 @@ function App() {
                   <NotFound />
                 </Route>
               </Switch>
+              <Route
+                exact
+                path="/shop/order"
+                render={() =>
+                  (window.location =
+                    "https://dev.to/mxdavis/redirecting-to-an-external-url-within-react-router-3nf1")
+                }
+              />
               <Footer />
             </Route>
           </Switch>
