@@ -59,7 +59,8 @@ const Header = () => {
       });
   };
 
-  const defaultSignIn = async () => {
+  const defaultSignIn = async (e) => {
+    e.preventDefault();
     try {
       const { access_token } = await emailSignIn({
         username,
@@ -261,11 +262,7 @@ const Header = () => {
                           <DropdownItem>
                             <i className="fas fa-user-circle" />
                           </DropdownItem>
-                          <DropdownItem
-                          //  onClick
-                          >
-                            <a href="/order">我的訂單</a>
-                          </DropdownItem>
+                          <DropdownItem href="/order">我的訂單</DropdownItem>
                           <DropdownItem
                             onClick={() =>
                               authDispatch({
@@ -381,65 +378,68 @@ const Header = () => {
                   <h3 className="mb-0">會員登入</h3>
                   <p>登入以使用功能</p>
                 </div>
-                <div className="js-form-message mb-4">
-                  <label className="input-label">電子信箱</label>
-                  <div className="input-group input-group-sm mb-2">
-                    <input
-                      type="email"
-                      onChange={(e) => {
-                        setUsername(e.target.value);
-                      }}
-                      className="form-control"
-                      name="email"
-                      id="signinEmail"
-                      placeholder="Email"
-                      aria-label="Email"
-                      required=""
-                      data-msg="Please enter a valid email address."
-                    />
+                <form>
+                  <div className="js-form-message mb-4">
+                    <label className="input-label">電子信箱</label>
+                    <div className="input-group input-group-sm mb-2">
+                      <input
+                        type="email"
+                        onChange={(e) => {
+                          setUsername(e.target.value);
+                        }}
+                        className="form-control"
+                        name="email"
+                        id="signinEmail"
+                        placeholder="Email"
+                        aria-label="Email"
+                        required=""
+                        data-msg="Please enter a valid email address."
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="js-form-message mb-3">
-                  <label className="input-label">密碼</label>
-                  <div className="input-group input-group-sm mb-2">
-                    <input
-                      type="password"
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                      className="form-control"
-                      name="password"
-                      id="signinPassword"
-                      placeholder="Password"
-                      aria-label="Password"
-                      required=""
-                      data-msg="Your password is invalid. Please try again."
-                    />
+                  <div className="js-form-message mb-3">
+                    <label className="input-label">密碼</label>
+                    <div className="input-group input-group-sm mb-2">
+                      <input
+                        type="password"
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                        }}
+                        className="form-control"
+                        name="password"
+                        id="signinPassword"
+                        placeholder="Password"
+                        aria-label="Password"
+                        required=""
+                        data-msg="Your password is invalid. Please try again."
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="d-flex justify-content-end mb-4">
-                  <a
-                    className="js-animation-link small link-underline"
-                    data-hs-show-animation-options='{
+                  <div className="d-flex justify-content-end mb-4">
+                    <a
+                      className="js-animation-link small link-underline"
+                      data-hs-show-animation-options='{
                          "targetSelector": "#forgotPassword",
                          "groupName": "idForm",
                          "animationType": "css-animation",
                          "animationIn": "slideInUp",
                          "duration": 400
                       //  }'
-                    data-hs-show-animation-link-group="idForm"
-                  >
-                    忘記密碼？
-                  </a>
-                </div>
-                <div className="mb-3">
-                  <button
-                    onClick={defaultSignIn}
-                    className="btn btn-sm btn-primary btn-block"
-                  >
-                    登入
-                  </button>
-                </div>
+                      data-hs-show-animation-link-group="idForm"
+                    >
+                      忘記密碼？
+                    </a>
+                  </div>
+                  <div className="mb-3">
+                    <button
+                      type="submit"
+                      onClick={defaultSignIn}
+                      className="btn btn-sm btn-primary btn-block"
+                    >
+                      登入
+                    </button>
+                  </div>
+                </form>
                 <div className="text-center mb-3">
                   <span className="divider divider-xs divider-text">或是</span>
                 </div>

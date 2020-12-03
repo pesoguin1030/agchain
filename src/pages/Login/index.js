@@ -14,6 +14,7 @@ function Login(props) {
       .auth()
       .signInWithPopup(provider)
       .then(async ({ user }) => {
+        console.log(user);
         try {
           const { access_token } = await oauthSignIn({
             provider: "google",
@@ -63,19 +64,19 @@ function Login(props) {
   };
 
   return (
-    <main id="content" role="main" class="main">
-      <div class="container py-5 py-sm-7">
-        <a class="d-flex justify-content-center mb-5" href="index.html">
-          <img class="z-index-2" src="logo.png" style={{ width: "8rem" }} />
+    <main id="content" role="main" className="main">
+      <div className="container py-5 py-sm-7">
+        <a className="d-flex justify-content-center mb-5" href="index.html">
+          <img className="z-index-2" src="logo.png" style={{ width: "8rem" }} />
         </a>
 
-        <div class="row justify-content-center">
-          <div class="col-md-7 col-lg-5">
-            <div class="card card-lg mb-5">
-              <div class="card-body">
-                <div class="text-center">
-                  <div class="mb-5">
-                    <h1 class="h3">會員登入</h1>
+        <div className="row justify-content-center">
+          <div className="col-md-7 col-lg-5">
+            <div className="card card-lg mb-5">
+              <div className="card-body">
+                <div className="text-center">
+                  <div className="mb-5">
+                    <h1 className="h3">會員登入</h1>
                     <p>
                       還沒有帳號？{" "}
                       <a href="authentication-signup-basic.html">註冊</a>
@@ -83,12 +84,12 @@ function Login(props) {
                   </div>
 
                   <a
-                    class="btn btn-block btn-white mb-4"
+                    className="btn btn-block btn-white mb-4"
                     onClick={googleSignIn}
                   >
-                    <span class="d-flex justify-content-center align-items-center">
+                    <span className="d-flex justify-content-center align-items-center">
                       <img
-                        class="avatar avatar-xss mr-2"
+                        className="avatar avatar-xss mr-2"
                         src="./assets/svg/brands/google.svg"
                         alt="Image Description"
                       />
@@ -96,12 +97,10 @@ function Login(props) {
                     </span>
                   </a>
 
-                  <span class="divider text-muted mb-4">或是</span>
+                  <span className="divider text-muted mb-4">或是</span>
                 </div>
-                <div class="js-form-message form-group">
-                  <label class="input-label" for="signinSrEmail">
-                    電子信箱
-                  </label>
+                <div className="js-form-message form-group">
+                  <label className="input-label">電子信箱</label>
 
                   <input
                     default-value={username}
@@ -109,26 +108,21 @@ function Login(props) {
                       setUsername(e.target.value);
                     }}
                     type="email"
-                    class="form-control"
+                    className="form-control"
                     name="email"
                     id="signinSrEmail"
-                    tabindex="1"
                     placeholder="email@address.com"
                     aria-label="email@address.com"
                     required
                     data-msg="Please enter a valid email address."
                   />
                 </div>
-                <div class="js-form-message form-group">
-                  <label
-                    class="input-label"
-                    for="signupSrPassword"
-                    tabindex="0"
-                  >
-                    <span class="d-flex justify-content-between align-items-center">
+                <div className="js-form-message form-group">
+                  <label className="input-label">
+                    <span className="d-flex justify-content-between align-items-center">
                       密碼
                       <a
-                        class="input-label-secondary"
+                        className="input-label-secondary"
                         href="authentication-reset-password-basic.html"
                       >
                         忘記密碼?
@@ -136,14 +130,14 @@ function Login(props) {
                     </span>
                   </label>
 
-                  <div class="input-group input-group-merge">
+                  <div className="input-group input-group-merge">
                     <input
                       default-value={password}
                       onChange={(e) => {
                         setPassword(e.target.value);
                       }}
                       type="password"
-                      class="js-toggle-password form-control"
+                      className="js-toggle-password form-control"
                       name="password"
                       id="signupSrPassword"
                       placeholder="8+ characters required"
@@ -157,25 +151,25 @@ function Login(props) {
                              "classChangeTarget": "#changePassIcon"
                            }'
                     />
-                    <div id="changePassTarget" class="input-group-append">
-                      <a class="input-group-text">
-                        <i id="changePassIcon" class="tio-visible-outlined"></i>
+                    <div id="changePassTarget" className="input-group-append">
+                      <a className="input-group-text">
+                        <i
+                          id="changePassIcon"
+                          className="tio-visible-outlined"
+                        ></i>
                       </a>
                     </div>
                   </div>
                 </div>
-                <div class="form-group">
-                  <div class="custom-control custom-checkbox">
+                <div className="form-group">
+                  <div className="custom-control custom-checkbox">
                     <input
                       type="checkbox"
-                      class="custom-control-input"
+                      className="custom-control-input"
                       id="termsCheckbox"
                       name="termsCheckbox"
                     />
-                    <label
-                      class="custom-control-label font-size-sm text-muted"
-                      for="termsCheckbox"
-                    >
+                    <label className="custom-control-label font-size-sm text-muted">
                       {" "}
                       記住帳號
                     </label>
@@ -183,7 +177,7 @@ function Login(props) {
                 </div>
                 <button
                   onClick={defaultSignIn}
-                  class="btn btn-block btn-primary"
+                  className="btn btn-block btn-primary"
                 >
                   登入
                 </button>

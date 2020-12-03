@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-const DropdownItem = (props) => (
-  <a {...props} href="#" className="dropdown-item" />
-);
+const DropdownItem = (props) => <a {...props} className="dropdown-item" />;
 
 const DropdownList = (props) => (
   <motion.div

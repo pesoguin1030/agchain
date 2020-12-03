@@ -24,7 +24,7 @@ const fetchCultivationRecord = async (cropId) => {
       action: e[1],
     }));
   } catch (err) {
-    return err;
+    return Promise.reject(err);
   }
 };
 
@@ -41,7 +41,7 @@ const fetchSecureItem = async (uuid) => {
       cid: record[1],
     };
   } catch (err) {
-    return err;
+    return Promise.reject(err);
   }
 };
 
@@ -59,7 +59,7 @@ const fetchOrganicCertificate = async (farmID) => {
       cid: record[2],
     };
   } catch (err) {
-    return err;
+    return Promise.reject(err);
   }
 };
 

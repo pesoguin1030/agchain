@@ -5,7 +5,7 @@ const fetchUser = async () => {
     const { data } = await request.get(`/users/info`);
     return data;
   } catch (err) {
-    return err;
+    return Promise.reject(err);
   }
 };
 
@@ -17,7 +17,7 @@ const emailSignIn = async ({ username, password }) => {
     });
     return data;
   } catch (err) {
-    return err;
+    return Promise.reject(err);
   }
 };
 
@@ -31,7 +31,7 @@ const oauthSignIn = async ({ provider, oauthId, name, email }) => {
     });
     return data;
   } catch (err) {
-    return err;
+    return Promise.reject(err);
   }
 };
 
