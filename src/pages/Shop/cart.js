@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { CartContext } from "../../appContext";
-import { createOrder } from "../../api/order";
+import { createOrder, getDestinations } from "../../api/order";
 import storage from "../../utils/storage";
 import { counter } from "@fortawesome/fontawesome-svg-core";
 import { fetchUser } from "../../api/user";
@@ -12,6 +12,8 @@ function ShoppingCart(props) {
   const [cartempty, setCartEmpty] = useState(true);
   const [item_and_amount, setItem_and_amount] = useState({});
   const [jump, setJump] = useState(false);
+  const [destination, setDestination] = useState([]);
+
   useEffect(() => {
     setCartEmpty(!cartState || cartState.length === 0);
     if (!(!cartState || cartState.length === 0)) {
@@ -21,6 +23,13 @@ function ShoppingCart(props) {
       // cleanup
     };
   }, [cartState]);
+
+  useEffect(async () => {
+    if (destination.length === 0) {
+      const des = await getDestinations(storage.getAccessToken());
+      console.log("---", des);
+    }
+  }, []);
 
   const countItem = (arr) => {
     var counter = {};

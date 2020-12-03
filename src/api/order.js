@@ -54,4 +54,24 @@ const getOrder = async (userToken) => {
   }
 };
 
-export { createOrder, getOrder };
+async function getDestinations(userToken) {
+  try {
+    const response = await request.get(`${Constants.SERVER_URL}/destination/`, {
+      params: {
+        user: "self",
+      },
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    const {
+      data: { items },
+    } = response;
+    console.log(items);
+    return items;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { createOrder, getOrder, getDestinations };
