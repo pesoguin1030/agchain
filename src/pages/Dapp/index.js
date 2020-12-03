@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import moment from "moment";
+import $ from "jquery";
 
 import Header from "../../../src/components/Header";
 import Footer from "../../../src/components/Footer";
 import CertificateCard from "../../../src/components/CertificateCard";
 import TimeLine from "../../../src/components/TimeLine";
+import GiftCard from "./giftcard";
 
 import axios from "axios";
-import { Reorder } from "@material-ui/icons";
 // let server_url = "https://app.freshio.me";
 let server_url = "http://localhost:4000";
 
@@ -175,12 +176,33 @@ async function getTraceData(package_uuid, serial_number) {
   }
 }
 
+async function pressLike(package_uuid, serial_number) {
+  try {
+    const response = await axios.get(`${server_url}/dapp/presslike`, {
+      params: {
+        // farm_id: currentPackage.farm_id || currentPackage.product.farm_id,
+        pkg_uuid: package_uuid,
+        serial_num: serial_number,
+      },
+    });
+
+    console.log(response.data);
+    alert("LIKE");
+    return response.data;
+  } catch (error) {
+    alert("按讚失敗?QQ");
+    console.log(error);
+    return false;
+  }
+}
+
 function Dapp(props) {
   const [cultivationRecord, setCultivationRecord] = useState([]); // 田間紀錄
   const [farmIntro, setFarmIntro] = useState([]); // 農場介紹
   const [farmPic, setFarmPic] = useState([]); // 農場照片(1~3張?)
   const [photoUrl, setPhotoUrl] = useState(""); // 出貨前照片
   const [certificate_filename_arr, setcertificate_filename_arr] = useState([]); // 檢驗證書
+  const [giftCard, setGiftCard] = useState();
 
   useEffect(() => {
     // 從url取得溯源參數
@@ -192,7 +214,7 @@ function Dapp(props) {
     // 去server端抓資料
     getTraceData(package_uuid, serial_number).then((data) => {
       const {
-        order_num,
+        gift_card,
         crop_id,
         photo_url,
         farm_intro,
@@ -202,6 +224,8 @@ function Dapp(props) {
       setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
       setcertificate_filename_arr(certificate_filename_arr);
       setPhotoUrl(photo_url);
+      // 用order_number抓gift card
+      setGiftCard("TEST");
 
       // 田間紀錄
       query(crop_id).then(function (data) {
@@ -231,6 +255,10 @@ function Dapp(props) {
     });
   }, []);
 
+  useEffect(() => {
+    $("#btnTrigger").click();
+  }, [giftCard]);
+
   function getPropertyByRegex(obj, propName) {
     var re = new RegExp("^" + propName + "(\\[\\d*\\])?$"),
       key;
@@ -256,6 +284,15 @@ function Dapp(props) {
         </div>
       </div> */}
 
+      <GiftCard
+        data={giftCard}
+        onPressLike={() =>
+          pressLike(
+            props.match.params.trace_param.split("_")[0],
+            props.match.params.trace_param.split("_")[1]
+          )
+        }
+      />
       <div className="border-bottom">
         <div className="container space-2 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
