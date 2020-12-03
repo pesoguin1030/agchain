@@ -72,8 +72,6 @@ function ShoppingCart(props) {
       orders.push(item);
     });
     setJump(true);
-    // return <Redirect to='/login/'/>
-    // return <Redirect to='https://colorlib.com/wp/free-bootstrap-ecommerce-website-templates/'/>
     // const user = await fetchUser(storage.getAccessToken());
     // const orderNumber = await createOrder(orders, storage.getAccessToken());
     // console.log("orderNumber:", orderNumber);
