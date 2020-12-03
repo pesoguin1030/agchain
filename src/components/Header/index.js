@@ -157,7 +157,7 @@ const Header = () => {
                               <figure className="max-w-9rem mx-auto mb-3">
                                 <img
                                   className="img-fluid"
-                                  src="../../assets/svg/illustrations/empty-cart.svg"
+                                  src="/assets/svg/illustrations/empty-cart.svg"
                                   alt="SVG"
                                 />
                               </figure>

@@ -15,13 +15,14 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import NotFound from "./pages/Exception/404";
+import storage from "./utils/storage";
+import ShoppingCart from "./pages/Shop/cart";
 
-// Stylesheets management
+// Stylesheets
 import "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "./themes/default.css";
-import storage from "./utils/storage";
-import ShoppingCart from "./pages/Shop/cart";
 
 function App() {
   // Auth
@@ -113,8 +114,6 @@ function App() {
       <CartContext.Provider value={{ cartState: cart, cartDispatch: setCart }}>
         <Router>
           <Switch>
-            {/* <Route path="/dapp/:uuid/:serial_num" component={Dapp} /> */}
-            <Route path="/dapp/:trace_param" component={Dapp} />
             <Route path="/admin">
               {authState.user ? <Admin /> : <Redirect to="/login" />}
             </Route>
@@ -124,17 +123,21 @@ function App() {
             <Route path="/signup">
               <Signup />
             </Route>
+
             <Route path="/">
               <Header />
               <Switch>
                 <Route exact path="/">
                   <Home />
                 </Route>
-                <Route path="/dapp">
+                <Route path="/dapp/:traceID">
                   <Dapp />
                 </Route>
                 <Route path="/shop/cart">
                   <ShoppingCart />
+                </Route>
+                <Route path="/404">
+                  <NotFound />
                 </Route>
               </Switch>
               <Footer />
