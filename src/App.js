@@ -15,7 +15,8 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-
+import Shop from "./pages/Shop";
+import Order from "./pages/Order";
 // Stylesheets management
 import "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-free/css/all.css";
@@ -121,14 +122,21 @@ function App() {
             <Route path="/login">
               {authState.user ? <Redirect to="/" /> : <Login />}
             </Route>
-            <Route path="/signup">
+            <Route exact path="/signup">
               <Signup />
+            </Route>
+            <Route path="/order">
+              <Header />
+              <Order />
             </Route>
             <Route path="/">
               <Header />
               <Switch>
                 <Route exact path="/">
                   <Home />
+                </Route>
+                <Route exact path="/shop">
+                  <Shop />
                 </Route>
                 <Route path="/dapp">
                   <Dapp />
@@ -137,6 +145,14 @@ function App() {
                   <ShoppingCart />
                 </Route>
               </Switch>
+              <Route
+                exact
+                path="/shop/order"
+                render={() =>
+                  (window.location =
+                    "https://dev.to/mxdavis/redirecting-to-an-external-url-within-react-router-3nf1")
+                }
+              />
               <Footer />
             </Route>
           </Switch>
