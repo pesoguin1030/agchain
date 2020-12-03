@@ -6793,6 +6793,14 @@ a.close.disabled {
   }
 }
 
+@media (min-width: 768px) {
+  .modal-md,
+  .modal-lg,
+  .modal-xl {
+    max-width: 570px;
+  }
+}
+
 @media (min-width: 992px) {
   .modal-lg,
   .modal-xl {
@@ -25209,3 +25217,7 @@ a:hover .text-hover-primary {
 /*------------------------------------
   File for your custom SCSS style
 ------------------------------------*/
+.responsive-img {
+  max-width: 100%;
+  height: auto;
+}
