@@ -120,7 +120,7 @@ function App() {
             <Route path="/login">
               {authState.user ? <Redirect to="/" /> : <Login />}
             </Route>
-            <Route path="/signup">
+            <Route exact path="/signup">
               <Signup />
             </Route>
             <Route path="/order">
