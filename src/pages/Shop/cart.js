@@ -57,6 +57,27 @@ function ShoppingCart(props) {
     return total_bill;
   };
 
+  const handleChange = (item, value) => {};
+  const decrement = (key) => {
+    let value = item_and_amount[key];
+    if (value > 0) value -= 1;
+    for (var i = 0; i < cartState.length; i++) {
+      if (cartState[i].name === JSON.parse(key).name) {
+        cartState.splice(i, 1);
+        break;
+      }
+    }
+    cartDispatch(cartState);
+
+    // cartDispatch(cartState.splice(JSON.parse(key)))
+    setItem_and_amount({ ...item_and_amount, [key]: value });
+  };
+  const increment = (key) => {
+    const value = item_and_amount[key] + 1;
+    cartDispatch([...cartState, JSON.parse(key)]);
+    setItem_and_amount({ ...item_and_amount, [key]: value });
+  };
+
   const handleItem = async () => {
     let orders = [];
     Object.keys(item_and_amount).map((key) => {
@@ -67,8 +88,6 @@ function ShoppingCart(props) {
       orders.push(item);
     });
     setJump(true);
-    // return <Redirect to='/login/'/>
-    // return <Redirect to='https://colorlib.com/wp/free-bootstrap-ecommerce-website-templates/'/>
     // const user = await fetchUser(storage.getAccessToken());
     // const orderNumber = await createOrder(orders, storage.getAccessToken());
     // console.log("orderNumber:", orderNumber);
@@ -105,28 +124,34 @@ function ShoppingCart(props) {
                                 <span class="h5 d-block mb-1">{price}</span>
                               </div>
                             </div>
+                            <div
+                              className="input-group input-group-sm"
+                              style={{ maxWidth: "150px" }}
+                            >
+                              <span className="input-group-btn">
+                                <button
+                                  className="btn btn-default btn-sm"
+                                  onClick={() => decrement(key)}
+                                >
+                                  <i className="fa fa-minus" />
+                                </button>
+                              </span>
+                              <input
+                                style={{ textAlign: "right" }}
+                                className="form-control"
+                                type="text"
+                                value={num}
+                              />
+                              <span className="input-group-btn">
+                                <button
+                                  onClick={() => increment(key)}
+                                  className="btn btn-default btn-sm"
+                                >
+                                  <i className="fa fa-plus" />
+                                </button>
+                              </span>
 
-                            <div class="col-md-3">
-                              <div class="row">
-                                <div class="col-auto">
-                                  <select
-                                    class="custom-select custom-select-sm w-auto mb-3"
-                                    // onChange={}
-                                  >
-                                    <option value={{ num }}>{num}</option>
-                                    {/* <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option> */}
-                                  </select>
-                                </div>
-
-                                <div class="col-auto">
+                              {/* <div class="col-auto">
                                   <a
                                     class="d-block text-body font-size-1 mb-1"
                                     href="javascript:;"
@@ -135,19 +160,8 @@ function ShoppingCart(props) {
                                     <span class="font-size-1 text-hover-primary">
                                       Remove
                                     </span>
-                                  </a>
-
-                                  <a
-                                    class="d-block text-body font-size-1"
-                                    href="javascript:;"
-                                  >
-                                    <i class="far fa-heart text-hover-primary mr-1"></i>
-                                    <span class="font-size-1 text-hover-primary">
-                                      Save for later
-                                    </span>
-                                  </a>
-                                </div>
-                              </div>
+                                  </a>                           
+                                </div> */}
                             </div>
 
                             <div class="col-4 col-md-2 d-none d-md-inline-block text-right">
@@ -162,7 +176,7 @@ function ShoppingCart(props) {
             // console.log(cartState)
           }
           <div class="d-sm-flex justify-content-end">
-            <a class="font-weight-bold" href="classic.html">
+            <a class="font-weight-bold" href="/shop/">
               <i class="fas fa-angle-left fa-xs mr-1"></i>
               繼續購物
             </a>
