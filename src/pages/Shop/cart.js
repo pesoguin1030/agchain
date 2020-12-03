@@ -132,7 +132,9 @@ function ShoppingCart(props) {
                               </a>
 
                               <div class="d-block d-md-none">
-                                <span class="h5 d-block mb-1">{price}</span>
+                                <span class="h5 d-block mb-1">
+                                  {price * num}
+                                </span>
                               </div>
                             </div>
                             <div
@@ -217,6 +219,7 @@ function ShoppingCart(props) {
                 <div class="card shadow-none mb-3">
                   <div class="card-body p-0">
                     <select class="custom-select" onChange={handleDestination}>
+                      <option value="36">清華大學台達館305室</option>
                       {destination.map(({ address, id }) => (
                         <option value={id}>{address}</option>
                       ))}
