@@ -16,8 +16,7 @@ function ShoppingCart(props) {
   const [jump, setJump] = useState(false);
   const [destinationId, setDestinationId] = useState();
   useEffect(() => {
-    const handleFetchDestination = async () => {
-      console.log("132456");
+    const getDestination = async () => {
       console.log(storage.getAccessToken());
       const { items, offset } = await fetchDestination(
         storage.getAccessToken()
@@ -27,8 +26,7 @@ function ShoppingCart(props) {
         setDestination(items);
       }
     };
-    handleFetchDestination();
-
+    getDestination();
     setCartEmpty(!cartState || cartState.length === 0);
     if (!(!cartState || cartState.length === 0)) {
       setItem_and_amount(countItem(cartState));
@@ -76,6 +74,12 @@ function ShoppingCart(props) {
     const value = item_and_amount[key] + 1;
     cartDispatch([...cartState, JSON.parse(key)]);
     setItem_and_amount({ ...item_and_amount, [key]: value });
+  };
+
+  const handleDestination = (e) => {
+    setDestinationId(e.target.value);
+    console.log("destinationId");
+    console.log(e.target.value);
   };
 
   const handleItem = async () => {
@@ -205,50 +209,12 @@ function ShoppingCart(props) {
                 </div>
                 <div class="card shadow-none mb-3">
                   <div class="card-body p-0">
-                    {/* <div class="custom-control custom-radio d-flex align-items-center small">
-                      <input
-                        type="radio"
-                        class="custom-control-input"
-                        id="deliveryRadio1"
-                        name="deliveryRadio"
-                        checked
-                      />
-                      <label
-                        class="custom-control-label ml-1"
-                        for="deliveryRadio1"
-                      >
-                        <span class="d-block font-size-1 font-weight-bold mb-1">
-                          Free - Standard delivery
-                        </span>
-                        <span class="d-block text-muted">
-                          Shipment may take 5-6 business days.
-                        </span>
-                      </label>
-                    </div> */}
+                    <select class="custom-select" onChange={handleDestination}>
+                      {destination.map(({ address, id }) => (
+                        <option value={id}>{address}</option>
+                      ))}
+                    </select>
                   </div>
-                </div>
-                <div class="card shadow-none">
-                  {/* <div class="card-body p-0">
-                    <div class="custom-control custom-radio d-flex align-items-center small">
-                      <input
-                        type="radio"
-                        class="custom-control-input"
-                        id="deliveryRadio2"
-                        name="deliveryRadio"
-                      />
-                      <label
-                        class="custom-control-label ml-1"
-                        for="deliveryRadio2"
-                      >
-                        <span class="d-block font-size-1 font-weight-bold mb-1">
-                          $7.99 - Express delivery
-                        </span>
-                        <span class="d-block text-muted">
-                          Shipment may take 2-3 business days.
-                        </span>
-                      </label>
-                    </div>
-                  </div> */}
                 </div>
               </div>
 
