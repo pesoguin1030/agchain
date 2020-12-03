@@ -1,6 +1,6 @@
 import request from "../utils/request";
 
-const fetchUser = async (accessToken) => {
+const fetchUser = async () => {
   try {
     const { data } = await request.get(`/users/info`);
     return data;
