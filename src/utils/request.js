@@ -9,9 +9,6 @@ request.interceptors.response.use(
     if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
       console.error(error);
     }
-    if (error.response.status === 401) {
-      window.location.href = `/login`;
-    }
     // Customize error handling
     return Promise.reject(error);
   }

@@ -19,12 +19,13 @@ const fetchCultivationRecord = async (cropId) => {
       httpProvider
     );
     const records = await contract.query(cropId);
+    console.log(records);
     return records.map((e) => ({
       timestamp: e[0],
       action: e[1],
     }));
   } catch (err) {
-    return Promise.reject(err);
+    return [];
   }
 };
 
@@ -41,7 +42,8 @@ const fetchSecureItem = async (uuid) => {
       cid: record[1],
     };
   } catch (err) {
-    return Promise.reject(err);
+    console.log(err);
+    return null;
   }
 };
 
@@ -52,14 +54,16 @@ const fetchOrganicCertificate = async (farmID) => {
       organicCertificateABI,
       httpProvider
     );
-    const record = await contract.Database(farmID);
+    const record = await contract.Database(`${farmID}`);
+    console.log(record);
     return {
       timestamp: record[0],
       name: record[1],
       cid: record[2],
     };
   } catch (err) {
-    return Promise.reject(err);
+    console.log(err);
+    return null;
   }
 };
 

@@ -20,11 +20,13 @@ import storage from "./utils/storage";
 import ShoppingCart from "./pages/Shop/cart";
 import Shop from "./pages/Shop";
 import Order from "./pages/Order";
+import GiftMaker from "./pages/Shop/gift";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "./themes/default.css";
+import Analysis from "./pages/Shop/analysis";
 
 function App() {
   // Auth
@@ -79,7 +81,7 @@ function App() {
         request.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
         // Validate token
         try {
-          const user = await fetchUser(accessToken);
+          const user = await fetchUser();
           authDispatch({
             type: "RESTORE",
             user: user,
@@ -138,11 +140,17 @@ function App() {
                 <Route exact path="/shop">
                   <Shop />
                 </Route>
+                <Route exact path="/shop/gift">
+                  <GiftMaker />
+                </Route>
                 <Route path="/dapp/:traceID">
                   <Dapp />
                 </Route>
                 <Route path="/shop/cart">
                   <ShoppingCart />
+                </Route>
+                <Route path="/shop/analysis">
+                  <Analysis />
                 </Route>
                 <Route path="/404">
                   <NotFound />

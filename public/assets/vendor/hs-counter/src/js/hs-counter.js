@@ -16,8 +16,8 @@ export default class HSCounter {
 			debounce: 10,
 			time: 1750,
 			fps: 60,
-			isCommaSeparated: false,
-			isReduceThousandsTo: false,
+			isCommaSeparated: true,
+			isReduceThousandsTo: true,
 			intervalId: null
 		};
 		this.settings = settings;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
-const GiftCard = ({ children, onPressLike, onClose, visible }) => {
+const GiftCard = ({ children, onPressLike, onClose, visible, disabled }) => {
   return (
     <Modal show={visible} onHide={onClose}>
       <Modal.Header>
@@ -30,13 +30,19 @@ const GiftCard = ({ children, onPressLike, onClose, visible }) => {
         <Button variant="light" onClick={onClose}>
           關閉
         </Button>
-        <Button
-          variant="dark"
-          style={{ backgroundColor: "var(--pink)" }}
-          onClick={onPressLike}
-        >
-          <i className="fas fa-heart"></i> 喜歡
-        </Button>
+        {disabled ? (
+          <Button variant="success" disabled>
+            <i className="fas fa-check"></i> 已按過讚
+          </Button>
+        ) : (
+          <Button
+            variant="dark"
+            style={{ backgroundColor: "var(--pink)" }}
+            onClick={onPressLike}
+          >
+            <i className="fas fa-heart"></i> 喜歡
+          </Button>
+        )}
       </Modal.Footer>
     </Modal>
   );

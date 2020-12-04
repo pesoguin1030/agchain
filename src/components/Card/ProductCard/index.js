@@ -1,6 +1,14 @@
 import React from "react";
 
-const ProductCard = ({ img, title, description, price, onAddToCart }) => (
+const ProductCard = ({
+  img,
+  title,
+  description,
+  price,
+  isInCart,
+  onRemoveFromCart,
+  onAddToCart,
+}) => (
   <div className="card border shadow-none text-center h-100">
     <div className="position-relative">
       <img
@@ -61,14 +69,23 @@ const ProductCard = ({ img, title, description, price, onAddToCart }) => (
           <span>5</span>
         </a>
       </div>
-
-      <button
-        type="button"
-        onClick={onAddToCart}
-        className="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-      >
-        加入購物車
-      </button>
+      {isInCart ? (
+        <button
+          type="button"
+          onClick={onRemoveFromCart}
+          className="btn btn-sm btn-outline-secondary btn-pill transition-3d-hover"
+        >
+          從購物車中移除
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={onAddToCart}
+          className="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
+        >
+          加入購物車
+        </button>
+      )}
     </div>
   </div>
 );
