@@ -18,13 +18,6 @@ function Order() {
     setPackages(orders);
     return orders;
   }
-  // return (
-  //     {
-  //        packages.map((item)=>{
-
-  //        })
-  //     }
-  // )
   return (
     <div>
       {packages.map((item) => {

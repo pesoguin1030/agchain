@@ -31,6 +31,7 @@ function Dapp(props) {
     // 從url取得溯源參數
     if (traceID) {
       // Farm & crop information
+      console.log(traceID);
       setupRequiredInformation(traceID);
       // Secure item snapshot
       fetchSecureItem(traceID);
