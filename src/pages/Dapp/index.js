@@ -1,13 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import moment from "moment";
-import $ from "jquery";
-
-import Header from "../../../src/components/Header";
-import Footer from "../../../src/components/Footer";
-import CertificateCard from "../../../src/components/CertificateCard";
+import CertificateCard from "../../../src/components/Card/CertificateCard";
 import TimeLine from "../../../src/components/TimeLine";
-import GiftCard from "./giftcard";
+import GiftCard from "../../../src/components/Card/GiftCard";
 import {
   fetchCultivationRecord,
   fetchOrganicCertificate,
@@ -26,7 +22,7 @@ function Dapp(props) {
   const [organicCerftificates, setOrganicCertificates] = useState([]); // 檢驗證書
   const [isForbidden, setIsForbidden] = useState(false);
   const [giftCardVisible, setGiftCardVisible] = useState(true);
-
+  const [likeIsPressed, setLikeIsPressed] = useState(false);
   useEffect(() => {
     // 從url取得溯源參數
     if (traceID) {
@@ -93,17 +89,17 @@ function Dapp(props) {
       response = await fetchOrganicCertificate(farm_id);
       setOrganicCertificates([
         {
-          timestamp: response.timestamp,
-          title: response.name,
-          cid: response.cid,
+          timestamp: response?.timestamp,
+          title: response?.name,
+          cid: response?.cid,
         },
       ]);
 
       // 出貨前照片
-      response = await fetchOrganicCertificate(farm_id);
+      response = await fetchSecureItem(traceID);
       setSecureItem({
-        timestamp: response.timestamp,
-        cid: response.cid,
+        timestamp: response?.timestamp,
+        cid: response?.cid,
       });
     } catch (err) {
       console.error("here", err);
@@ -112,6 +108,15 @@ function Dapp(props) {
     }
   }
 
+  async function handlePressLike(traceID) {
+    try {
+      await sendPressLike(traceID);
+      setLikeIsPressed(true);
+    } catch (err) {
+      alert("遇到了一點錯誤");
+      console.error(err);
+    }
+  }
   return isForbidden ? (
     <Redirect to="/404" />
   ) : (
@@ -127,7 +132,8 @@ function Dapp(props) {
       <GiftCard
         visible={giftCardVisible}
         onClose={() => setGiftCardVisible(false)}
-        onPressLike={() => sendPressLike(traceID)}
+        onPressLike={() => handlePressLike(traceID)}
+        disabled={likeIsPressed}
       >
         <div
           style={{
@@ -147,7 +153,7 @@ function Dapp(props) {
             <h2>出貨前照片</h2>
             {secureItem ? (
               <img
-                src={`https://ipfs.io/${secureItem?.cid}`}
+                src={`https://ipfs.io/ipfs/${secureItem?.cid}`}
                 className="responsive-img mt-2"
               />
             ) : (
@@ -183,17 +189,15 @@ function Dapp(props) {
               })}
             </div>
             <div className="col-sm-6 col-md-6 col-lg-6 px-2 px-sm-3 mb-3 mb-sm-5 px-5">
-              <p style={{ letterSpacing: "0.2rem" }}>
-                {farmIntro["farm_intro"]}
-              </p>
+              <p style={{ letterSpacing: "0.2rem" }}>{farmIntro?.farm_intro}</p>
               <ul style={{ listStyleType: "none", textAlign: "left" }}>
                 <li>
                   <i className="fas fa-map-marked-alt"></i>
-                  <span className="mx-2">{farmIntro["farm_address"]}</span>
+                  <span className="mx-2">{farmIntro?.farm_address}</span>
                 </li>
                 <li>
                   <i className="fas fa-phone-square-alt"></i>
-                  <span className="mx-2">{farmIntro["farm_phone"]}</span>
+                  <span className="mx-2">{farmIntro?.farm_phone}</span>
                 </li>
               </ul>
             </div>

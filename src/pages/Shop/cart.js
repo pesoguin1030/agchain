@@ -89,12 +89,15 @@ function ShoppingCart(props) {
     console.log(orders);
     const orderNumber = await createOrder(orders);
     console.log("orderNumber:", orderNumber);
+    setJump(true);
   };
 
-  return (
+  return jump ? (
+    <Redirect to="/shop/analysis" />
+  ) : (
     <div className="container space-1 space-md-2">
       <div className="row">
-        <div className="col-lg-8 mb-7 mb-lg-0">
+        <div className="col-lg-7 mb-7 mb-lg-0">
           <div className="d-flex justify-content-between align-items-end border-bottom pb-3 mb-7">
             <h1 className="h3 mb-0">購物車</h1>
             <span>{cartempty ? null : cartState.length} 產品</span>
@@ -184,7 +187,7 @@ function ShoppingCart(props) {
             </a>
           </div>
         </div>
-        <div className="col-lg-4">
+        <div className="col-lg-5">
           <div className="pl-lg-4">
             <div className="card shadow-soft p-4 mb-4">
               <div className="border-bottom pb-4 mb-4">
@@ -254,7 +257,28 @@ function ShoppingCart(props) {
                   </button>
                 </div>
               </div>
-              {jump ? <Redirect to="/shop/order" /> : null}
+            </div>
+            <div className="card shadow-soft mb-4">
+              <div className="card rounded">
+                <div className="card-header">
+                  <label class="toggle-switch d-flex align-items-center mb-3">
+                    <input
+                      type="checkbox"
+                      class="toggle-switch-input"
+                      onChange={(e) => console.log(e.target.value)}
+                    />
+                    <span class="toggle-switch-label">
+                      <span class="toggle-switch-indicator"></span>
+                    </span>
+                    <span class="toggle-switch-content">
+                      <span class="d-block">要製作電子賀卡嗎？</span>
+                      <small class="d-block text-muted">
+                        收禮者可於溯源時查看
+                      </small>
+                    </span>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
