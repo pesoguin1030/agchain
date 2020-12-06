@@ -35,7 +35,11 @@ function Order() {
             {packages.map((item) => {
               return (
                 <tr>
-                  <td>{item["orderNumber"]}</td>
+                  <td>
+                    <a href={"./shop/analysis/" + item["orderNumber"]}>
+                      {item["orderNumber"]}
+                    </a>
+                  </td>
                   <td>{item["time"]}</td>
                   <td>{item["contractAddress"]}</td>
                 </tr>

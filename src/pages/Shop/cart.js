@@ -16,6 +16,7 @@ function ShoppingCart(props) {
   const [jump, setJump] = useState(false);
   const [destinationId, setDestinationId] = useState();
   const [destinationInputVisible, setDestinationInputVisible] = useState(false);
+  const [orderNumber, setOrderNumber] = useState("");
   useEffect(() => {
     const getDestination = async () => {
       const { items, offset } = await fetchDestination();
@@ -87,13 +88,14 @@ function ShoppingCart(props) {
       orders.push(item);
     });
     console.log(orders);
-    const orderNumber = await createOrder(orders);
+    const orderNumber1 = await createOrder(orders);
+    setOrderNumber(orderNumber1);
     console.log("orderNumber:", orderNumber);
     setJump(true);
   };
 
   return jump ? (
-    <Redirect to="/shop/analysis" />
+    <Redirect to={"/shop/analysis/" + orderNumber} />
   ) : (
     <div className="container space-1 space-md-2">
       <div className="row">
