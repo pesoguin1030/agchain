@@ -1,34 +1,22 @@
 import request from "../utils/request";
 import Constants from "./constants";
 
-const createOrder = async (orders, userToken) => {
+const createOrder = async (orders) => {
   try {
-    const { data } = await request.post(
-      `${Constants.SERVER_URL}/orders/giftorder`,
-      orders,
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
+    const { data } = await request.post(`/orders/giftorder`, orders);
     return data;
   } catch (err) {
-    return err.response.request._response;
+    return Promise.reject(err);
   }
 };
 
-const getOrder = async (userToken) => {
-  console.log(`Bearer ${userToken}`);
+const getOrder = async () => {
   try {
-    const response = await request.get(`${Constants.SERVER_URL}/orders/`, {
+    const response = await request.get(`/orders`, {
       params: {
         buyer: "yes",
         offset: 0,
         limit: 30,
-      },
-      headers: {
-        Authorization: `Bearer ${userToken}`,
       },
     });
     const {
@@ -48,29 +36,21 @@ const getOrder = async (userToken) => {
       }
     }
     return orderNumber;
-  } catch (error) {
-    alert("無法取得訂單");
-    console.log(error);
+  } catch (err) {
+    return Promise.reject(err);
   }
 };
 
-async function getDestinations(userToken) {
+async function getDestinations() {
   try {
-    const response = await request.get(`${Constants.SERVER_URL}/destination/`, {
-      params: {
-        user: "self",
-      },
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    });
+    const response = await request.get(`/destination`);
     const {
       data: { items },
     } = response;
     console.log(items);
     return items;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    return Promise.reject(err);
   }
 }
 

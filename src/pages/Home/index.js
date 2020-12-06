@@ -6,7 +6,6 @@ import { CartContext } from "../../appContext";
 function Home(props) {
   const { cartState, cartDispatch } = useContext(CartContext);
   const [products, setProducts] = useState([]);
-
   useEffect(() => {
     const handleFetchProducts = async () => {
       const { items, offset } = await fetchProducts();
@@ -139,6 +138,10 @@ function Home(props) {
                 description={description}
                 price={price}
                 img={photo_url}
+                isInCart={cartState.map(({ id }) => id).includes(id)}
+                onRemoveFromCart={() =>
+                  cartDispatch((prev) => prev.filter((e) => e.id !== id))
+                }
                 onAddToCart={() =>
                   cartDispatch((prev) => [
                     ...prev,

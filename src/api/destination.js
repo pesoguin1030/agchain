@@ -1,22 +1,12 @@
 import request from "../utils/request";
 import Constants from "./constants";
 
-const fetchDestination = async (accessToken) => {
+const fetchDestination = async () => {
   try {
-    console.log("fetch");
-    const { data } = await request.get(`${Constants.SERVER_URL}/destination`, {
-      params: {
-        user: "self",
-      },
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Cache-Control": "no-cache, no-store",
-      },
-    });
-    console.log(data);
+    const { data } = await request.get(`/destination`);
     return data;
   } catch (err) {
-    return err;
+    return Promise.reject(err);
   }
 };
 

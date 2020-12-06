@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { CartContext } from "../../appContext";
-import { createOrder, getDestinations } from "../../api/order";
+import { createOrder } from "../../api/order";
 import storage from "../../utils/storage";
 import { counter } from "@fortawesome/fontawesome-svg-core";
 import { fetchUser } from "../../api/user";
@@ -12,18 +12,15 @@ function ShoppingCart(props) {
   const { cartState, cartDispatch } = useContext(CartContext);
   const [cartempty, setCartEmpty] = useState(true);
   const [item_and_amount, setItem_and_amount] = useState({});
-  const [destination, setDestination] = useState([]);
+  const [destinations, setDestinations] = useState([]);
   const [jump, setJump] = useState(false);
   const [destinationId, setDestinationId] = useState();
+  const [destinationInputVisible, setDestinationInputVisible] = useState(false);
   useEffect(() => {
     const getDestination = async () => {
-      console.log(storage.getAccessToken());
-      const { items, offset } = await fetchDestination(
-        storage.getAccessToken()
-      );
-      console.log(items);
+      const { items, offset } = await fetchDestination();
       if (Array.isArray(items)) {
-        setDestination(items);
+        setDestinations(items);
       }
     };
     getDestination();
@@ -35,13 +32,6 @@ function ShoppingCart(props) {
       // cleanup
     };
   }, [cartState]);
-
-  useEffect(async () => {
-    if (destination.length === 0) {
-      const des = await getDestinations(storage.getAccessToken());
-      console.log("---", des);
-    }
-  }, []);
 
   const countItem = (arr) => {
     var counter = {};
@@ -85,8 +75,6 @@ function ShoppingCart(props) {
 
   const handleDestination = (e) => {
     setDestinationId(e.target.value);
-    console.log("destinationId");
-    console.log(e.target.value);
   };
 
   const handleItem = async () => {
@@ -98,18 +86,20 @@ function ShoppingCart(props) {
       item["productId"] = JSON.parse(key)["id"];
       orders.push(item);
     });
+    console.log(orders);
+    const orderNumber = await createOrder(orders);
+    console.log("orderNumber:", orderNumber);
     setJump(true);
-    // const user = await fetchUser(storage.getAccessToken());
-    // const orderNumber = await createOrder(orders, storage.getAccessToken());
-    // console.log("orderNumber:", orderNumber);
   };
 
-  return (
-    <div class="container space-1 space-md-2">
-      <div class="row">
-        <div class="col-lg-8 mb-7 mb-lg-0">
-          <div class="d-flex justify-content-between align-items-end border-bottom pb-3 mb-7">
-            <h1 class="h3 mb-0">購物車</h1>
+  return jump ? (
+    <Redirect to="/shop/analysis" />
+  ) : (
+    <div className="container space-1 space-md-2">
+      <div className="row">
+        <div className="col-lg-7 mb-7 mb-lg-0">
+          <div className="d-flex justify-content-between align-items-end border-bottom pb-3 mb-7">
+            <h1 className="h3 mb-0">購物車</h1>
             <span>{cartempty ? null : cartState.length} 產品</span>
           </div>
           {
@@ -119,20 +109,20 @@ function ShoppingCart(props) {
                   const { id, name, price, img } = JSON.parse(key);
                   const num = item_and_amount[key];
                   return (
-                    <div class="border-bottom pb-5 mb-5">
-                      <div class="media">
-                        <div class="max-w-15rem w-100 mr-3">
-                          <img class="img-fluid" src={img} alt={img} />
+                    <div key={id} className="border-bottom pb-5 mb-5">
+                      <div className="media">
+                        <div className="max-w-15rem w-100 mr-3">
+                          <img className="img-fluid" src={img} alt={img} />
                         </div>
-                        <div class="media-body">
-                          <div class="row">
-                            <div class="col-md-7 mb-3 mb-md-0">
-                              <a class="h5 d-block" href="#">
+                        <div className="media-body">
+                          <div className="row">
+                            <div className="col-md-7 mb-3 mb-md-0">
+                              <a className="h5 d-block" href="#">
                                 {name}
                               </a>
 
-                              <div class="d-block d-md-none">
-                                <span class="h5 d-block mb-1">
+                              <div className="d-block d-md-none">
+                                <span className="h5 d-block mb-1">
                                   {price * num}
                                 </span>
                               </div>
@@ -164,21 +154,23 @@ function ShoppingCart(props) {
                                 </button>
                               </span>
 
-                              {/* <div class="col-auto">
+                              {/* <div className="col-auto">
                                   <a
-                                    class="d-block text-body font-size-1 mb-1"
+                                    className="d-block text-body font-size-1 mb-1"
                                     href="javascript:;"
                                   >
-                                    <i class="far fa-trash-alt text-hover-primary mr-1"></i>
-                                    <span class="font-size-1 text-hover-primary">
+                                    <i className="far fa-trash-alt text-hover-primary mr-1"></i>
+                                    <span className="font-size-1 text-hover-primary">
                                       Remove
                                     </span>
                                   </a>                           
                                 </div> */}
                             </div>
 
-                            <div class="col-4 col-md-2 d-none d-md-inline-block text-right">
-                              <span class="h5 d-block mb-1">{price * num}</span>
+                            <div className="col-4 col-md-2 d-none d-md-inline-block text-right">
+                              <span className="h5 d-block mb-1">
+                                {price * num}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -188,76 +180,105 @@ function ShoppingCart(props) {
                 })
             // console.log(cartState)
           }
-          <div class="d-sm-flex justify-content-end">
-            <a class="font-weight-bold" href="/shop/">
-              <i class="fas fa-angle-left fa-xs mr-1"></i>
+          <div className="d-sm-flex justify-content-end">
+            <a className="font-weight-bold" href="/shop/">
+              <i className="fas fa-angle-left fa-xs mr-1"></i>
               繼續購物
             </a>
           </div>
         </div>
-        <div class="col-lg-4">
-          <div class="pl-lg-4">
-            <div class="card shadow-soft p-4 mb-4">
-              <div class="border-bottom pb-4 mb-4">
-                <h2 class="h3 mb-0">訂單總結</h2>
+        <div className="col-lg-5">
+          <div className="pl-lg-4">
+            <div className="card shadow-soft p-4 mb-4">
+              <div className="border-bottom pb-4 mb-4">
+                <h2 className="h3 mb-0">訂單總結</h2>
               </div>
-              <div class="border-bottom pb-4 mb-4">
-                <div class="media align-items-center mb-3">
-                  <span class="d-block font-size-1 mr-3">
+              <div className="border-bottom pb-4 mb-4">
+                <div className="media align-items-center mb-3">
+                  <span className="d-block font-size-1 mr-3">
                     {<span>{cartempty ? null : cartState.length} 產品</span>}
                   </span>
-                  <div class="media-body text-right">
-                    <span class="text-dark font-weight-bold">
+                  <div className="media-body text-right">
+                    <span className="text-dark font-weight-bold">
                       {countBill()}
                     </span>
                   </div>
                 </div>
 
-                <div class="media align-items-center mb-3">
-                  <span class="d-block font-size-1 mr-3">運送地址</span>
+                <div className="media align-items-center mb-3">
+                  <span className="d-block font-size-1 mr-3">目的地</span>
                 </div>
-                <div class="card shadow-none mb-3">
-                  <div class="card-body p-0">
-                    <select class="custom-select" onChange={handleDestination}>
-                      <option value="36">清華大學台達館305室</option>
-                      {destination.map(({ address, id }) => (
-                        <option value={id}>{address}</option>
-                      ))}
-                    </select>
+                <div className="card shadow-none mb-3">
+                  <div className="card-body p-0">
+                    {destinationInputVisible ? (
+                      <input
+                        className="form-control"
+                        placeholder="詳細地址"
+                        onChange={handleDestination}
+                      />
+                    ) : (
+                      <select
+                        className="custom-select"
+                        onChange={handleDestination}
+                      >
+                        <option value="36">清華大學台達館305室</option>
+                        {destinations.map(({ address, id }) => (
+                          <option value={id}>{address}</option>
+                        ))}
+                      </select>
+                    )}
+                    <a
+                      href="javascript:void(0);"
+                      className="form-link small"
+                      onClick={() => setDestinationInputVisible(true)}
+                    >
+                      <i className="fas fa-plus mr-1"></i> 手動輸入地址
+                    </a>
                   </div>
                 </div>
               </div>
 
-              <div class="media align-items-center mb-3">
-                <span class="d-block font-size-1 mr-3">Total</span>
-                <div class="media-body text-right">
-                  <span class="text-dark font-weight-bold">{countBill()}</span>
+              <div className="media align-items-center mb-3">
+                <span className="d-block font-size-1 mr-3">Total</span>
+                <div className="media-body text-right">
+                  <span className="text-dark font-weight-bold">
+                    {countBill()}
+                  </span>
                 </div>
               </div>
 
-              <div class="row mx-1">
-                <div class="col px-1 my-1">
+              <div className="row mx-1">
+                <div className="col px-1 my-1">
                   <button
-                    class="btn btn-primary btn-block btn-pill transition-3d-hover"
+                    className="btn btn-primary btn-block btn-pill transition-3d-hover"
                     onClick={handleItem}
                   >
                     結帳
                   </button>
                 </div>
-                <div class="col px-1 my-1">
-                  <button
-                    type="submit"
-                    class="btn btn-soft-warning btn-block btn-pill transition-3d-hover"
-                  >
-                    {/* <img
-                      src="/assets/img/logos/paypal.png"
-                      width="70"
-                      alt="PayPal logo"
-                    /> */}
-                  </button>
+              </div>
+            </div>
+            <div className="card shadow-soft mb-4">
+              <div className="card rounded">
+                <div className="card-header">
+                  <label class="toggle-switch d-flex align-items-center mb-3">
+                    <input
+                      type="checkbox"
+                      class="toggle-switch-input"
+                      onChange={(e) => console.log(e.target.value)}
+                    />
+                    <span class="toggle-switch-label">
+                      <span class="toggle-switch-indicator"></span>
+                    </span>
+                    <span class="toggle-switch-content">
+                      <span class="d-block">要製作電子賀卡嗎？</span>
+                      <small class="d-block text-muted">
+                        收禮者可於溯源時查看
+                      </small>
+                    </span>
+                  </label>
                 </div>
               </div>
-              {jump ? <Redirect to="/shop/order" /> : null}
             </div>
           </div>
         </div>
