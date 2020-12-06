@@ -65,14 +65,35 @@ function Dapp(props) {
         let icon_path = "../../assets/img/cultivation";
         switch (record.action) {
           case "播種測試":
-            icon_path = "../../assets/img/cultivation/sow.png";
+          case "播種":
+            icon_path = "../../assets/img/cultivation/播種.png";
+            break;
+          case "種植":
+          case "定植":
+            icon_path = "../../assets/img/cultivation/定植.png";
             break;
           case "施肥":
-            icon_path = "../../assets/img/cultivation/fertilize.png";
+            icon_path = "../../assets/img/cultivation/施肥.png";
+            break;
+          case "除草":
+            icon_path = "../../assets/img/cultivation/除草.png";
+            break;
+          case "粗耕":
+            icon_path = "../../assets/img/cultivation/粗耕.png";
+            break;
+          case "細耕":
+            icon_path = "../../assets/img/cultivation/細耕.png";
+            break;
+          case "割稻":
+            icon_path = "../../assets/img/cultivation/割稻.png";
+            break;
+          case "插秧":
+            icon_path = "../../assets/img/cultivation/插秧.png";
             break;
 
+          case "整地":
           default:
-            icon_path = "../../assets/img/cultivation/018-shovel.jpg";
+            icon_path = "../../assets/img/cultivation/整地.jpg";
             break;
         }
         return {
