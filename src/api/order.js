@@ -10,13 +10,16 @@ const createOrder = async (orders) => {
   }
 };
 
-const getOrder = async () => {
+const getOrder = async (userToken) => {
   try {
     const response = await request.get(`/orders`, {
       params: {
         buyer: "yes",
         offset: 0,
         limit: 30,
+      },
+      headers: {
+        Authorization: `Bearer ${userToken}`,
       },
     });
     const {
