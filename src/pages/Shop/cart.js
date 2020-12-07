@@ -83,12 +83,13 @@ function ShoppingCart(props) {
     Object.keys(item_and_amount).map((key) => {
       let item = {};
       item["amount"] = item_and_amount[key];
-      item["destination"] = destinationId; //之後要改，這裡是destination_id 之後要先找destination資料表抓出id再丟
+      item["destination"] = destinationId;
       item["productId"] = JSON.parse(key)["id"];
       orders.push(item);
     });
 
     const orderNumber = await createOrder(orders);
+    console.log(orders);
     console.log("orderNumber:", orderNumber);
 
     if (giftToggled) setJumpTo(`/shop/gift/${orderNumber}`);
