@@ -10,6 +10,7 @@ import {
   fetchSecureItem,
 } from "../../api/ethereum";
 import { getTraceData, sendPressLike } from "../../api/package";
+import { fetchVideo } from "../../api/media";
 import { useParams, Redirect } from "react-router-dom";
 import ReactPlayer from "react-player";
 
@@ -23,6 +24,10 @@ function Dapp(props) {
   const [isForbidden, setIsForbidden] = useState(false);
   const [giftCardVisible, setGiftCardVisible] = useState(true);
   const [likeIsPressed, setLikeIsPressed] = useState(false);
+  const [giftVideo, setGiftVideo] = useState(null);
+  const [giftFrom, setGiftFrom] = useState("");
+  const [giftText, setGiftText] = useState("");
+
   useEffect(() => {
     // 從url取得溯源參數
     if (traceID) {
@@ -53,6 +58,8 @@ function Dapp(props) {
         farm_id,
         photo_url,
         farm_intro,
+        certificate_filename_arr,
+        gift,
       } = await getTraceData(traceID);
 
       setFarmIntro(farm_intro);
@@ -86,13 +93,7 @@ function Dapp(props) {
 
       // 有機檢驗證書
       response = await fetchOrganicCertificate(farm_id);
-      setOrganicCertificates([
-        {
-          timestamp: response?.timestamp,
-          title: response?.name,
-          cid: response?.cid,
-        },
-      ]);
+      setOrganicCertificates(certificate_filename_arr);
 
       // 出貨前照片
       response = await fetchSecureItem(traceID);
@@ -100,6 +101,11 @@ function Dapp(props) {
         timestamp: response?.timestamp,
         cid: response?.cid,
       });
+
+      response = await fetchVideo(gift.video_id);
+      setGiftFrom(gift.gift_from);
+      setGiftText(gift.gift_text);
+      setGiftVideo(response.data);
     } catch (err) {
       console.error("here", err);
       // Redirect to 404 page
@@ -139,11 +145,23 @@ function Dapp(props) {
             width: "100%",
           }}
         >
-          <ReactPlayer
-            light={true}
-            width="100%"
-            url="https://www.youtube.com/watch?v=AGcYApKfHuY"
-          />
+          {giftVideo ? (
+            <div>
+              <h6>送禮者：{giftFrom}</h6>
+              <h6>祝賀詞：{giftText}</h6>
+              <ReactPlayer
+                light={true}
+                width="100%"
+                url={`https://storage.googleapis.com/agchain/${giftVideo.StandardDefinition}`}
+              />
+            </div>
+          ) : (
+            <div className="space-1 text-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          )}
         </div>
       </GiftCard>
       <div className="border-bottom">
@@ -209,17 +227,13 @@ function Dapp(props) {
           </div>
           <div className="row mx-n2 mx-sm-n3 mb-3">
             {organicCerftificates.length > 0 ? (
-              organicCerftificates.map(({ timestamp, title, cid }, index) => {
+              organicCerftificates.map((e, index) => {
                 return (
                   <div
                     className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
                     key={index}
                   >
-                    <CertificateCard
-                      idx={index}
-                      img={`https://ipfs.io/ipfs/${cid}`}
-                      title={`${title}`}
-                    />
+                    <CertificateCard idx={index} img={e} title={e} />
                   </div>
                 );
               })
