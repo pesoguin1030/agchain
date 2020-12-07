@@ -149,7 +149,7 @@ function App() {
                 <Route path="/shop/cart">
                   <ShoppingCart />
                 </Route>
-                <Route path="/shop/analysis">
+                <Route path="/shop/analysis/:orderNumber">
                   <Analysis />
                 </Route>
                 <Route path="/404">

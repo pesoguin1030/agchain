@@ -10,13 +10,16 @@ const createOrder = async (orders) => {
   }
 };
 
-const getOrder = async () => {
+const getOrder = async (userToken) => {
   try {
     const response = await request.get(`/orders`, {
       params: {
         buyer: "yes",
         offset: 0,
         limit: 30,
+      },
+      headers: {
+        Authorization: `Bearer ${userToken}`,
       },
     });
     const {
@@ -54,4 +57,17 @@ async function getDestinations() {
   }
 }
 
-export { createOrder, getOrder, getDestinations };
+async function getPressLikeNum(orderNumber) {
+  try {
+    const response = await request.get(
+      `${Constants.SERVER_URL}/orders/like/${orderNumber}`
+    );
+    const { data } = response;
+    const { press_like } = data[0];
+    return press_like;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+export { createOrder, getOrder, getDestinations, getPressLikeNum };

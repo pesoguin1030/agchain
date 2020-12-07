@@ -16,6 +16,7 @@ function ShoppingCart(props) {
   const [jump, setJump] = useState(false);
   const [destinationId, setDestinationId] = useState();
   const [destinationInputVisible, setDestinationInputVisible] = useState(false);
+  const [orderNumber, setOrderNumber] = useState("");
   useEffect(() => {
     const getDestination = async () => {
       const { items, offset } = await fetchDestination();
@@ -82,18 +83,19 @@ function ShoppingCart(props) {
     Object.keys(item_and_amount).map((key) => {
       let item = {};
       item["amount"] = item_and_amount[key];
-      item["destination"] = destinationId; //之後要改，這裡是destination_id 之後要先找destination資料表抓出id再丟
+      item["destination"] = destinationId;
       item["productId"] = JSON.parse(key)["id"];
       orders.push(item);
     });
     console.log(orders);
-    const orderNumber = await createOrder(orders);
+    const orderNumber1 = await createOrder(orders);
+    setOrderNumber(orderNumber1);
     console.log("orderNumber:", orderNumber);
     setJump(true);
   };
 
   return jump ? (
-    <Redirect to="/shop/analysis" />
+    <Redirect to={"/shop/analysis/" + orderNumber} />
   ) : (
     <div className="container space-1 space-md-2">
       <div className="row">
