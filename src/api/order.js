@@ -59,9 +59,7 @@ async function getDestinations() {
 
 async function getPressLikeNum(orderNumber) {
   try {
-    const response = await request.get(
-      `${Constants.SERVER_URL}/orders/like/${orderNumber}`
-    );
+    const response = await request.get(`/orders/like/${orderNumber}`);
     const { data } = response;
     const { press_like } = data[0];
     return press_like;

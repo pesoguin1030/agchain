@@ -138,7 +138,9 @@ function Home(props) {
                 description={description}
                 price={price}
                 img={photo_url}
-                isInCart={cartState.map(({ id }) => id).includes(id)}
+                isInCart={
+                  cartState ? cartState.map((e) => e.id).includes(id) : false
+                }
                 onRemoveFromCart={() =>
                   cartDispatch((prev) => prev.filter((e) => e.id !== id))
                 }
