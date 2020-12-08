@@ -19,10 +19,10 @@ const fetchCultivationRecord = async (cropId) => {
       httpProvider
     );
     const records = await contract.query(cropId);
-    console.log(records);
     return records.map((e) => ({
       timestamp: e[0],
       action: e[1],
+      txHash: e[2],
     }));
   } catch (err) {
     return [];

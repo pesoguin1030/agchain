@@ -1,7 +1,46 @@
 export const cutivationRecordAddress =
-  "0xACA042F6Fe0A29d02D16E859aaA03bcCb1169D9B";
+  "0xEEF74779AF1031a3Bc34046613E71184d8D2DE29";
 
 export const cutivationRecordABI = [
+  {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "Database",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "timestamp",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "action",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "txHash",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
   {
     inputs: [
       {
@@ -43,31 +82,18 @@ export const cutivationRecordABI = [
         type: "string",
       },
     ],
-    name: "batch",
+    name: "batchInsert",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
     inputs: [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
+        internalType: "uint256[]",
+        name: "cropIDs",
+        type: "uint256[]",
       },
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "Database",
-    outputs: [
       {
         internalType: "uint256",
         name: "timestamp",
@@ -78,8 +104,15 @@ export const cutivationRecordABI = [
         name: "action",
         type: "string",
       },
+      {
+        internalType: "string",
+        name: "txHash",
+        type: "string",
+      },
     ],
-    stateMutability: "view",
+    name: "batchUpdate",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -115,6 +148,11 @@ export const cutivationRecordABI = [
           {
             internalType: "string",
             name: "action",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "txHash",
             type: "string",
           },
         ],

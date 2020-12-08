@@ -49,7 +49,7 @@ const CertificateCard = ({ idx, img, title }) => (
             </h5>
             <button
               type="button"
-              className="btn btn-xs btn-icon btn-soft-secondary"
+              className="btn btn-xs btn-icon btn-soft-dark"
               data-dismiss="modal"
               aria-label="Close"
             >
