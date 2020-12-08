@@ -10,13 +10,14 @@ import { useHistory } from "react-router-dom";
 
 function ShoppingCart(props) {
   const { cartState, cartDispatch } = useContext(CartContext);
-  const [cartempty, setCartEmpty] = useState(true);
+  const [cartEmpty, setCartEmpty] = useState(true);
   const [item_and_amount, setItem_and_amount] = useState({});
   const [destinations, setDestinations] = useState([]);
-  const [jump, setJump] = useState(false);
+  const [jumpTo, setJumpTo] = useState(null);
   const [destinationId, setDestinationId] = useState();
   const [destinationInputVisible, setDestinationInputVisible] = useState(false);
-  const [orderNumber, setOrderNumber] = useState("");
+  const [giftToggled, setGiftToggled] = useState(false);
+
   useEffect(() => {
     const getDestination = async () => {
       const { items, offset } = await fetchDestination();
@@ -53,7 +54,6 @@ function ShoppingCart(props) {
     return total_bill;
   };
 
-  const handleChange = (item, value) => {};
   const decrement = (key) => {
     let value = item_and_amount[key];
     if (value > 0) value -= 1;
@@ -87,25 +87,27 @@ function ShoppingCart(props) {
       item["productId"] = JSON.parse(key)["id"];
       orders.push(item);
     });
+
+    const orderNumber = await createOrder(orders);
     console.log(orders);
-    const orderNumber1 = await createOrder(orders);
-    setOrderNumber(orderNumber1);
     console.log("orderNumber:", orderNumber);
-    setJump(true);
+
+    if (giftToggled) setJumpTo(`/shop/gift/${orderNumber}`);
+    else setJumpTo(`/shop/analysis/${orderNumber}`);
   };
 
-  return jump ? (
-    <Redirect to={"/shop/analysis/" + orderNumber} />
+  return jumpTo ? (
+    <Redirect to={jumpTo} />
   ) : (
     <div className="container space-1 space-md-2">
       <div className="row">
         <div className="col-lg-7 mb-7 mb-lg-0">
           <div className="d-flex justify-content-between align-items-end border-bottom pb-3 mb-7">
             <h1 className="h3 mb-0">購物車</h1>
-            <span>{cartempty ? null : cartState.length} 產品</span>
+            <span>{cartEmpty ? null : cartState.length} 產品</span>
           </div>
           {
-            cartempty
+            cartEmpty
               ? null
               : Object.keys(item_and_amount).map((key) => {
                   const { id, name, price, img } = JSON.parse(key);
@@ -198,7 +200,7 @@ function ShoppingCart(props) {
               <div className="border-bottom pb-4 mb-4">
                 <div className="media align-items-center mb-3">
                   <span className="d-block font-size-1 mr-3">
-                    {<span>{cartempty ? null : cartState.length} 產品</span>}
+                    {<span>{cartEmpty ? null : cartState.length} 產品</span>}
                   </span>
                   <div className="media-body text-right">
                     <span className="text-dark font-weight-bold">
@@ -225,7 +227,7 @@ function ShoppingCart(props) {
                       >
                         <option value="36">清華大學台達館305室</option>
                         {destinations.map(({ address, id }) => (
-                          <option value={id}>{address}</option>
+                          <option value={address}>{address}</option>
                         ))}
                       </select>
                     )}
@@ -263,18 +265,19 @@ function ShoppingCart(props) {
             <div className="card shadow-soft mb-4">
               <div className="card rounded">
                 <div className="card-header">
-                  <label class="toggle-switch d-flex align-items-center mb-3">
+                  <label className="toggle-switch d-flex align-items-center mb-3">
                     <input
                       type="checkbox"
-                      class="toggle-switch-input"
-                      onChange={(e) => console.log(e.target.value)}
+                      className="toggle-switch-input"
+                      checked={giftToggled}
+                      onChange={() => setGiftToggled((prev) => !prev)}
                     />
-                    <span class="toggle-switch-label">
-                      <span class="toggle-switch-indicator"></span>
+                    <span className="toggle-switch-label">
+                      <span className="toggle-switch-indicator"></span>
                     </span>
-                    <span class="toggle-switch-content">
-                      <span class="d-block">要製作電子賀卡嗎？</span>
-                      <small class="d-block text-muted">
+                    <span className="toggle-switch-content">
+                      <span className="d-block">要製作電子賀卡嗎？</span>
+                      <small className="d-block text-muted">
                         收禮者可於溯源時查看
                       </small>
                     </span>

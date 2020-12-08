@@ -140,7 +140,7 @@ function App() {
                 <Route exact path="/shop">
                   <Shop />
                 </Route>
-                <Route exact path="/shop/gift">
+                <Route exact path="/shop/gift/:orderNumber">
                   <GiftMaker />
                 </Route>
                 <Route path="/dapp/:traceID">
