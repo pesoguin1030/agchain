@@ -4,6 +4,7 @@ import moment from "moment";
 import CertificateCard from "../../../src/components/Card/CertificateCard";
 import TimeLine from "../../../src/components/TimeLine";
 import GiftCard from "../../../src/components/Card/GiftCard";
+import Radarchart from "../../../src/components/RadarChart";
 import {
   fetchCultivationRecord,
   fetchOrganicCertificate,
@@ -78,39 +79,42 @@ function Dapp(props) {
             break;
           case "種植":
           case "定植":
-            icon_path = "../../assets/img/cultivation/定植.png";
+            icon_path = "定植.png";
             break;
           case "施肥":
-            icon_path = "../../assets/img/cultivation/施肥.png";
+            icon_path = "施肥.png";
             break;
           case "除草":
-            icon_path = "../../assets/img/cultivation/除草.png";
+            icon_path = "除草.png";
             break;
           case "粗耕":
-            icon_path = "../../assets/img/cultivation/粗耕.png";
+            icon_path = "粗耕.png";
             break;
           case "細耕":
-            icon_path = "../../assets/img/cultivation/細耕.png";
+            icon_path = "細耕.png";
             break;
           case "割稻":
-            icon_path = "../../assets/img/cultivation/割稻.png";
+            icon_path = "割稻.png";
             break;
           case "插秧":
-            icon_path = "../../assets/img/cultivation/插秧.png";
+            icon_path = "插秧.png";
             break;
 
           case "整地":
           default:
-            icon_path = "../../assets/img/cultivation/整地.jpg";
+            icon_path = "整地.png";
             break;
         }
         return {
           icon: icon_path,
-          title: record.action,
-          description: moment.unix(record.timestamp).format("YYYY-MM-DD"),
+          title:
+            record.action +
+            " (" +
+            moment.unix(record.timestamp).format("YYYY-MM-DD") +
+            ")",
+          description: record.txHash,
         };
       });
-
       setCultivationRecord(cultivation_records);
 
       // 有機檢驗證書
@@ -147,10 +151,10 @@ function Dapp(props) {
     <Redirect to="/404" />
   ) : (
     <div>
-      <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9 mt-2">
+      <div className="w-md-80 w-lg-40 text-center mx-md-auto my-3 mt-5">
         <button
           onClick={() => setGiftCardVisible(true)}
-          className="btn btn-primary"
+          className="btn btn-primary btn-pill"
         >
           觀看賀卡
         </button>
@@ -185,6 +189,7 @@ function Dapp(props) {
           )}
         </div>
       </GiftCard>
+
       <div className="border-bottom">
         <div className="container space-2 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
@@ -199,21 +204,30 @@ function Dapp(props) {
             )}
           </div>
         </div>
+
         <div className="container space-2 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>生產履歷</h2>
           </div>
-          <div className="row">
-            <div className="col-sm-4"></div>
-            <div className="col-sm-4">
-              {cultivationRecord !== null || cultivationRecord.length !== 0 ? (
-                <TimeLine items={cultivationRecord} />
-              ) : (
-                <p>無相關田間紀錄</p>
-              )}
-            </div>
-            <div className="col-sm-4"></div>
+          <div className="w-md-80 w-lg-40 mx-md-auto px-5">
+            {cultivationRecord !== null || cultivationRecord.length !== 0 ? (
+              <TimeLine items={cultivationRecord} />
+            ) : (
+              <p>無相關田間紀錄</p>
+            )}
           </div>
+        </div>
+
+        <div className="container space-2 space-lg-3">
+          <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9 ">
+            <h2>種植數據</h2>
+            {/* {secureItem ? (
+                <Radarchart/>
+              ) : (
+                <p>無法取得種植數據</p>
+              )} */}
+          </div>
+          <Radarchart />
         </div>
 
         <div className="container space-2 space-lg-3">
@@ -255,6 +269,7 @@ function Dapp(props) {
                     key={index}
                   >
                     <CertificateCard idx={index} img={e} title={e} />
+                    {/* <CertificateCard idx={index} img={`https://ipfs.io/ipfs/${e?.cid}`} title={e.name} /> */}
                   </div>
                 );
               })

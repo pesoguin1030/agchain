@@ -37,13 +37,24 @@ const ListItem = (items) => {
           <span className="step-icon step-icon-soft-primary">
             <img
               className="step-avatar-img"
-              src={item.icon}
-              alt="Image Description"
+              src={`/assets/img/cultivation/` + item.icon}
+              alt="Image"
             />
           </span>
           <div className="step-content">
             <h4>{item.title}</h4>
-            <p className="text-body">{item.description}</p>
+            <button
+              type="button"
+              className="btn btn-outline-secondary btn-xs"
+              onClick={() =>
+                window.open(
+                  "https://goerli.etherscan.io/tx/" + item.description
+                )
+              }
+            >
+              <i className="fas fa-shield-alt mr-1"></i>
+              詳細區塊鏈資訊...
+            </button>
           </div>
         </div>
       </li>
