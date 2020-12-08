@@ -7,6 +7,10 @@ import {
   organicCertificateABI,
   organicCertificateAddress,
 } from "../abi/organicCertificate";
+import {
+  sensorAnalysisABI,
+  sensorAnalysisAddress,
+} from "../abi/sensorAnalysis";
 import { secureItemABI, secureItemAddress } from "../abi/secureItem";
 
 const httpProvider = ethers.getDefaultProvider("goerli");
@@ -67,4 +71,29 @@ const fetchOrganicCertificate = async (farmID) => {
   }
 };
 
-export { fetchCultivationRecord, fetchSecureItem, fetchOrganicCertificate };
+const fetchSensorAnalysis = async (cropID) => {
+  try {
+    const contract = new ethers.Contract(
+      sensorAnalysisAddress,
+      sensorAnalysisABI,
+      httpProvider
+    );
+    const record = await contract.get(cropID);
+    console.log(record);
+    return record.map((el) => ({
+      key: el[0],
+      value: el[1],
+      unit: el[2],
+      updateAt: el[3],
+    }));
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+export {
+  fetchCultivationRecord,
+  fetchSecureItem,
+  fetchOrganicCertificate,
+  fetchSensorAnalysis,
+};

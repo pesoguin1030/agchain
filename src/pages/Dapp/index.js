@@ -9,6 +9,7 @@ import {
   fetchCultivationRecord,
   fetchOrganicCertificate,
   fetchSecureItem,
+  fetchSensorAnalysis,
 } from "../../api/ethereum";
 import { getTraceData, sendPressLike } from "../../api/package";
 import { fetchVideo } from "../../api/media";
@@ -52,90 +53,90 @@ function Dapp(props) {
   }
 
   async function setupRequiredInformation(traceID) {
-    try {
-      // 去server端抓資料，TODO: We need a metainfo contract bypass our server side
-      let {
-        gift_card,
-        crop_id,
-        farm_id,
-        photo_url,
-        farm_intro,
-        certificate_filename_arr,
-        gift,
-      } = await getTraceData(traceID);
+    // 去server端抓資料，TODO: We need a metainfo contract bypass our server side
+    let {
+      gift_card,
+      crop_id,
+      farm_id,
+      photo_url,
+      farm_intro,
+      certificate_filename_arr,
+      gift,
+    } = await getTraceData(traceID);
 
-      setFarmIntro(farm_intro);
-      setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
+    setFarmIntro(farm_intro);
+    setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
 
-      // 田間紀錄
-      let response = await fetchCultivationRecord(crop_id);
-      // 轉換成{icon, title, description}的形式，方便用timeline顯示
-      let cultivation_records = response.map((record) => {
-        let icon_path = "../../assets/img/cultivation";
-        switch (record.action) {
-          case "播種測試":
-          case "播種":
-            icon_path = "../../assets/img/cultivation/播種.png";
-            break;
-          case "種植":
-          case "定植":
-            icon_path = "定植.png";
-            break;
-          case "施肥":
-            icon_path = "施肥.png";
-            break;
-          case "除草":
-            icon_path = "除草.png";
-            break;
-          case "粗耕":
-            icon_path = "粗耕.png";
-            break;
-          case "細耕":
-            icon_path = "細耕.png";
-            break;
-          case "割稻":
-            icon_path = "割稻.png";
-            break;
-          case "插秧":
-            icon_path = "插秧.png";
-            break;
+    // 田間紀錄
+    let response = await fetchCultivationRecord(crop_id);
+    // 轉換成{icon, title, description}的形式，方便用timeline顯示
+    let cultivation_records = response.map((record) => {
+      let icon_path = "../../assets/img/cultivation";
+      switch (record.action) {
+        case "播種測試":
+        case "播種":
+          icon_path = "../../assets/img/cultivation/播種.png";
+          break;
+        case "種植":
+        case "定植":
+          icon_path = "定植.png";
+          break;
+        case "施肥":
+          icon_path = "施肥.png";
+          break;
+        case "除草":
+          icon_path = "除草.png";
+          break;
+        case "粗耕":
+          icon_path = "粗耕.png";
+          break;
+        case "細耕":
+          icon_path = "細耕.png";
+          break;
+        case "割稻":
+          icon_path = "割稻.png";
+          break;
+        case "插秧":
+          icon_path = "插秧.png";
+          break;
 
-          case "整地":
-          default:
-            icon_path = "整地.png";
-            break;
-        }
-        return {
-          icon: icon_path,
-          title:
-            record.action +
-            " (" +
-            moment.unix(record.timestamp).format("YYYY-MM-DD") +
-            ")",
-          description: record.txHash,
-        };
-      });
-      setCultivationRecord(cultivation_records);
+        case "整地":
+        default:
+          icon_path = "整地.png";
+          break;
+      }
+      return {
+        icon: icon_path,
+        title:
+          record.action +
+          " (" +
+          moment.unix(record.timestamp).format("YYYY-MM-DD") +
+          ")",
+        description: record.txHash,
+      };
+    });
+    setCultivationRecord(cultivation_records);
 
-      // 有機檢驗證書
-      response = await fetchOrganicCertificate(farm_id);
-      setOrganicCertificates(certificate_filename_arr);
+    // 有機檢驗證書
+    response = await fetchOrganicCertificate(farm_id);
+    setOrganicCertificates(certificate_filename_arr);
 
-      // 出貨前照片
-      response = await fetchSecureItem(traceID);
-      setSecureItem({
-        timestamp: response?.timestamp,
-        cid: response?.cid,
-      });
+    // 出貨前照片
+    response = await fetchSecureItem(traceID);
+    setSecureItem({
+      timestamp: response?.timestamp,
+      cid: response?.cid,
+    });
 
-      // 送禮影片
-      response = await fetchVideo(gift.video_id);
-      setGiftFrom(gift.gift_from);
-      setGiftText(gift.gift_text);
-      setGiftVideo(response.data);
-    } catch (err) {
-      console.error(err);
-    }
+    // 送禮影片
+    response = await fetchVideo(gift.video_id);
+    setGiftFrom(gift.gift_from);
+    setGiftText(gift.gift_text);
+    setGiftVideo(response.data);
+
+    // 數據分析
+    response = await fetchSensorAnalysis(crop_id);
+    console.log(response);
   }
 
   async function handlePressLike(traceID) {
