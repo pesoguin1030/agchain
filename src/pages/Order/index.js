@@ -21,8 +21,8 @@ function Order() {
     return orders;
   }
   return (
-    <div class="container space-1 space-md-2">
-      <div class="row">
+    <div className="container space-1 space-md-2">
+      <div className="row">
         <Table striped bordered hover>
           <thead>
             <tr>

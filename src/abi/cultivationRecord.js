@@ -1,5 +1,5 @@
 export const cutivationRecordAddress =
-  "0x76D41F891f26b90b87EdD9585682443Fca84d5e8";
+  "0xEEF74779AF1031a3Bc34046613E71184d8D2DE29";
 
 export const cutivationRecordABI = [
   {

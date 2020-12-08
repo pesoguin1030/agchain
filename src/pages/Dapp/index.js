@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import moment from "moment";
 import CertificateCard from "../../../src/components/Card/CertificateCard";
@@ -124,14 +124,13 @@ function Dapp(props) {
         cid: response?.cid,
       });
 
+      // 送禮影片
       response = await fetchVideo(gift.video_id);
       setGiftFrom(gift.gift_from);
       setGiftText(gift.gift_text);
       setGiftVideo(response.data);
     } catch (err) {
-      console.error("here", err);
-      // Redirect to 404 page
-      setIsForbidden(true);
+      console.error(err);
     }
   }
 
