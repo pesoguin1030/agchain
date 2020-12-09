@@ -134,11 +134,12 @@ function Dapp(props) {
     });
 
     // 送禮影片
-    response = await fetchVideo(gift.video_id);
-    setGiftFrom(gift.gift_from);
-    setGiftText(gift.gift_text);
-    setGiftVideo(response.data);
-
+    if (gift) {
+      response = await fetchVideo(gift.video_id);
+      setGiftFrom(gift.gift_from);
+      setGiftText(gift.gift_text);
+      setGiftVideo(response.data);
+    }
     // 數據分析
     response = await fetchSensorAnalysis(crop_id);
     setSensorAnalysis(response);

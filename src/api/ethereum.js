@@ -22,7 +22,7 @@ const fetchCultivationRecord = async (cropId) => {
       cutivationRecordABI,
       httpProvider
     );
-    const records = await contract.query(167);
+    const records = await contract.query(cropId);
     return records.map((e) => ({
       timestamp: e[0],
       action: e[1],
