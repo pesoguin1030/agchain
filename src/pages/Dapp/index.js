@@ -19,6 +19,7 @@ import ReactPlayer from "react-player";
 function Dapp(props) {
   const { traceID } = useParams(); // main KEY in url
   const [cultivationRecord, setCultivationRecord] = useState([]); // 田間紀錄
+  const [sensorAnalysis, setSensorAnalysis] = useState([]); // 種植數據
   const [farmIntro, setFarmIntro] = useState([]); // 農場介紹
   const [farmPic, setFarmPic] = useState([]); // 農場照片(1~3張?)
   const [secureItem, setSecureItem] = useState(null); // 出貨前照片
@@ -29,6 +30,7 @@ function Dapp(props) {
   const [giftVideo, setGiftVideo] = useState(null);
   const [giftFrom, setGiftFrom] = useState("");
   const [giftText, setGiftText] = useState("");
+  const [cropName, setCropName] = useState("");
 
   useEffect(() => {
     // 從url取得溯源參數
@@ -55,8 +57,9 @@ function Dapp(props) {
   async function setupRequiredInformation(traceID) {
     // 去server端抓資料，TODO: We need a metainfo contract bypass our server side
     let {
-      gift_card,
+      // gift_card,
       crop_id,
+      crop_name,
       farm_id,
       photo_url,
       farm_intro,
@@ -66,9 +69,11 @@ function Dapp(props) {
 
     setFarmIntro(farm_intro);
     setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
+    setCropName(crop_name);
 
     // 田間紀錄
     let response = await fetchCultivationRecord(crop_id);
+    console.log(response);
     // 轉換成{icon, title, description}的形式，方便用timeline顯示
     let cultivation_records = response.map((record) => {
       let icon_path = "../../assets/img/cultivation";
@@ -136,7 +141,7 @@ function Dapp(props) {
 
     // 數據分析
     response = await fetchSensorAnalysis(crop_id);
-    console.log(response);
+    setSensorAnalysis(response);
   }
 
   async function handlePressLike(traceID) {
@@ -208,7 +213,7 @@ function Dapp(props) {
 
         <div className="container space-2 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-            <h2>生產履歷</h2>
+            <h2>區塊鏈信賴溯源</h2>
           </div>
           <div className="w-md-80 w-lg-40 mx-md-auto px-5">
             {cultivationRecord !== null || cultivationRecord.length !== 0 ? (
@@ -228,7 +233,7 @@ function Dapp(props) {
                 <p>無法取得種植數據</p>
               )} */}
           </div>
-          <Radarchart />
+          <Radarchart data={sensorAnalysis} crop_name={cropName} />
         </div>
 
         <div className="container space-2 space-lg-3">
