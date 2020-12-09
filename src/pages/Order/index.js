@@ -10,7 +10,6 @@ function Order() {
     if (packages.length === 0) {
       getPackages();
     }
-    // console.log("-------",showPackage)
   }, [packages]);
   async function getPackages() {
     const userToken = storage.getAccessToken();
@@ -29,6 +28,7 @@ function Order() {
               <th>訂單編號</th>
               <th>時間</th>
               <th>訂單位置</th>
+              <th>電子賀卡</th>
             </tr>
           </thead>
           <tbody>
@@ -42,6 +42,9 @@ function Order() {
                   </td>
                   <td>{item["time"]}</td>
                   <td>{item["contractAddress"]}</td>
+                  <td>
+                    <a href={"./shop/gift/" + item["orderNumber"]}>修改</a>
+                  </td>
                 </tr>
               );
             })}
