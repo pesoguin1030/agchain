@@ -1,20 +1,27 @@
 import React from "react";
 import { Radar } from "react-chartjs-2";
 
-const state = {
-  labels: ["January", "February", "March", "April"],
-  datasets: [
-    {
-      label: "Rainfall",
-      backgroundColor: "rgba(75,192,192,0.2)",
-      borderColor: "rgba(75,192,192, 0.9)",
-      borderWidth: 2,
-      data: [65, 59, 80, 81],
-    },
-  ],
-};
+function formatData(data, crop_name) {
+  let labels = Object.values(data).map((item) => item.key);
+  let datas = Object.values(data).map((item) => item.value);
+  let states = {
+    labels: labels,
+    datasets: [
+      {
+        label: crop_name,
+        backgroundColor: "rgba(75,192,192,0.2)",
+        borderColor: "rgba(75,192,192, 0.9)",
+        borderWidth: 2,
+        data: datas,
+      },
+    ],
+  };
 
-const Radarchart = () => {
+  return states;
+}
+
+const Radarchart = ({ data, crop_name }) => {
+  let state = formatData(data, crop_name);
   return (
     <div className="w-md-90 w-lg-75 mx-md-auto">
       <Radar
@@ -26,8 +33,11 @@ const Radarchart = () => {
             fontSize: 20,
           },
           legend: {
-            display: false,
-            position: "right",
+            display: true,
+            position: "top",
+          },
+          label: {
+            fontSize: 10,
           },
           responsive: true,
         }}
