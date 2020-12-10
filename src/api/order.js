@@ -23,7 +23,7 @@ const getOrder = async (userToken) => {
       },
     });
     const {
-      data: { items, offset },
+      data: { items },
     } = response;
     let orderNumber = [];
     var temp = [];
@@ -39,6 +39,31 @@ const getOrder = async (userToken) => {
       }
     }
     return orderNumber;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const getOrderItem = async (orderNumber, userToken) => {
+  try {
+    const response = await request.get(
+      `${Constants.SERVER_URL}/orders/orderItem/${orderNumber}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    const { data } = response;
+    // console.log("---",typeof(data))
+    let return_data = [];
+    for (let index = 0; index < data.length; index++) {
+      return_data.push({
+        amount: data[index].amount,
+        name: data[index].name,
+      });
+    }
+    return return_data;
   } catch (err) {
     return Promise.reject(err);
   }
@@ -68,4 +93,10 @@ async function getPressLikeNum(orderNumber) {
   }
 }
 
-export { createOrder, getOrder, getDestinations, getPressLikeNum };
+export {
+  createOrder,
+  getOrder,
+  getOrderItem,
+  getDestinations,
+  getPressLikeNum,
+};
