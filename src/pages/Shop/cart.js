@@ -14,7 +14,7 @@ function ShoppingCart(props) {
   const [item_and_amount, setItem_and_amount] = useState({});
   const [destinations, setDestinations] = useState([]);
   const [jumpTo, setJumpTo] = useState(null);
-  const [destinationId, setDestinationId] = useState();
+  const [destinationId, setDestinationId] = useState("");
   const [destinationInputVisible, setDestinationInputVisible] = useState(false);
   const [giftToggled, setGiftToggled] = useState(false);
 
@@ -265,7 +265,7 @@ function ShoppingCart(props) {
             <div className="card shadow-soft mb-4">
               <div className="card rounded">
                 <div className="card-header">
-                  <label className="toggle-switch d-flex align-items-center mb-3">
+                  <label className="toggle-switch d-flex align-items-center">
                     <input
                       type="checkbox"
                       className="toggle-switch-input"
