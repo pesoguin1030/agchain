@@ -211,7 +211,7 @@ function Dapp(props) {
               觀看賀卡
             </button>
           </div>
-          <GiftCard
+          {/* <GiftCard
             visible={giftCardVisible}
             onClose={() => setGiftCardVisible(false)}
             onPressLike={() => handlePressLike(traceID)}
@@ -242,7 +242,12 @@ function Dapp(props) {
                 </div>
               )}
             </div>
-          </GiftCard>
+          </GiftCard> */}
+          <ReactPlayer
+            playing={true}
+            width="100%"
+            url={`https://storage.googleapis.com/agchain/${giftVideo.StandardDefinition}`}
+          />
         </div>
       ) : null}
       <div className="container space-2 space-lg-3">
@@ -301,7 +306,7 @@ function Dapp(props) {
         </div>
         <div className="row mx-n2 mx-sm-n3 mb-3">
           <div className="col-12">
-            <Radarchart data={sensorAnalysis} cropName={cropName} />
+            <Radarchart data={sensorAnalysis} cropName={cropName} size={650} />
           </div>
         </div>
       </div>
