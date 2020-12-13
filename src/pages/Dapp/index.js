@@ -311,7 +311,7 @@ function Dapp(props) {
         </div>
         <div className="row mx-n2 mx-sm-n3 mb-3">
           <div className="col-12">
-            <Radarchart data={sensorAnalysis} cropName={cropName} size={650} />
+            <Radarchart data={sensorAnalysis} cropName={cropName} />
           </div>
         </div>
       </div>

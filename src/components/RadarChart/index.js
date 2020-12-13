@@ -25,7 +25,7 @@ const Radarchart = ({ data, cropName }) => {
   return (
     <div
       className="w-md-90 w-lg-75 mx-md-auto"
-      style={{ height: "100vh", width: "100%" }}
+      style={{ height: "50vh", width: "100%" }}
     >
       <Radar
         data={state}
