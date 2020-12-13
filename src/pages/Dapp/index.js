@@ -204,14 +204,13 @@ function Dapp(props) {
       {giftVideo ? (
         <div>
           <div className="w-md-80 w-lg-40 text-center mx-md-auto my-3 mt-5">
-            <button
+            {/* <button
               onClick={() => setGiftCardVisible(true)}
               className="btn btn-primary btn-pill"
-            >
-              觀看賀卡
-            </button>
-          </div>
-          {/* <GiftCard
+            > */}
+            <h2>觀看賀卡</h2>
+            {/* </button> */}
+            {/* <GiftCard
             visible={giftCardVisible}
             onClose={() => setGiftCardVisible(false)}
             onPressLike={() => handlePressLike(traceID)}
@@ -243,11 +242,17 @@ function Dapp(props) {
               )}
             </div>
           </GiftCard> */}
-          <ReactPlayer
-            playing={true}
-            width="100%"
-            url={`https://storage.googleapis.com/agchain/${giftVideo.StandardDefinition}`}
-          />
+            <h4>送禮者：{giftFrom}</h4>
+            <h4>
+              祝賀詞：<span ref={giftTextRef}></span>
+            </h4>
+            <ReactPlayer
+              playing={true}
+              width="100%"
+              // url={`https://www.youtube.com/watch?v=v9svxE49Ngs&list=RDv9svxE49Ngs&ab_channel=FR3ESPIRIT10`}
+              url={`https://storage.googleapis.com/agchain/${giftVideo.StandardDefinition}`}
+            />
+          </div>
         </div>
       ) : null}
       <div className="container space-2 space-lg-3">
