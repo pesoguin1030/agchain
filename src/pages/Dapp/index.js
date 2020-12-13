@@ -201,17 +201,12 @@ function Dapp(props) {
               }}
             >
               {giftVideo ? (
-                <div>
-                  <h5>送禮者：{giftFrom}</h5>
-                  <h5>
-                    祝賀詞：<span ref={giftTextRef}></span>
-                  </h5>
-                  <ReactPlayer
-                    playing={true}
-                    width="100%"
-                    url={`https://storage.googleapis.com/agchain/${giftVideo.StandardDefinition}`}
-                  />
-                </div>
+                <iframe
+                  src="http://140.114.71.32:8080/show/1234"
+                  style={{ border: "none" }}
+                  height="420"
+                  scrolling="no"
+                />
               ) : (
                 <div className="space-1 text-center">
                   <div class="spinner-border text-primary" role="status">
