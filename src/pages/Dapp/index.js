@@ -16,7 +16,9 @@ import { fetchVideo } from "../../api/media";
 import { useParams, Redirect } from "react-router-dom";
 import ReactPlayer from "react-player";
 import Typed from "typed.js";
+
 import { Button } from "react-bootstrap";
+import { icon } from "@fortawesome/fontawesome-svg-core";
 
 function Dapp(props) {
   const giftTextRef = useRef();
@@ -73,13 +75,27 @@ function Dapp(props) {
     return objs;
   }
 
+  function sortCultivationRecord(records) {
+    // 過濾掉同一個TxHash的田間紀錄
+    let uniqueRecords = Array.from(new Set(records.map((a) => a.txHash))).map(
+      (txHash) => {
+        return records.find((a) => a.txHash === txHash);
+      }
+    );
+    // 依時間先後順序排列
+    uniqueRecords.sort(function (a, b) {
+      return a.timestamp - b.timestamp;
+    });
+
+    return uniqueRecords;
+  }
+
   async function setupRequiredInformation(traceID) {
     // 去server端抓資料，TODO: We need a metainfo contract bypass our server side
     let {
       crop_id,
       crop_name,
       farm_id,
-      photo_url,
       farm_intro,
       certificate_filename_arr,
       order_number,
@@ -96,14 +112,14 @@ function Dapp(props) {
 
     // 田間紀錄
     response = await fetchCultivationRecord(crop_id);
-
+    response = sortCultivationRecord(response);
     // 轉換成{icon, title, description}的形式，方便用timeline顯示
     let cultivation_records = response.map((record) => {
       let icon_path = "../../assets/img/cultivation";
       switch (record.action) {
         case "播種測試":
         case "播種":
-          icon_path = "../../assets/img/cultivation/播種.png";
+          icon_path = "播種.png";
           break;
         case "種植":
         case "定植":
@@ -127,11 +143,18 @@ function Dapp(props) {
         case "插秧":
           icon_path = "插秧.png";
           break;
-
         case "整地":
-        default:
           icon_path = "整地.png";
           break;
+        case "澆水":
+          icon_path = "澆水.png";
+          break;
+        case "除草":
+          icon_path = "除草.png";
+          break;
+
+        default:
+          icon_path = "agriculture.png";
       }
       return {
         icon: icon_path,
@@ -212,8 +235,21 @@ function Dapp(props) {
         </div>
       </div>
       <div className="container space-2 space-lg-3">
+        <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5">
+          <img
+            className="img-fluid w-md-50 w-lg-40 mx-7 my-3"
+            src="/assets/svg/icons/icon-50.svg"
+            alt="SVG"
+          />
+          <h1>區塊鏈信賴溯源</h1>
+          <p style={{ letterSpacing: "0.2rem" }}>
+            以下資料皆有區塊鏈加密與不可竄改之信賴保障，提高食品安全透明度。
+          </p>
+        </div>
+      </div>
+      <div className="container space-2 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-          <h2>出貨前照片</h2>
+          <h2>防偽鑑識照片</h2>
         </div>
         <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           {secureItem && secureItem.cid !== "" ? (
@@ -233,9 +269,9 @@ function Dapp(props) {
 
       <div className="container space-2 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-          <h2>區塊鏈信賴溯源</h2>
+          <h2>田間紀錄</h2>
         </div>
-        <div className="row w-md-80 w-lg-40 mx-md-auto px-5">
+        <div className="row w-md-80 w-lg-60 mx-md-auto px-5">
           {cultivationRecord && cultivationRecord.length !== 0 ? (
             <div className="col-12">
               <TimeLine items={cultivationRecord} />

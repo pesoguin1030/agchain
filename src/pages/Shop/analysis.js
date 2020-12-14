@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from "react";
 import $ from "jquery";
 import { useParams } from "react-router-dom";
-import { getPressLikeNum } from "../../api/order";
+import storage from "../../utils/storage";
+import { getPressLikeNum, getOrderItem } from "../../api/order";
+import { Table } from "react-bootstrap";
 
 function Analysis(prop) {
   const { orderNumber } = useParams();
   const [chartVisible, setChartVisible] = useState(false);
   const [likeNum, setLikeNum] = useState(0);
+  const [orderInfo, setOrderInfo] = useState([]);
+
   useEffect(() => {
     if (chartVisible) {
       $(".js-counter").each(function () {
         var counter = new window.HSCounter($(this)).init();
       });
     }
+    (async (orderNumber) => {
+      const userToken = storage.getAccessToken();
+      const orderItem = await getOrderItem(orderNumber, userToken);
+      setOrderInfo(orderItem);
+      console.log(orderItem);
+    })(orderNumber);
+
     if (orderNumber) {
       (async (orderNumber) => {
         const like_num = await getPressLikeNum(orderNumber);
@@ -49,11 +60,28 @@ function Analysis(prop) {
           <i class="fas fa-check-circle text-success fa-5x mb-3"></i>
           <div class="mb-5">
             <h1 class="h2">你的訂單已成立</h1>
-            <p>
-              Thank you for your order! Your order is being processed and will
-              be completed within 3-6 hours. You will receive an email
-              confirmation when your order is completed.
-            </p>
+            <p>感謝您的訂購，您的訂單會盡快出貨</p>
+          </div>
+
+          <div>
+            <h3>訂單編號：{orderNumber}</h3>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>名稱</th>
+                  <th>數量</th>
+                </tr>
+                {orderInfo.map((item) => {
+                  return (
+                    <tr>
+                      <td>{item["name"]}</td>
+                      <td>{item["amount"]}</td>
+                    </tr>
+                  );
+                })}
+              </thead>
+              <tbody></tbody>
+            </Table>
           </div>
           <a
             onClick={() => setChartVisible(true)}
