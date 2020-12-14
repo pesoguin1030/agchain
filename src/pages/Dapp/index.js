@@ -16,6 +16,7 @@ import { fetchVideo } from "../../api/media";
 import { useParams, Redirect } from "react-router-dom";
 import ReactPlayer from "react-player";
 import Typed from "typed.js";
+import { Button } from "react-bootstrap";
 
 function Dapp(props) {
   const giftTextRef = useRef();
@@ -33,7 +34,7 @@ function Dapp(props) {
   const [giftFrom, setGiftFrom] = useState("");
   const [giftText, setGiftText] = useState("");
   const [cropName, setCropName] = useState("");
-
+  const [orderNumber, setOrderNumber] = useState(null);
   // Running gift text
   useEffect(() => {
     if (giftText === "" || !giftTextRef.current) return;
@@ -75,25 +76,19 @@ function Dapp(props) {
   async function setupRequiredInformation(traceID) {
     // 去server端抓資料，TODO: We need a metainfo contract bypass our server side
     let {
-      // gift_card,
       crop_id,
       crop_name,
       farm_id,
       photo_url,
       farm_intro,
       certificate_filename_arr,
-      gift,
+      order_number,
     } = await getTraceData(traceID);
 
     let response;
 
     // 送禮影片
-    if (gift) {
-      response = await fetchVideo(gift.video_id);
-      setGiftFrom(gift.gift_from);
-      setGiftText(gift.gift_text);
-      setGiftVideo(response.data);
-    }
+    setOrderNumber(order_number);
 
     setFarmIntro(farm_intro);
     setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
@@ -179,50 +174,43 @@ function Dapp(props) {
     <Redirect to="/404" />
   ) : (
     <div className="border-bottom">
-      {giftVideo ? (
-        <div>
-          <div className="w-md-80 w-lg-40 text-center mx-md-auto my-3 mt-5">
-            <button
-              onClick={() => setGiftCardVisible(true)}
-              className="btn btn-primary btn-pill"
-            >
-              觀看賀卡
-            </button>
-          </div>
-          <GiftCard
-            visible={giftCardVisible}
-            onClose={() => setGiftCardVisible(false)}
-            onPressLike={() => handlePressLike(traceID)}
-            disabled={likeIsPressed}
-          >
-            <div
-              style={{
-                width: "100%",
-              }}
-            >
-              {giftVideo ? (
-                <div>
-                  <h5>送禮者：{giftFrom}</h5>
-                  <h5>
-                    祝賀詞：<span ref={giftTextRef}></span>
-                  </h5>
-                  <ReactPlayer
-                    playing={true}
-                    width="100%"
-                    url={`https://storage.googleapis.com/agchain/${giftVideo.StandardDefinition}`}
-                  />
-                </div>
-              ) : (
-                <div className="space-1 text-center">
-                  <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </GiftCard>
+      <div className="container space-2 space-lg-3">
+        <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+          <h2>電子賀卡</h2>
         </div>
-      ) : null}
+        <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+          <div className="col-12">
+            {orderNumber ? (
+              <iframe
+                height="425"
+                style={{
+                  border: "none",
+                  margin: "auto",
+                  marginBottom: 36,
+                }}
+                src={`https://gift-7ee75.web.app/show/${orderNumber}`}
+                scrolling="no"
+              />
+            ) : null}
+            {likeIsPressed ? (
+              <Button variant="success" disabled>
+                <i className="fas fa-check"></i> 已按過讚
+              </Button>
+            ) : (
+              <Button
+                variant="dark"
+                style={{
+                  backgroundColor: "var(--pink)",
+                  borderColor: "var(--pink)",
+                }}
+                onClick={() => handlePressLike(traceID)}
+              >
+                <i className="fas fa-heart"></i> 喜歡
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
       <div className="container space-2 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>出貨前照片</h2>

@@ -92,8 +92,9 @@ function ShoppingCart(props) {
     console.log(orders);
     console.log("orderNumber:", orderNumber);
 
-    if (giftToggled) setJumpTo(`/shop/gift/${orderNumber}`);
-    else setJumpTo(`/shop/analysis/${orderNumber}`);
+    if (giftToggled) {
+      window.open(`https://gift-7ee75.web.app/about/${orderNumber}`);
+    } else setJumpTo(`/shop/analysis/${orderNumber}`);
   };
 
   return jumpTo ? (
