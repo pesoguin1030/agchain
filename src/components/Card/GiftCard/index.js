@@ -37,7 +37,10 @@ const GiftCard = ({ children, onPressLike, onClose, visible, disabled }) => {
         ) : (
           <Button
             variant="dark"
-            style={{ backgroundColor: "var(--pink)" }}
+            style={{
+              backgroundColor: "var(--pink)",
+              borderColor: "var(--pink)",
+            }}
             onClick={onPressLike}
           >
             <i className="fas fa-heart"></i> 喜歡

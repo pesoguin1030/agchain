@@ -20,10 +20,13 @@ function formatData(data, crop_name) {
   return states;
 }
 
-const Radarchart = ({ data, crop_name }) => {
-  let state = formatData(data, crop_name);
+const Radarchart = ({ data, cropName }) => {
+  let state = formatData(data, cropName);
   return (
-    <div className="w-md-90 w-lg-75 mx-md-auto">
+    <div
+      className="w-md-90 w-lg-75 mx-md-auto"
+      style={{ height: "50vh", width: "100%" }}
+    >
       <Radar
         data={state}
         options={{
@@ -40,6 +43,8 @@ const Radarchart = ({ data, crop_name }) => {
             fontSize: 10,
           },
           responsive: true,
+          maintainAspectRatio: false,
+          aspectRatio: 1.1,
         }}
       />
     </div>
