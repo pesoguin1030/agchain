@@ -93,8 +93,11 @@ function ShoppingCart(props) {
     console.log("orderNumber:", orderNumber);
 
     if (giftToggled) {
-      window.open(`https://gift-7ee75.web.app/about/${orderNumber}`);
-    } else setJumpTo(`/shop/analysis/${orderNumber}`);
+      window.open(
+        `https://gift-7ee75.web.app/about/${orderNumber}?referer=https://freshio.web.app/shop/analysis/${orderNumber}`
+      );
+    }
+    setJumpTo(`/shop/analysis/${orderNumber}`);
   };
 
   return jumpTo ? (

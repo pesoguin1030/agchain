@@ -96,6 +96,7 @@ function Dapp(props) {
       crop_id,
       crop_name,
       farm_id,
+      photo_url,
       farm_intro,
       certificate_filename_arr,
       order_number,
@@ -172,7 +173,7 @@ function Dapp(props) {
     response = await fetchSecureItem(traceID);
     setSecureItem({
       timestamp: response?.timestamp,
-      cid: response?.cid,
+      cid: photo_url,
     });
 
     // 數據分析
@@ -203,34 +204,40 @@ function Dapp(props) {
         </div>
         <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <div className="col-12">
-            {orderNumber ? (
-              <iframe
-                height="425"
-                style={{
-                  border: "none",
-                  margin: "auto",
-                  marginBottom: 36,
-                }}
-                src={`https://gift-7ee75.web.app/show/${orderNumber}`}
-                scrolling="no"
-              />
-            ) : null}
-            {likeIsPressed ? (
-              <Button variant="success" disabled>
-                <i className="fas fa-check"></i> 已按過讚
-              </Button>
-            ) : (
-              <Button
-                variant="dark"
-                style={{
-                  backgroundColor: "var(--pink)",
-                  borderColor: "var(--pink)",
-                }}
-                onClick={() => handlePressLike(traceID)}
-              >
-                <i className="fas fa-heart"></i> 喜歡
-              </Button>
-            )}
+            <div
+              style={{
+                margin: "auto",
+              }}
+            >
+              {orderNumber ? (
+                <iframe
+                  width="100%"
+                  height="500f"
+                  style={{
+                    marginBottom: 36,
+                    border: "none",
+                  }}
+                  src={`https://gift-7ee75.web.app/show/${orderNumber}`}
+                  scrolling="no"
+                />
+              ) : null}
+              {likeIsPressed ? (
+                <Button variant="success" disabled>
+                  <i className="fas fa-check"></i> 已按過讚
+                </Button>
+              ) : (
+                <Button
+                  variant="dark"
+                  style={{
+                    backgroundColor: "var(--pink)",
+                    borderColor: "var(--pink)",
+                  }}
+                  onClick={() => handlePressLike(traceID)}
+                >
+                  <i className="fas fa-heart"></i> 喜歡
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -254,10 +261,7 @@ function Dapp(props) {
         <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           {secureItem && secureItem.cid !== "" ? (
             <div className="row w-md-80 w-lg-40 mx-md-auto px-5">
-              <img
-                src={`https://ipfs.io/ipfs/${secureItem?.cid}`}
-                className="responsive-img mt-2"
-              />
+              <img src={`${secureItem?.cid}`} className="responsive-img mt-2" />
             </div>
           ) : (
             <div className="col-12 text-center">

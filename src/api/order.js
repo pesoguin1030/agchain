@@ -46,14 +46,11 @@ const getOrder = async (userToken) => {
 
 const getOrderItem = async (orderNumber, userToken) => {
   try {
-    const response = await request.get(
-      `${Constants.SERVER_URL}/orders/orderItem/${orderNumber}`,
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
+    const response = await request.get(`/orders/orderItem/${orderNumber}`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
     const { data } = response;
     // console.log("---",typeof(data))
     let return_data = [];
@@ -86,6 +83,7 @@ async function getPressLikeNum(orderNumber) {
   try {
     const response = await request.get(`/orders/like/${orderNumber}`);
     const { data } = response;
+    console.log(data);
     const { press_like } = data[0];
     return press_like;
   } catch (err) {
