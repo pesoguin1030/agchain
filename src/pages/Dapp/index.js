@@ -245,7 +245,7 @@ function Dapp(props) {
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5">
           <img
             className="img-fluid w-md-50 w-lg-40 mx-7 my-3"
-            src="/assets/svg/icons/icon-50.svg"
+            src="/assets/svg/icons/icon-68.svg"
             alt="SVG"
           />
           <h1>區塊鏈信賴溯源</h1>
@@ -258,10 +258,17 @@ function Dapp(props) {
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>防偽鑑識照片</h2>
         </div>
-        <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+        <div className="row w-md-80 text-center mx-md-auto mb-5 mb-md-9">
           {secureItem && secureItem.cid !== "" ? (
-            <div className="row w-md-80 w-lg-40 mx-md-auto px-5">
-              <img src={`${secureItem?.cid}`} className="responsive-img mt-2" />
+            <div className="row w-md-80 mx-md-auto px-5">
+              <img
+                style={{
+                  objectFit: "contain",
+                  maxHeight: 480,
+                }}
+                src={`${secureItem?.cid}`}
+                className="responsive-img mt-2"
+              />
             </div>
           ) : (
             <div className="col-12 text-center">
@@ -355,7 +362,7 @@ function Dapp(props) {
                   className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
                   key={index}
                 >
-                  <CertificateCard idx={index} img={e} title={e} />
+                  <CertificateCard idx={index} img={e} title={"農場檢驗證書"} />
                   {/* <CertificateCard idx={index} img={`https://ipfs.io/ipfs/${e?.cid}`} title={e.name} /> */}
                 </div>
               );
