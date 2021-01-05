@@ -52,7 +52,6 @@ const getOrderItem = async (orderNumber, userToken) => {
       },
     });
     const { data } = response;
-    console.log("---", data);
     let return_data = [];
     for (let index = 0; index < data.length; index++) {
       return_data.push({
@@ -73,7 +72,6 @@ async function getDestinations() {
     const {
       data: { items },
     } = response;
-    console.log(items);
     return items;
   } catch (err) {
     return Promise.reject(err);
@@ -84,7 +82,6 @@ async function getPressLikeNum(orderNumber) {
   try {
     const response = await request.get(`/orders/like/${orderNumber}`);
     const { data } = response;
-    console.log(data);
     const { press_like } = data[0];
     return press_like;
   } catch (err) {

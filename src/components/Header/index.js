@@ -292,7 +292,13 @@ const Header = () => {
             <nav className="js-mega-menu navbar navbar-expand-lg">
               {/* Logo */}
               <a className="navbar-brand" href="/">
-                <img src="/logo.png" alt="Logo" />
+                <img
+                  style={{
+                    width: "5.5rem",
+                  }}
+                  src="/logo.jpg"
+                  alt="Logo"
+                />
               </a>
               <button
                 type="button"

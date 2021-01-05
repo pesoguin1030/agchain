@@ -212,9 +212,8 @@ function Dapp(props) {
               {orderNumber ? (
                 <iframe
                   width="100%"
-                  height="500f"
+                  height="640"
                   style={{
-                    marginBottom: 36,
                     border: "none",
                   }}
                   src={`https://gift-7ee75.web.app/show/${orderNumber}`}
@@ -244,7 +243,7 @@ function Dapp(props) {
       <div className="container space-2 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5">
           <img
-            className="img-fluid w-md-50 w-lg-40 mx-7 my-3"
+            className="img-fluid w-80"
             src="/assets/svg/icons/icon-68.svg"
             alt="SVG"
           />
