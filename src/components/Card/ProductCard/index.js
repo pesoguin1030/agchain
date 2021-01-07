@@ -1,6 +1,7 @@
 import React from "react";
 
 const ProductCard = ({
+  product_id,
   img,
   title,
   description,
@@ -41,12 +42,12 @@ const ProductCard = ({
       <div className="mb-2">
         <a
           className="d-inline-block text-body small font-weight-bold mb-1"
-          href="#"
+          href={"./shop/single-product/" + product_id}
         >
           {title}
         </a>
         <span className="d-block font-size-1">
-          <a className="text-inherit" href="single-product.html">
+          <a className="text-inherit" href="./single-product">
             {description}
           </a>
         </span>
