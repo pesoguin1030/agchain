@@ -55,12 +55,13 @@ const getOrderItem = async (orderNumber, userToken) => {
       }
     );
     const { data } = response;
-    // console.log("---",typeof(data))
+    console.log("---", data);
     let return_data = [];
     for (let index = 0; index < data.length; index++) {
       return_data.push({
         amount: data[index].amount,
         name: data[index].name,
+        price: data[index].price,
       });
     }
     return return_data;

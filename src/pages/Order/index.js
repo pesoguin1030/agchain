@@ -43,7 +43,7 @@ function Order() {
                   <td>{item["time"]}</td>
                   <td>{item["contractAddress"]}</td>
                   <td>
-                    <a href={"./shop/gift/" + item["orderNumber"]}>查看修改</a>
+                    <a href={"./shop/gift/" + item["orderNumber"]}>修改</a>
                   </td>
                 </tr>
               );

@@ -70,12 +70,14 @@ function Analysis(prop) {
                 <tr>
                   <th>名稱</th>
                   <th>數量</th>
+                  <th>單價</th>
                 </tr>
                 {orderInfo.map((item) => {
                   return (
                     <tr>
                       <td>{item["name"]}</td>
                       <td>{item["amount"]}</td>
+                      <td>{item["price"]}</td>
                     </tr>
                   );
                 })}
