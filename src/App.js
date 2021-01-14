@@ -21,6 +21,7 @@ import ShoppingCart from "./pages/Shop/cart";
 import Shop from "./pages/Shop";
 import Order from "./pages/Order";
 import GiftMaker from "./pages/Shop/gift";
+import SingleProduct from "./pages/Shop/single-product";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -139,6 +140,9 @@ function App() {
                 </Route>
                 <Route exact path="/shop">
                   <Shop />
+                </Route>
+                <Route exact path="/shop/single-product/:id">
+                  <SingleProduct />
                 </Route>
                 <Route exact path="/shop/gift/:orderNumber">
                   <GiftMaker />
