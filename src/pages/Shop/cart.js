@@ -100,8 +100,6 @@ function ShoppingCart(props) {
     })();
 
     orderlist.then(async (orders) => {
-      console.log(orders);
-
       const orderNumber = await createOrder(orders);
       console.log("orderNumber:", orderNumber);
       if (giftToggled) {

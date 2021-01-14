@@ -274,9 +274,15 @@ function SingleProduct() {
                       </span>
                       <span class="media-body">
                         <span class="d-block font-size-1 font-weight-bold">
-                          7 天內可退換貨
+                          關於退換貨
                         </span>
                       </span>
+                    </span>
+                  </span>
+                  <span class="col-3 text-right">
+                    <span class="card-btn-toggle">
+                      <span class="card-btn-toggle-default"></span>
+                      <span class="card-btn-toggle-active">收回</span>
                     </span>
                   </span>
                 </span>
@@ -290,8 +296,8 @@ function SingleProduct() {
             >
               <div class="card-body">
                 <p class="small mb-0">
-                  If you're not satisfied, return it for a full refund. We'll
-                  take care of disassembly and return shipping.
+                  生鮮蔬菜水果類商品類符合「通訊交易解除權合理例外情事適用準則」第二條第一項(易於腐敗、保存期限較短或解約時即將逾期之商品)，
+                  將排除7日解除權時，不再適用消費者保護法（以下簡稱消保法）第19條規定之7日解除權。因此不受理商品退貨，請確定生鮮蔬菜水果類商品是您需要的商品再進行下單
                 </p>
               </div>
             </div>
