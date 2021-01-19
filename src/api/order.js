@@ -3,7 +3,10 @@ import Constants from "./constants";
 
 const createOrder = async (orders) => {
   try {
-    const { data } = await request.post(`/orders/giftorder`, orders);
+    const { data } = await request.post(
+      Constants.SERVER_URL + `/orders/giftorder`,
+      orders
+    );
     return data;
   } catch (err) {
     return Promise.reject(err);

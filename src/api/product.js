@@ -1,4 +1,6 @@
 import request from "../utils/request";
+import Constants from "./constants";
+import storage from "../utils/storage";
 
 const fetchProducts = async () => {
   try {
@@ -9,4 +11,39 @@ const fetchProducts = async () => {
   }
 };
 
-export { fetchProducts };
+const ProductDetail = async (id) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.get(
+      `${Constants.SERVER_URL + /products/}` + id,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    // const {data} = await request.get(`/products/`+id)
+    return data;
+  } catch (err) {
+    return err;
+  }
+};
+
+const FarmInfo = async (id) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.get(
+      Constants.SERVER_URL + `/products/farm_info/` + id,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    return data[0];
+  } catch (error) {
+    return error;
+  }
+};
+
+export { fetchProducts, ProductDetail, FarmInfo };
