@@ -2,9 +2,18 @@ import React from "react";
 import { Redirect, useParams } from "react-router-dom";
 import { AuthContext, CartContext } from "../../appContext";
 import { useEffect, useState, useContext } from "react";
-import { ProductDetail, FarmInfo } from "../../api/product";
-import { ProductCard } from "../../components/Card";
+
+import Radarchart from "../../../src/components/RadarChart";
+import TimeLine from "../../../src/components/TimeLine";
 import Header from "../../components/Header";
+
+import { ProductDetail, FarmInfo } from "../../api/product";
+import { getCultivationRecord } from "../../api/cultivationRecord";
+import {
+  fetchOrganicCertificate,
+  fetchSecureItem,
+  fetchSensorAnalysis,
+} from "../../api/ethereum";
 
 function SingleProduct() {
   const { id } = useParams(); // main KEY in url
@@ -21,6 +30,10 @@ function SingleProduct() {
   const [isInCart, setIsInCart] = useState(
     cartState ? cartState.map((e) => e.id).includes(id) : false
   );
+
+  const [cultivationRecord, setCultivationRecord] = useState([]); // 田間紀錄
+  const [sensorAnalysis, setSensorAnalysis] = useState([]); // 種植數據
+
   useEffect(() => {
     PreLoadData();
     return () => {};
@@ -28,7 +41,6 @@ function SingleProduct() {
   const PreLoadData = async () => {
     const data = await ProductDetail(id);
     const farm_data = await FarmInfo(id);
-    console.log(farm_data);
     setName(data["name"]);
     setPrice(data["price"]);
     setImgUrl(data["photo_url"]);
@@ -41,6 +53,15 @@ function SingleProduct() {
     setFarmPic(getPropertyByRegex(farm_data, "farm_picture|[1-9]"));
 
     setIsInCart(cartState ? cartState.map((e) => e.id).includes(id) : false);
+
+    let crop_id = data["crop_id"];
+    // 田間紀錄
+    let response = await getCultivationRecord(crop_id);
+    setCultivationRecord(response);
+
+    // 數據分析
+    response = await fetchSensorAnalysis(crop_id);
+    setSensorAnalysis(response);
   };
 
   function getPropertyByRegex(obj, propName) {
@@ -379,6 +400,32 @@ function SingleProduct() {
                 </a>
               </li>
             </ul>
+          </div>
+        </div>
+
+        <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+          <h2>田間紀錄</h2>
+        </div>
+        <div className="row w-md-80 w-lg-60 mx-md-auto px-5">
+          {cultivationRecord && cultivationRecord.length !== 0 ? (
+            <div className="col-12">
+              <TimeLine items={cultivationRecord} />
+            </div>
+          ) : (
+            <div className="col-12 text-center">
+              <p>無相關田間紀錄</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="container space-2 space-lg-3">
+        <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9 ">
+          <h2>種植數據</h2>
+        </div>
+        <div className="row mx-n2 mx-sm-n3 mb-3">
+          <div className="col-12">
+            <Radarchart data={sensorAnalysis} cropName={name} />
           </div>
         </div>
       </div>
