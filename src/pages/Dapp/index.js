@@ -37,6 +37,7 @@ function Dapp(props) {
   const [giftText, setGiftText] = useState("");
   const [cropName, setCropName] = useState("");
   const [orderNumber, setOrderNumber] = useState(null);
+
   // Running gift text
   useEffect(() => {
     if (giftText === "" || !giftTextRef.current) return;
@@ -53,11 +54,11 @@ function Dapp(props) {
       typed.destroy();
     };
   }, [giftText, giftTextRef.current]);
+
   useEffect(() => {
     // 從url取得溯源參數
     if (traceID) {
       // Farm & crop information
-      console.log(traceID);
       setupRequiredInformation(traceID);
       // Secure item snapshot
       fetchSecureItem(traceID);
@@ -107,6 +108,7 @@ function Dapp(props) {
     // 送禮影片
     setOrderNumber(order_number);
 
+    console.log(farm_intro);
     setFarmIntro(farm_intro);
     setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
     setCropName(crop_name);
@@ -198,7 +200,7 @@ function Dapp(props) {
     <Redirect to="/404" />
   ) : (
     <div className="border-bottom">
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>電子賀卡</h2>
         </div>
@@ -212,7 +214,7 @@ function Dapp(props) {
               {orderNumber ? (
                 <iframe
                   width="100%"
-                  height="640"
+                  height="720"
                   style={{
                     border: "none",
                   }}
@@ -240,7 +242,7 @@ function Dapp(props) {
           </div>
         </div>
       </div>
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5">
           <img
             className="img-fluid w-80"
@@ -253,7 +255,7 @@ function Dapp(props) {
           </p>
         </div>
       </div>
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>防偽鑑識照片</h2>
         </div>
@@ -277,7 +279,7 @@ function Dapp(props) {
         </div>
       </div>
 
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>田間紀錄</h2>
         </div>
@@ -294,7 +296,7 @@ function Dapp(props) {
         </div>
       </div>
 
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9 ">
           <h2>種植數據</h2>
         </div>
@@ -305,12 +307,22 @@ function Dapp(props) {
         </div>
       </div>
 
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>農場資訊</h2>
         </div>
         <div className="row">
           <div className="col-md-6 px-sm-3 mb-4 px-3">
+            {
+              <iframe
+                width="100%"
+                height={360}
+                src={`${farmIntro?.farm_video}?autoplay=1&mute=1`}
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              />
+            }
             {farmPic.map((pic, index) => {
               return <img src={pic} className="responsive-img" key={index} />;
             })}
@@ -349,7 +361,7 @@ function Dapp(props) {
         </div>
       </div>
 
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>檢驗證書</h2>
         </div>
