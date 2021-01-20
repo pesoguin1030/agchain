@@ -10,7 +10,7 @@ function Analysis(prop) {
   const [chartVisible, setChartVisible] = useState(false);
   const [likeNum, setLikeNum] = useState(0);
   const [orderInfo, setOrderInfo] = useState([]);
-
+  const [total_price, setTotalPrice] = useState(0);
   useEffect(() => {
     if (chartVisible) {
       $(".js-counter").each(function () {
@@ -20,6 +20,12 @@ function Analysis(prop) {
     (async (orderNumber) => {
       const userToken = storage.getAccessToken();
       const orderItem = await getOrderItem(orderNumber, userToken);
+      var sum = 0;
+      for (let index = 0; index < orderItem.length; index++) {
+        const item = orderItem[index];
+        sum += item["amount"] * item["price"];
+      }
+      setTotalPrice(sum);
       setOrderInfo(orderItem);
       console.log(orderItem);
     })(orderNumber);
@@ -76,6 +82,7 @@ function Analysis(prop) {
                   <th>名稱</th>
                   <th>數量</th>
                   <th>單價</th>
+                  <th>單品項總額</th>
                 </tr>
                 {orderInfo.map((item) => {
                   return (
@@ -83,12 +90,14 @@ function Analysis(prop) {
                       <td>{item["name"]}</td>
                       <td>{item["amount"]}</td>
                       <td>{item["price"]}</td>
+                      <td>{item["amount"] * item["price"]}</td>
                     </tr>
                   );
                 })}
               </thead>
               <tbody></tbody>
             </Table>
+            <h2>總計：{total_price}</h2>
           </div>
           <a
             onClick={() => setChartVisible(true)}

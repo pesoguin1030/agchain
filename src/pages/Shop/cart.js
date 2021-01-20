@@ -14,7 +14,7 @@ function ShoppingCart(props) {
   const [item_and_amount, setItem_and_amount] = useState({});
   const [destinations, setDestinations] = useState([]);
   const [jumpTo, setJumpTo] = useState(null);
-  const [destinationId, setDestinationId] = useState("");
+  const [destinationId, setDestinationId] = useState(36);
   const [destinationInputVisible, setDestinationInputVisible] = useState(false);
   const [giftToggled, setGiftToggled] = useState(false);
 
@@ -75,29 +75,37 @@ function ShoppingCart(props) {
   };
 
   const handleDestination = (e) => {
+    console.log(e.target.value);
     setDestinationId(e.target.value);
   };
 
   const handleItem = async () => {
     let orders = [];
-    Object.keys(item_and_amount).map((key) => {
-      let item = {};
-      item["amount"] = item_and_amount[key];
-      item["destination"] = destinationId;
-      item["productId"] = JSON.parse(key)["id"];
-      orders.push(item);
+    console.log("item_and_amount", item_and_amount);
+    // Object.keys(item_and_amount).map((key) => {
+    //   let item = {};
+    //   item["amount"] = item_and_amount[key];
+    //   item["destination"] = destinationId;
+    //   item["productId"] = JSON.parse(key)["id"];
+    //   orders.push(item);
+    // });
+    //--------------
+    const orderlist = (async () => {
+      const result = await Object.keys(item_and_amount).map((key) => ({
+        amount: item_and_amount[key],
+        destination: destinationId,
+        productId: parseInt(JSON.parse(key)["id"], 10),
+      }));
+      return result;
+    })();
+
+    orderlist.then(async (orders) => {
+      const orderNumber = await createOrder(orders);
+      console.log("orderNumber:", orderNumber);
+      if (giftToggled) {
+        window.open(`https://gift-7ee75.web.app/about/${orderNumber}`);
+      } else setJumpTo(`/shop/analysis/${orderNumber}`);
     });
-
-    const orderNumber = await createOrder(orders);
-    console.log(orders);
-    console.log("orderNumber:", orderNumber);
-
-    if (giftToggled) {
-      window.open(
-        `https://gift-7ee75.web.app/about/${orderNumber}?referer=https://freshio.web.app/shop/analysis/${orderNumber}`
-      );
-    }
-    setJumpTo(`/shop/analysis/${orderNumber}`);
   };
 
   return jumpTo ? (
@@ -231,7 +239,7 @@ function ShoppingCart(props) {
                       >
                         <option value="36">清華大學台達館305室</option>
                         {destinations.map(({ address, id }) => (
-                          <option value={address}>{address}</option>
+                          <option value={id}>{address}</option>
                         ))}
                       </select>
                     )}

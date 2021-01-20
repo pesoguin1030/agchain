@@ -19,6 +19,7 @@ import Typed from "typed.js";
 
 import { Button } from "react-bootstrap";
 import { icon } from "@fortawesome/fontawesome-svg-core";
+import { ImgToPuzzle } from "../../components/Puzzle";
 
 function Dapp(props) {
   const giftTextRef = useRef();
@@ -259,9 +260,14 @@ function Dapp(props) {
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>防偽鑑識照片</h2>
         </div>
-        <div className="row w-md-80 text-center mx-md-auto mb-5 mb-md-9">
+        {/* <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+          <div className="row w-md-80 w-lg-40 mx-md-auto px-5">
+            <ImgToPuzzle/>
+          </div>
+        </div> */}
+        <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           {secureItem && secureItem.cid !== "" ? (
-            <div className="row w-md-80 mx-md-auto px-5">
+            <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
               <img
                 style={{
                   objectFit: "contain",
@@ -273,7 +279,7 @@ function Dapp(props) {
             </div>
           ) : (
             <div className="col-12 text-center">
-              <p>無法取得出貨前照片</p>
+              <ImgToPuzzle />
             </div>
           )}
         </div>
