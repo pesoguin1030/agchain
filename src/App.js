@@ -13,6 +13,7 @@ import Admin from "./pages/Admin";
 import { fetchUser } from "./api/user";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Payment from "./pages/Payment";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import NotFound from "./pages/Exception/404";
@@ -143,6 +144,9 @@ function App() {
                 </Route>
                 <Route exact path="/shop/single-product/:id">
                   <SingleProduct />
+                </Route>
+                <Route path="/shop/payment/:html/:orderNumber">
+                  <Payment />
                 </Route>
                 <Route exact path="/shop/gift/:orderNumber">
                   <GiftMaker />

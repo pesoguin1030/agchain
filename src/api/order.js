@@ -1,13 +1,23 @@
 import request from "../utils/request";
 import Constants from "./constants";
 
-const createOrder = async (orders) => {
+const createOrder = async (orders, userToken) => {
   try {
-    const { data } = await request.post(
-      Constants.SERVER_URL + `/orders/giftorder`,
-      orders
+    // const { data } = await request.post(
+    //   Constants.SERVER_URL + `/orders/giftorder`,
+    //   orders
+    // );
+    const response = await request.post(
+      `${Constants.SERVER_URL}/orders/newebpay`,
+      orders,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
     );
-    return data;
+    // const { data: html } = response;
+    return response;
   } catch (err) {
     return Promise.reject(err);
   }

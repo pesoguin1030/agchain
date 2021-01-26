@@ -81,17 +81,10 @@ function ShoppingCart(props) {
 
   const handleItem = async () => {
     let orders = [];
-    console.log("item_and_amount", item_and_amount);
-    // Object.keys(item_and_amount).map((key) => {
-    //   let item = {};
-    //   item["amount"] = item_and_amount[key];
-    //   item["destination"] = destinationId;
-    //   item["productId"] = JSON.parse(key)["id"];
-    //   orders.push(item);
-    // });
-    //--------------
+    console.log(item_and_amount);
     const orderlist = (async () => {
       const result = await Object.keys(item_and_amount).map((key) => ({
+        price: parseInt(JSON.parse(key)["price"], 10),
         amount: item_and_amount[key],
         destination: destinationId,
         productId: parseInt(JSON.parse(key)["id"], 10),
@@ -100,11 +93,16 @@ function ShoppingCart(props) {
     })();
 
     orderlist.then(async (orders) => {
-      const orderNumber = await createOrder(orders);
-      console.log("orderNumber:", orderNumber);
-      if (giftToggled) {
-        window.open(`https://gift-7ee75.web.app/about/${orderNumber}`);
-      } else setJumpTo(`/shop/analysis/${orderNumber}`);
+      const userToken = storage.getAccessToken();
+      const response = await createOrder(orders, userToken);
+      const { data } = response;
+      const encode_html = data["html"].replaceAll("/", "-");
+      const orderNumber = data["orderNumber"];
+      setJumpTo(`/shop/payment/${encode_html}/${orderNumber}`);
+      // console.log("orderNumber:", orderNumber);
+      // if (giftToggled) {
+      //   window.open(`https://gift-7ee75.web.app/about/${orderNumber}`);
+      // } else setJumpTo(`/shop/analysis/${orderNumber}`);
     });
   };
 
