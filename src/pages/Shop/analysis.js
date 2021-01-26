@@ -29,14 +29,19 @@ function Analysis(prop) {
       setOrderInfo(orderItem);
       console.log(orderItem);
     })(orderNumber);
+  }, [chartVisible]);
 
+  useEffect(() => {
     if (orderNumber) {
-      (async (orderNumber) => {
+      const timer = setInterval(async () => {
         const like_num = await getPressLikeNum(orderNumber);
         setLikeNum(like_num);
-      })(orderNumber);
+      }, 3000);
+      return () => {
+        clearInterval(timer);
+      };
     }
-  }, [chartVisible]);
+  }, []);
 
   return chartVisible ? (
     <div className="container space-2 space-lg-3">
@@ -51,7 +56,7 @@ function Analysis(prop) {
           >
             {likeNum}
           </div>
-          <h2>People</h2>
+          <h2>多少人喜歡你/妳的賀卡</h2>
           <br />
           <div class="spinner-grow text-danger" role="status">
             <span class="sr-only">Loading...</span>

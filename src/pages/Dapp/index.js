@@ -36,6 +36,7 @@ function Dapp(props) {
   const [giftText, setGiftText] = useState("");
   const [cropName, setCropName] = useState("");
   const [orderNumber, setOrderNumber] = useState(null);
+
   // Running gift text
   useEffect(() => {
     if (giftText === "" || !giftTextRef.current) return;
@@ -52,11 +53,11 @@ function Dapp(props) {
       typed.destroy();
     };
   }, [giftText, giftTextRef.current]);
+
   useEffect(() => {
     // 從url取得溯源參數
     if (traceID) {
       // Farm & crop information
-      console.log(traceID);
       setupRequiredInformation(traceID);
       // Secure item snapshot
       fetchSecureItem(traceID);
@@ -80,6 +81,7 @@ function Dapp(props) {
       crop_id,
       crop_name,
       farm_id,
+      photo_url,
       farm_intro,
       certificate_filename_arr,
       order_number,
@@ -90,6 +92,7 @@ function Dapp(props) {
     // 送禮影片
     setOrderNumber(order_number);
 
+    console.log(farm_intro);
     setFarmIntro(farm_intro);
     setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
     setCropName(crop_name);
@@ -102,7 +105,7 @@ function Dapp(props) {
     response = await fetchSecureItem(traceID);
     setSecureItem({
       timestamp: response?.timestamp,
-      cid: response?.cid,
+      cid: photo_url,
     });
 
     // 數據分析
@@ -127,48 +130,53 @@ function Dapp(props) {
     <Redirect to="/404" />
   ) : (
     <div className="border-bottom">
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>電子賀卡</h2>
         </div>
         <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <div className="col-12">
-            {orderNumber ? (
-              <iframe
-                height="425"
-                style={{
-                  border: "none",
-                  margin: "auto",
-                  marginBottom: 36,
-                }}
-                src={`https://gift-7ee75.web.app/show/${orderNumber}`}
-                scrolling="no"
-              />
-            ) : null}
-            {likeIsPressed ? (
-              <Button variant="success" disabled>
-                <i className="fas fa-check"></i> 已按過讚
-              </Button>
-            ) : (
-              <Button
-                variant="dark"
-                style={{
-                  backgroundColor: "var(--pink)",
-                  borderColor: "var(--pink)",
-                }}
-                onClick={() => handlePressLike(traceID)}
-              >
-                <i className="fas fa-heart"></i> 喜歡
-              </Button>
-            )}
+            <div
+              style={{
+                margin: "auto",
+              }}
+            >
+              {orderNumber ? (
+                <iframe
+                  width="100%"
+                  height="720"
+                  style={{
+                    border: "none",
+                  }}
+                  src={`https://gift-7ee75.web.app/show/${orderNumber}`}
+                  scrolling="no"
+                />
+              ) : null}
+              {likeIsPressed ? (
+                <Button variant="success" disabled>
+                  <i className="fas fa-check"></i> 已按過讚
+                </Button>
+              ) : (
+                <Button
+                  variant="dark"
+                  style={{
+                    backgroundColor: "var(--pink)",
+                    borderColor: "var(--pink)",
+                  }}
+                  onClick={() => handlePressLike(traceID)}
+                >
+                  <i className="fas fa-heart"></i> 喜歡
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5">
           <img
-            className="img-fluid w-md-50 w-lg-40 mx-7 my-3"
-            src="/assets/svg/icons/icon-50.svg"
+            className="img-fluid w-80"
+            src="/assets/svg/icons/icon-68.svg"
             alt="SVG"
           />
           <h1>區塊鏈信賴溯源</h1>
@@ -177,7 +185,7 @@ function Dapp(props) {
           </p>
         </div>
       </div>
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>防偽鑑識照片</h2>
         </div>
@@ -190,7 +198,11 @@ function Dapp(props) {
           {secureItem && secureItem.cid !== "" ? (
             <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
               <img
-                src={`https://ipfs.io/ipfs/${secureItem?.cid}`}
+                style={{
+                  objectFit: "contain",
+                  maxHeight: 480,
+                }}
+                src={`${secureItem?.cid}`}
                 className="responsive-img mt-2"
               />
             </div>
@@ -202,7 +214,7 @@ function Dapp(props) {
         </div>
       </div>
 
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>田間紀錄</h2>
         </div>
@@ -219,7 +231,7 @@ function Dapp(props) {
         </div>
       </div>
 
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9 ">
           <h2>種植數據</h2>
         </div>
@@ -230,12 +242,22 @@ function Dapp(props) {
         </div>
       </div>
 
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>農場資訊</h2>
         </div>
         <div className="row">
           <div className="col-md-6 px-sm-3 mb-4 px-3">
+            {
+              <iframe
+                width="100%"
+                height={360}
+                src={`${farmIntro?.farm_video}?autoplay=1&mute=1`}
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              />
+            }
             {farmPic.map((pic, index) => {
               return <img src={pic} className="responsive-img" key={index} />;
             })}
@@ -274,7 +296,7 @@ function Dapp(props) {
         </div>
       </div>
 
-      <div className="container space-2 space-lg-3">
+      <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>檢驗證書</h2>
         </div>
@@ -286,7 +308,7 @@ function Dapp(props) {
                   className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
                   key={index}
                 >
-                  <CertificateCard idx={index} img={e} title={e} />
+                  <CertificateCard idx={index} img={e} title={"農場檢驗證書"} />
                   {/* <CertificateCard idx={index} img={`https://ipfs.io/ipfs/${e?.cid}`} title={e.name} /> */}
                 </div>
               );
