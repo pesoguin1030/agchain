@@ -82,7 +82,7 @@ const Header = () => {
 
   return (
     <>
-      <header id="header" className="header">
+      <header id="header" className="header sticky">
         <div className="header-section">
           <div className="container header-hide-content pt-2">
             <div className="d-flex align-items-center">
@@ -279,6 +279,7 @@ const Header = () => {
                         className="btn btn-xs btn-ghost-secondary"
                         onClick={() => setIsSidebarVisible(true)}
                       >
+                        <span>註冊會員</span>
                         <i className="fas fa-user-circle" />
                       </a>
                     )}

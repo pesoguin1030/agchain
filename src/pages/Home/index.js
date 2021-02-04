@@ -134,6 +134,7 @@ function Home(props) {
             >
               <ProductCard
                 key={id}
+                product_id={id}
                 title={name}
                 description={description}
                 price={price}

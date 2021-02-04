@@ -7,8 +7,7 @@ const success = () => {
   alert("success");
 };
 const ImgToPuzzle = ({ img, level }) => {
-  console.log("ji", level);
-  return <Puzzle image={img} size={500} onDone={success} level={level} />;
+  return <Puzzle image={img} size={300} onDone={success} level={level} />;
 };
 
 export { ImgToPuzzle };

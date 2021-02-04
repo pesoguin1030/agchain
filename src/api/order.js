@@ -24,6 +24,22 @@ const createOrder = async (orders, userToken) => {
 };
 
 const getOrder = async (userToken) => {
+  const translate_state = (state) => {
+    switch (state) {
+      case "unpaid":
+        return "尚未付款";
+      case "delivering":
+        return "運送中";
+      case "paid":
+        return "已付款";
+      case "new":
+        return "已付款";
+      case "arrived":
+        return "已送達";
+      case "close":
+        return "-";
+    }
+  };
   try {
     const response = await request.get(`/orders`, {
       params: {
@@ -43,10 +59,11 @@ const getOrder = async (userToken) => {
     for (var i = 0; i < items.length; i++) {
       if (!temp.includes(items[i].orderNumber)) {
         temp.push(items[i].orderNumber);
+        const state = translate_state(items[i].state);
         orderNumber.push({
           orderNumber: items[i].orderNumber,
           time: items[i].create_at,
-          state: items[i].state,
+          state: state,
           contractAddress: items[i].contractAddress,
         });
       }

@@ -99,7 +99,6 @@ function ShoppingCart(props) {
       const encode_html = data["html"].replaceAll("/", "-");
       const orderNumber = data["orderNumber"];
       setJumpTo(`/shop/payment/${encode_html}/${orderNumber}`);
-      // console.log("orderNumber:", orderNumber);
       // if (giftToggled) {
       //   window.open(`https://gift-7ee75.web.app/about/${orderNumber}`);
       // } else setJumpTo(`/shop/analysis/${orderNumber}`);

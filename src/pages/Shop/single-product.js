@@ -230,7 +230,7 @@ function SingleProduct() {
                 aria-expanded="false"
                 aria-controls="shopCardOne"
               >
-                <span class="row align-items-center">
+                <span class="span_row align-items-center">
                   <span class="col-9">
                     <span class="media align-items-center">
                       <span class="w-100 max-w-6rem mr-3">
@@ -262,7 +262,7 @@ function SingleProduct() {
                 aria-expanded="false"
                 aria-controls="shopCardTwo"
               >
-                <span class="row align-items-center">
+                <span class="span_row align-items-center">
                   <span class="col-9">
                     <span class="media align-items-center">
                       <span class="w-100 max-w-6rem mr-3">

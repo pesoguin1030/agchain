@@ -13,7 +13,6 @@ function Order() {
   }, [packages]);
   async function getPackages() {
     const userToken = storage.getAccessToken();
-    console.log(userToken);
     const orders = await getOrder(userToken);
     console.log(orders);
     setPackages(orders);
@@ -27,6 +26,7 @@ function Order() {
             <tr>
               <th>訂單編號</th>
               <th>時間</th>
+              <th>訂單狀態</th>
               <th>訂單位置</th>
               <th>電子賀卡</th>
             </tr>
@@ -41,6 +41,7 @@ function Order() {
                     </a>
                   </td>
                   <td>{item["time"]}</td>
+                  <td>{item["state"]}</td>
                   <td>{item["contractAddress"]}</td>
                   <td>
                     <a href={"./shop/gift/" + item["orderNumber"]}>修改</a>
