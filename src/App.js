@@ -8,7 +8,10 @@ import {
 import { AuthContext, CartContext } from "./appContext";
 import Home from "./pages/Home";
 import request from "./utils/request";
-import Dapp from "./pages/Dapp";
+import Dapp from "./pages/Dapp/index";
+
+import AccountInfo from "./pages/Account/index";
+
 import Admin from "./pages/Admin";
 import { fetchUser } from "./api/user";
 import Header from "./components/Header";
@@ -101,6 +104,7 @@ function App() {
       }
     };
     bootstrapAsync();
+    // console.log((authState.user));
   }, []);
 
   useEffect(() => {
@@ -120,7 +124,7 @@ function App() {
         <Router>
           <Switch>
             <Route path="/admin">
-              {authState.user ? <Admin /> : <Redirect to="/login" />}
+              {authState.user ? <Admin /> : <Login />}
             </Route>
             <Route path="/login">
               {authState.user ? <Redirect to="/" /> : <Login />}
@@ -132,12 +136,18 @@ function App() {
               <Header />
               <Order />
             </Route>
-            <Route path="/">
+            <Route path="/user">
               <Header />
               <Switch>
-                <Route exact path="/">
-                  <Home />
+                <Route exact path="/user/account/info">
+                  {authState.user ? <AccountInfo /> : <Login />}
                 </Route>
+                {/* TODO */}
+              </Switch>
+            </Route>
+            <Route path="/shop">
+              <Header />
+              <Switch>
                 <Route exact path="/shop">
                   <Shop />
                 </Route>
@@ -147,27 +157,29 @@ function App() {
                 <Route exact path="/shop/gift/:orderNumber">
                   <GiftMaker />
                 </Route>
-                <Route path="/dapp/:traceID">
-                  <Dapp />
-                </Route>
-                <Route path="/shop/cart">
+                <Route exact path="/shop/cart">
                   <ShoppingCart />
                 </Route>
-                <Route path="/shop/analysis/:orderNumber">
+                <Route exact path="/shop/analysis/:orderNumber">
                   <Analysis />
                 </Route>
+              </Switch>
+            </Route>
+            <Route path="/">
+              <Header />
+              <Switch>
+                <Route exact path="/">
+                  <Home />
+                </Route>
+
+                <Route exact path="/dapp/:traceID">
+                  <Dapp />
+                </Route>
+
                 <Route path="/404">
                   <NotFound />
                 </Route>
               </Switch>
-              <Route
-                exact
-                path="/shop/order"
-                render={() =>
-                  (window.location =
-                    "https://dev.to/mxdavis/redirecting-to-an-external-url-within-react-router-3nf1")
-                }
-              />
               <Footer />
             </Route>
           </Switch>

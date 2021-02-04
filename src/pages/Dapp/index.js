@@ -3,6 +3,9 @@ import React, { useEffect, useRef, useState } from "react";
 import CertificateCard from "../../../src/components/Card/CertificateCard";
 import TimeLine from "../../../src/components/TimeLine";
 import Radarchart from "../../../src/components/RadarChart";
+import { ImgToPuzzle } from "../../components/Puzzle";
+import Slideshow from "../../components/Slideshow";
+
 import {
   fetchOrganicCertificate,
   fetchSecureItem,
@@ -16,8 +19,6 @@ import ReactPlayer from "react-player";
 import Typed from "typed.js";
 
 import { Button } from "react-bootstrap";
-import { icon } from "@fortawesome/fontawesome-svg-core";
-import { ImgToPuzzle } from "../../components/Puzzle";
 
 function Dapp(props) {
   const giftTextRef = useRef();
@@ -71,7 +72,9 @@ function Dapp(props) {
     var re = new RegExp("^" + propName + "(\\[\\d*\\])?$"),
       key;
     var objs = [];
-    for (key in obj) if (re.test(key) && obj[key] != null) objs.push(obj[key]);
+    for (key in obj) {
+      if (re.test(key) && obj[key] != null) objs.push(obj[key]);
+    }
     return objs;
   }
 
@@ -96,6 +99,7 @@ function Dapp(props) {
     setFarmIntro(farm_intro);
     setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
     setCropName(crop_name);
+    console.log(farmPic);
 
     // 田間紀錄
     response = await getCultivationRecord(crop_id);
@@ -126,6 +130,7 @@ function Dapp(props) {
       console.error(err);
     }
   }
+
   return isForbidden ? (
     <Redirect to="/404" />
   ) : (
@@ -134,7 +139,7 @@ function Dapp(props) {
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>電子賀卡</h2>
         </div>
-        <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+        <div className="row w-md-80 w-lg-75 text-center mx-md-auto mb-5 mb-md-9">
           <div className="col-12">
             <div
               style={{
@@ -172,6 +177,7 @@ function Dapp(props) {
           </div>
         </div>
       </div>
+
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5">
           <img
@@ -185,6 +191,7 @@ function Dapp(props) {
           </p>
         </div>
       </div>
+
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>防偽鑑識照片</h2>
@@ -194,16 +201,16 @@ function Dapp(props) {
             <ImgToPuzzle/>
           </div>
         </div> */}
-        <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+        <div className="row w-md-80 w-lg-60 text-center mx-md-auto mb-5 mb-md-9">
           {secureItem && secureItem.cid !== "" ? (
-            <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
+            <div className="row w-md-100 w-lg-70 mx-md-auto px-5">
               <img
                 style={{
                   objectFit: "contain",
                   maxHeight: 480,
                 }}
                 src={`${secureItem?.cid}`}
-                className="responsive-img mt-2"
+                className="responsive-img mt-2 mx-auto"
               />
             </div>
           ) : (
@@ -218,7 +225,7 @@ function Dapp(props) {
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>田間紀錄</h2>
         </div>
-        <div className="row w-md-80 w-lg-60 mx-md-auto px-5">
+        <div className="row w-md-80 w-lg-70 mx-md-auto px-5">
           {cultivationRecord && cultivationRecord.length !== 0 ? (
             <div className="col-12">
               <TimeLine items={cultivationRecord} />
@@ -246,7 +253,40 @@ function Dapp(props) {
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>農場資訊</h2>
         </div>
-        <div className="row">
+        <Slideshow src_arr={[farmPic[0], farmPic[1], farmPic[2]]} />
+        <div className="space-1">
+          <p style={{ letterSpacing: "0.2rem" }}>{farmIntro?.farm_intro}</p>
+          <ul
+            style={{
+              listStyleType: "none",
+              paddingLeft: 0,
+              textAlign: "center",
+            }}
+          >
+            <li className="mt-1">
+              <i className="fas fa-map-marked"></i>
+              <a
+                target="_blank"
+                href={`http://maps.google.com/?q=${farmIntro?.farm_address}`}
+                className="mx-2"
+              >
+                {farmIntro?.farm_address}
+              </a>
+            </li>
+            <li className="mt-1">
+              <i className="fas fa-phone" style={{ width: 18 }}></i>
+              <a
+                target="_blank"
+                href={`tel:${farmIntro?.farm_phone}`}
+                className="mx-2"
+              >
+                {farmIntro?.farm_phone}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        {/* <div className="row">
           <div className="col-md-6 px-sm-3 mb-4 px-3">
             {
               <iframe
@@ -260,7 +300,8 @@ function Dapp(props) {
             }
             {farmPic.map((pic, index) => {
               return <img src={pic} className="responsive-img" key={index} />;
-            })}
+            })} 
+            
           </div>
           <div className="col-md-6 px-sm-3 mb-5 px-5">
             <p style={{ letterSpacing: "0.2rem" }}>{farmIntro?.farm_intro}</p>
@@ -293,7 +334,7 @@ function Dapp(props) {
               </li>
             </ul>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="container space-1 space-lg-3">

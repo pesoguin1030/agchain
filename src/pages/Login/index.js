@@ -66,8 +66,12 @@ function Login(props) {
   return (
     <main id="content" role="main" className="main">
       <div className="container py-5 py-sm-7">
-        <a className="d-flex justify-content-center mb-5" href="index.html">
-          <img className="z-index-2" src="logo.png" style={{ width: "8rem" }} />
+        <a className="d-flex justify-content-center mb-5" href="/">
+          <img
+            className="z-index-2"
+            src="/logo.jpg"
+            style={{ width: "8rem" }}
+          />
         </a>
 
         <div className="row justify-content-center">
