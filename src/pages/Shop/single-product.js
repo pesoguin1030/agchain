@@ -56,7 +56,7 @@ function SingleProduct() {
     alert("hi");
   };
   return (
-    <div class="row">
+    <div class="row mt-10">
       {/* <h1>{id}</h1> */}
       <div class="col-lg-7 mb-7 mb-lg-0">
         <div class="pr-lg-4">

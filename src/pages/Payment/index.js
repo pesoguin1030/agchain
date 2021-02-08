@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Redirect, useParams } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import storage from "../../utils/storage";
 import { getOrderItem } from "../../api/order";
 
-function Payment() {
-  // const htmlPart = "<p>Welcome to this <strong>page</strong></p>";
+function Payment(props) {
   const [orderInfo, setOrderInfo] = useState([]);
   const [total_price, setTotalPrice] = useState(0);
-  const { html, orderNumber } = useParams();
-  const decode_html = html.replaceAll("-", "/");
-
+  const html = props.html;
+  const orderNumber = props.orderNumber;
+  console.log(html, orderNumber);
+  var decode_html = html.replaceAll("-", "/");
+  // decode_html = html.replaceAll('value="submit"', 'value="結帳"');
   useEffect(() => {
     (async (orderNumber) => {
       const userToken = storage.getAccessToken();
@@ -22,10 +22,10 @@ function Payment() {
       }
       setTotalPrice(sum);
       setOrderInfo(orderItem);
-      console.log(orderItem);
+      // console.log(orderItem);
     })(orderNumber);
     return () => {};
-  });
+  }, []);
 
   return (
     <div class="container space-2 space-lg-3">

@@ -16,7 +16,6 @@ const createOrder = async (orders, userToken) => {
         },
       }
     );
-    // const { data: html } = response;
     return response;
   } catch (err) {
     return Promise.reject(err);
@@ -85,7 +84,6 @@ const getOrderItem = async (orderNumber, userToken) => {
       }
     );
     const { data } = response;
-    console.log("---", data);
     let return_data = [];
     for (let index = 0; index < data.length; index++) {
       return_data.push({
