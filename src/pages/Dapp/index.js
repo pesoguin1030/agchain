@@ -258,13 +258,14 @@ function Dapp(props) {
       </div>
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-          <h2>防偽鑑識照片</h2>
+          <h2>與收到的禮品比比看</h2>
         </div>
         {/* <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <div className="row w-md-80 w-lg-40 mx-md-auto px-5">
             <ImgToPuzzle/>
           </div>
         </div> */}
+
         <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           {secureItem && secureItem.cid !== "" ? (
             <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
@@ -276,10 +277,15 @@ function Dapp(props) {
                 src={`${secureItem?.cid}`}
                 className="responsive-img mt-2"
               />
+              <ImgToPuzzle img={`https://ipfs.io/ipfs/${secureItem?.cid}`} />
             </div>
           ) : (
             <div className="col-12 text-center">
-              <ImgToPuzzle />
+              <ImgToPuzzle
+                img={
+                  "https://storage.googleapis.com/tenlife/df302260-4f4a-11eb-a316-2f179a7b75ab.jpg"
+                }
+              />
             </div>
           )}
         </div>

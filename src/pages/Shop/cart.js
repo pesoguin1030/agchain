@@ -7,13 +7,16 @@ import { fetchUser } from "../../api/user";
 import { fetchDestination } from "../../api/destination";
 import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import Payment from "../Payment";
 
 function ShoppingCart(props) {
   const { cartState, cartDispatch } = useContext(CartContext);
   const [cartEmpty, setCartEmpty] = useState(true);
   const [item_and_amount, setItem_and_amount] = useState({});
   const [destinations, setDestinations] = useState([]);
-  const [jumpTo, setJumpTo] = useState(null);
+  const [jumpTo, setJumpTo] = useState(false);
+  const [payHtml, setPayHtml] = useState("");
+  const [orderNumber, setOrderNumber] = useState(0);
   const [destinationId, setDestinationId] = useState(36);
   const [destinationInputVisible, setDestinationInputVisible] = useState(false);
   const [giftToggled, setGiftToggled] = useState(false);
@@ -81,17 +84,10 @@ function ShoppingCart(props) {
 
   const handleItem = async () => {
     let orders = [];
-    console.log("item_and_amount", item_and_amount);
-    // Object.keys(item_and_amount).map((key) => {
-    //   let item = {};
-    //   item["amount"] = item_and_amount[key];
-    //   item["destination"] = destinationId;
-    //   item["productId"] = JSON.parse(key)["id"];
-    //   orders.push(item);
-    // });
-    //--------------
+    console.log(item_and_amount);
     const orderlist = (async () => {
       const result = await Object.keys(item_and_amount).map((key) => ({
+        price: parseInt(JSON.parse(key)["price"], 10),
         amount: item_and_amount[key],
         destination: destinationId,
         productId: parseInt(JSON.parse(key)["id"], 10),
@@ -99,17 +95,22 @@ function ShoppingCart(props) {
       return result;
     })();
 
+    //由此拿到orderNumber 以及支付api拿到的html
     orderlist.then(async (orders) => {
-      const orderNumber = await createOrder(orders);
-      console.log("orderNumber:", orderNumber);
-      if (giftToggled) {
-        window.open(`https://gift-7ee75.web.app/about/${orderNumber}`);
-      } else setJumpTo(`/shop/analysis/${orderNumber}`);
+      const userToken = storage.getAccessToken();
+      const response = await createOrder(orders, userToken);
+      const { data } = response;
+      const encode_html = data["html"].replaceAll("/", "-");
+      const orderNumber = data["orderNumber"];
+      setPayHtml(encode_html);
+      setOrderNumber(orderNumber);
+      setJumpTo(true);
+      // setJumpTo(`/shop/payment/${encode_html}/${orderNumber}`);
     });
   };
 
   return jumpTo ? (
-    <Redirect to={jumpTo} />
+    <Payment html={payHtml} orderNumber={orderNumber} />
   ) : (
     <div className="container space-1 space-md-2">
       <div className="row">
