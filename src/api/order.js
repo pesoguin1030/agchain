@@ -22,6 +22,23 @@ const createOrder = async (orders, userToken) => {
   }
 };
 
+const createGiftOrder = async (orders, userToken) => {
+  try {
+    const { data } = await request.post(
+      Constants.SERVER_URL + `/orders/giftorder`,
+      orders,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
 const getOrder = async (userToken) => {
   const translate_state = (state) => {
     switch (state) {

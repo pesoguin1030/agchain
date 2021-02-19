@@ -14,6 +14,16 @@ const Footer = () => (
               <img className="brand" src="/logo.jpg" alt="Logo" />
             </a>
             <p className="small text-muted mb-0">&copy; 千農科技有限公司</p>
+            <br />
+            <p className="small text-muted mb-0">電話：(03) 657-3989</p>
+            <p className="small text-muted mb-0">
+              電子信箱：
+              <a href="mailto:4A.Judy@gmail.com"> 4A.Judy@gmail.com</a>
+            </p>
+
+            <p className="small text-muted mb-0">
+              地址：新竹縣竹北市縣政二路488號2樓
+            </p>
           </div>
         </div>
         <div className="col-6 col-md-4 col-lg-3 ml-lg-auto mb-5 mb-lg-0">

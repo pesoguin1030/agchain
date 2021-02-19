@@ -145,9 +145,6 @@ function App() {
                 <Route exact path="/shop/single-product/:id">
                   <SingleProduct />
                 </Route>
-                {/* <Route path="/shop/payment/:html/:orderNumber">
-                  <Payment />
-                </Route> */}
                 <Route exact path="/shop/gift/:orderNumber">
                   <GiftMaker />
                 </Route>
