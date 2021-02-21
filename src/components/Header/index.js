@@ -357,6 +357,7 @@ const Header = () => {
               </div>
             </nav>
           </div>
+          {/* <hr class="hr-text" /> */}
         </div>
       </header>
       <Sidebar

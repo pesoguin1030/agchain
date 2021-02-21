@@ -28,7 +28,7 @@ function Payment(props) {
   }, []);
 
   return (
-    <div class="container space-2 space-lg-3">
+    <div class="container space-2 space-lg-3 mt-10">
       <div class="w-md-80 w-lg-50 text-center mx-md-auto">
         <div className="border-bottom pb-4 mb-4">
           <h1 className="h3 mb-0">訂單總結</h1>

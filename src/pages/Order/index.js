@@ -58,7 +58,7 @@ function Order() {
                   <td>{item["state"]}</td>
                   <td>{item["description"]}</td>
                   <td>
-                    <a href={"./shop/gift/" + item["orderNumber"]}>修改</a>
+                    <a href={item["video_url"]}>{item["order_type"]}</a>
                   </td>
                 </tr>
               );

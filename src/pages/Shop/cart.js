@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { CartContext } from "../../appContext";
-import { createOrder } from "../../api/order";
+import { createOrder, createGiftOrder } from "../../api/order";
 import storage from "../../utils/storage";
 import { counter } from "@fortawesome/fontawesome-svg-core";
 import { fetchUser } from "../../api/user";
@@ -98,14 +98,24 @@ function ShoppingCart(props) {
     //由此拿到orderNumber 以及支付api拿到的html
     orderlist.then(async (orders) => {
       const userToken = storage.getAccessToken();
-      const response = await createOrder(orders, userToken);
-      const { data } = response;
-      const encode_html = data["html"].replaceAll("/", "-");
-      const orderNumber = data["orderNumber"];
-      setPayHtml(encode_html);
-      setOrderNumber(orderNumber);
-      setJumpTo(true);
-      // setJumpTo(`/shop/payment/${encode_html}/${orderNumber}`);
+      if (giftToggled) {
+        const response = await createGiftOrder(orders, userToken);
+        const { data } = response;
+        console.log(data);
+        const encode_html = data["html"]; //.replaceAll("/", "-");
+        const orderNumber = data["orderNumber"];
+        setPayHtml(encode_html);
+        setOrderNumber(orderNumber);
+        setJumpTo(true);
+      } else {
+        const response = await createOrder(orders, userToken);
+        const { data } = response;
+        const encode_html = data["html"];
+        const orderNumber = data["orderNumber"];
+        setPayHtml(encode_html);
+        setOrderNumber(orderNumber);
+        setJumpTo(true);
+      }
     });
   };
 
