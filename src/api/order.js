@@ -115,14 +115,11 @@ const getOrder = async (userToken) => {
 
 const getOrderItem = async (orderNumber, userToken) => {
   try {
-    const response = await request.get(
-      `${Constants.SERVER_URL}/orders/orderItem/${orderNumber}`,
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
+    const response = await request.get(`/orders/orderItem/${orderNumber}`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
     const { data } = response;
     let return_data = [];
     for (let index = 0; index < data.length; index++) {
@@ -144,7 +141,6 @@ async function getDestinations() {
     const {
       data: { items },
     } = response;
-    console.log(items);
     return items;
   } catch (err) {
     return Promise.reject(err);

@@ -45,6 +45,13 @@ const Radarchart = ({ data, cropName }) => {
           responsive: true,
           maintainAspectRatio: false,
           aspectRatio: 1.1,
+          scale: {
+            ticks: {
+              beginAtZero: true,
+              max: 100,
+              stepSize: 20,
+            },
+          },
         }}
       />
     </div>

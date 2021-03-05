@@ -26,7 +26,8 @@ function ShoppingCart(props) {
   const [destinationInputVisible, setDestinationInputVisible] = useState(false);
   const [giftToggled, setGiftToggled] = useState(false);
   const [shippingInfo, setShippingInfo] = useState({});
-
+  const [farms_fee, setFarmsFee] = useState({});
+  const [totalFee, setTotalFee] = useState(0);
   useEffect(() => {
     const getDestination = async () => {
       const { items, offset } = await fetchDestination();
@@ -70,23 +71,42 @@ function ShoppingCart(props) {
   };
 
   const decrement = (key) => {
+    console.log(cartState);
     let value = item_and_amount[key];
-    if (value > 0) value -= 1;
+    console.log(value);
+    value -= 1;
     for (var i = 0; i < cartState.length; i++) {
       if (cartState[i].name === JSON.parse(key).name) {
         cartState.splice(i, 1);
         break;
       }
     }
-    cartDispatch(cartState);
-
-    // cartDispatch(cartState.splice(JSON.parse(key)))
+    cartDispatch([...cartState]);
     setItem_and_amount({ ...item_and_amount, [key]: value });
+    console.log(cartState);
   };
+
   const increment = (key) => {
     const value = item_and_amount[key] + 1;
     cartDispatch([...cartState, JSON.parse(key)]);
     setItem_and_amount({ ...item_and_amount, [key]: value });
+    console.log(cartState);
+    console.log(item_and_amount);
+  };
+
+  const removeItem = (key) => {
+    let amount = item_and_amount[key];
+    for (var i = 0; i < cartState.length; i++) {
+      if (cartState[i].name == JSON.parse(key).name) {
+        cartState.splice(i, amount);
+        break;
+      }
+    }
+    cartDispatch([...cartState]);
+    delete item_and_amount[key];
+    setItem_and_amount(item_and_amount);
+    console.log(cartState);
+    console.log(item_and_amount);
   };
 
   const handleDestination = (e) => {
@@ -160,7 +180,14 @@ function ShoppingCart(props) {
       }
       each_farm_fee[ship_info["farm_id"]] = tmp;
     }
-    console.log(each_farm_fee);
+    console.log(each_farm_fee); //{farm_id:{shippinfo}}
+    var total_fee = 0;
+    Object.keys(each_farm_fee).map((key) => {
+      total_fee += each_farm_fee[key]["fee"];
+    });
+    setFarmsFee(each_farm_fee);
+    setTotalFee(total_fee);
+
     let products_fee = {};
     Object.keys(product_farmID).map((key) => {
       products_fee[key] = each_farm_fee[product_farmID[key]];
@@ -234,21 +261,25 @@ function ShoppingCart(props) {
                               <a className="h5 d-block" href="#">
                                 {name}
                               </a>
-
+                              <a
+                                className="d-block text-body font-size-1 mb-1"
+                                href="javascript:void(0);"
+                                onClick={() => removeItem(key)}
+                              >
+                                <i className="far fa-trash-alt text-hover-primary mr-1"></i>
+                                <span className="font-size-1 text-hover-primary">
+                                  移除商品
+                                </span>
+                              </a>
                               <div className="text-body d-md-none">
                                 <span className="h5 d-block mb-1">
                                   {price * num}
                                 </span>
                               </div>
-                              {/* {Object.keys(shippingInfo).map((key)=>{
-                                if(key==id){
-                                  return JSON.stringify(shippingInfo[id]['fee'])
-                                }
-                               })} */}
                             </div>
                             <div
                               className="input-group input-group-sm"
-                              style={{ maxWidth: "150px" }}
+                              style={{ maxWidth: "160px" }}
                             >
                               <span className="input-group-btn">
                                 <button
@@ -259,7 +290,7 @@ function ShoppingCart(props) {
                                 </button>
                               </span>
                               <input
-                                style={{ textAlign: "right" }}
+                                style={{ textAlign: "center" }}
                                 className="form-control"
                                 type="text"
                                 value={num}
@@ -272,18 +303,6 @@ function ShoppingCart(props) {
                                   <i className="fa fa-plus" />
                                 </button>
                               </span>
-
-                              {/* <div className="col-auto">
-                                  <a
-                                    className="d-block text-body font-size-1 mb-1"
-                                    href="javascript:;"
-                                  >
-                                    <i className="far fa-trash-alt text-hover-primary mr-1"></i>
-                                    <span className="font-size-1 text-hover-primary">
-                                      Remove
-                                    </span>
-                                  </a>                           
-                                </div> */}
                             </div>
                             <div className="col-4 col-md-2 d-none d-md-inline-block text-right">
                               <span className="h5 d-block mb-1">
@@ -312,8 +331,10 @@ function ShoppingCart(props) {
                                       <br />
                                       <span>
                                         來自：
-                                        {JSON.stringify(
-                                          shippingInfo[id]["farm"]
+                                        {JSON.parse(
+                                          JSON.stringify(
+                                            shippingInfo[id]["farm"]
+                                          )
                                         )}
                                       </span>
                                     </div>
@@ -344,7 +365,7 @@ function ShoppingCart(props) {
               </div>
               <div className="border-bottom pb-4 mb-4">
                 <div className="media align-items-center mb-3">
-                  <span className="d-block font-size-1 mr-3">
+                  <span className="d-block font-size-2 mr-3">
                     {<span>{cartEmpty ? null : cartState.length} 產品</span>}
                   </span>
                   <div className="media-body text-right">
@@ -358,14 +379,23 @@ function ShoppingCart(props) {
                   <span className="d-block font-size-1 mr-3">目的地</span>
                 </div>
                 <div className="card shadow-none mb-3">
-                  <div className="card-body p-0">
-                    {destinationInputVisible ? (
+                  {destinationInputVisible ? (
+                    <div className="card-body p-0">
                       <input
                         className="form-control"
                         placeholder="詳細地址"
                         onChange={handleDestination}
                       />
-                    ) : (
+                      <a
+                        href="javascript:void(0);"
+                        className="form-link small"
+                        onClick={() => setDestinationInputVisible(false)}
+                      >
+                        <i className="fas fa-plus mr-1"></i> 選擇已記錄地址
+                      </a>
+                    </div>
+                  ) : (
+                    <div className="card-body p-0">
                       <select
                         className="custom-select"
                         onChange={handleDestination}
@@ -375,31 +405,38 @@ function ShoppingCart(props) {
                           <option value={id}>{address}</option>
                         ))}
                       </select>
-                    )}
-                    <a
-                      href="javascript:void(0);"
-                      className="form-link small"
-                      onClick={() => setDestinationInputVisible(true)}
-                    >
-                      <i className="fas fa-plus mr-1"></i> 手動輸入地址
-                    </a>
-                  </div>
+                      <a
+                        href="javascript:void(0);"
+                        className="form-link small"
+                        onClick={() => setDestinationInputVisible(true)}
+                      >
+                        <i className="fas fa-plus mr-1"></i> 手動輸入地址
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
+              <span className="d-block font-size-2 mr-3">運費</span>
 
+              {Object.keys(farms_fee).map((key) => {
+                return (
+                  <div className="media align-items-center mb-3">
+                    <span className="d-block font-size-1 mr-3">
+                      {JSON.parse(JSON.stringify(farms_fee[key]["farm"]))}
+                    </span>
+                    <div className="media-body text-right">
+                      <span className="text-dark font-weight-bold">
+                        {JSON.stringify(farms_fee[key]["fee"])}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
               <div className="media align-items-center mb-3">
-                <span className="d-block font-size-1 mr-3">總額</span>
+                <span className="d-block font-size-2 mr-3">總額</span>
                 <div className="media-body text-right">
                   <span className="text-dark font-weight-bold">
-                    {countBill()}
-                  </span>
-                </div>
-              </div>
-              <div className="media align-items-center mb-3">
-                <span className="d-block font-size-1 mr-3">物流運費</span>
-                <div className="media-body text-right">
-                  <span className="text-dark font-weight-bold">
-                    {countBill()}
+                    {countBill() + totalFee}
                   </span>
                 </div>
               </div>

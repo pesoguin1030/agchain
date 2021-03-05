@@ -11,7 +11,7 @@ const Footer = () => (
               href="../landings/index.html"
               aria-label="Front"
             >
-              <img className="brand" src="/logo.png" alt="Logo" />
+              <img className="brand" src="/logo.jpg" alt="Logo" />
             </a>
             <p className="small text-muted mb-0">&copy; 千農科技有限公司</p>
             <br />
