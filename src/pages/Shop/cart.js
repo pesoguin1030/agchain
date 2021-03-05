@@ -1,9 +1,14 @@
 import React, { useState, useContext, useEffect } from "react";
 import { CartContext } from "../../appContext";
-import { createOrder } from "../../api/order";
+import {
+  createOrder,
+  createGiftOrder,
+  getAllShoppingInfo,
+} from "../../api/order";
 import storage from "../../utils/storage";
 import { counter } from "@fortawesome/fontawesome-svg-core";
 import { fetchUser } from "../../api/user";
+import { FarmInfo } from "../../api/product";
 import { fetchDestination } from "../../api/destination";
 import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
@@ -20,7 +25,9 @@ function ShoppingCart(props) {
   const [destinationId, setDestinationId] = useState(36);
   const [destinationInputVisible, setDestinationInputVisible] = useState(false);
   const [giftToggled, setGiftToggled] = useState(false);
-
+  const [shippingInfo, setShippingInfo] = useState({});
+  const [farms_fee, setFarmsFee] = useState({});
+  const [totalFee, setTotalFee] = useState(0);
   useEffect(() => {
     const getDestination = async () => {
       const { items, offset } = await fetchDestination();
@@ -32,11 +39,17 @@ function ShoppingCart(props) {
     setCartEmpty(!cartState || cartState.length === 0);
     if (!(!cartState || cartState.length === 0)) {
       setItem_and_amount(countItem(cartState));
+      console.log("sdc", item_and_amount);
     }
     return () => {
       // cleanup
     };
   }, [cartState]);
+
+  useEffect(() => {
+    getShippingInfo();
+    return () => {};
+  }, [item_and_amount, destinationId]);
 
   const countItem = (arr) => {
     var counter = {};
@@ -101,6 +114,88 @@ function ShoppingCart(props) {
     setDestinationId(e.target.value);
   };
 
+  const getShippingInfo = async () => {
+    var destinationName = "新竹市";
+
+    let farm_price = {};
+    let farm_name = {};
+    let product_farmID = {};
+    for (let index = 0; index < Object.keys(item_and_amount).length; index++) {
+      const element = Object.keys(item_and_amount)[index];
+      const product_id = parseInt(JSON.parse(element)["id"], 10);
+      var farm = await FarmInfo(product_id);
+      console.log("farm", farm);
+      var total_price =
+        (await item_and_amount[element]) *
+        parseInt(JSON.parse(element)["price"], 10);
+      const farm_id = farm.farm_id;
+      farm_price[farm_id] = farm_price[farm_id] || 0;
+      farm_price[farm_id] += total_price;
+      farm_name[farm_id] = farm["farm_name"];
+      product_farmID[product_id] = farm.farm_id;
+    }
+    const result = await getAllShoppingInfo(Object.keys(farm_price));
+    let each_farm_fee = {};
+    for (let index = 0; index < result.length; index++) {
+      const ship_info = result[index];
+      console.log(ship_info);
+      var tmp;
+      if (ship_info["county"] !== destinationName) {
+        if (ship_info.free_threshold > farm_price[ship_info["farm_id"]]) {
+          tmp = {
+            fee: ship_info["different_city"],
+            farm: farm_name[ship_info["farm_id"]],
+            margin: ship_info.free_threshold - farm_price[ship_info["farm_id"]],
+            location: ship_info["county"],
+            categroy: "不同縣市運費",
+          };
+        } else {
+          tmp = {
+            fee: 0,
+            farm: farm_name[ship_info["farm_id"]],
+            margin: 0,
+            location: ship_info["county"],
+            categroy: "不同縣市運費",
+          };
+        }
+      } else {
+        if (ship_info.free_threshold > farm_price[ship_info["farm_id"]]) {
+          tmp = {
+            fee: ship_info["same_city"],
+            farm: farm_name[ship_info["farm_id"]],
+            bmargin:
+              ship_info.free_threshold - farm_price[ship_info["farm_id"]],
+            location: ship_info["county"],
+            categroy: "同縣市運費",
+          };
+        } else {
+          tmp = {
+            fee: 0,
+            farm: farm_name[ship_info["farm_id"]],
+            margin: 0,
+            location: ship_info["county"],
+            categroy: "不同縣市運費",
+          };
+        }
+      }
+      each_farm_fee[ship_info["farm_id"]] = tmp;
+    }
+    console.log(each_farm_fee); //{farm_id:{shippinfo}}
+    var total_fee = 0;
+    Object.keys(each_farm_fee).map((key) => {
+      total_fee += each_farm_fee[key]["fee"];
+    });
+    setFarmsFee(each_farm_fee);
+    setTotalFee(total_fee);
+
+    let products_fee = {};
+    Object.keys(product_farmID).map((key) => {
+      products_fee[key] = each_farm_fee[product_farmID[key]];
+    });
+    setShippingInfo(products_fee);
+    console.log(products_fee);
+  };
+
   const handleItem = async () => {
     let orders = [];
     console.log(item_and_amount);
@@ -117,21 +212,31 @@ function ShoppingCart(props) {
     //由此拿到orderNumber 以及支付api拿到的html
     orderlist.then(async (orders) => {
       const userToken = storage.getAccessToken();
-      const response = await createOrder(orders, userToken);
-      const { data } = response;
-      const encode_html = data["html"].replaceAll("/", "-");
-      const orderNumber = data["orderNumber"];
-      setPayHtml(encode_html);
-      setOrderNumber(orderNumber);
-      setJumpTo(true);
-      // setJumpTo(`/shop/payment/${encode_html}/${orderNumber}`);
+      if (giftToggled) {
+        const response = await createGiftOrder(orders, userToken);
+        const { data } = response;
+        console.log(data);
+        const encode_html = data["html"]; //.replaceAll("/", "-");
+        const orderNumber = data["orderNumber"];
+        setPayHtml(encode_html);
+        setOrderNumber(orderNumber);
+        setJumpTo(true);
+      } else {
+        const response = await createOrder(orders, userToken);
+        const { data } = response;
+        const encode_html = data["html"];
+        const orderNumber = data["orderNumber"];
+        setPayHtml(encode_html);
+        setOrderNumber(orderNumber);
+        setJumpTo(true);
+      }
     });
   };
 
   return jumpTo ? (
     <Payment html={payHtml} orderNumber={orderNumber} />
   ) : (
-    <div className="container space-1 space-md-2">
+    <div className="container space-1 space-md-2 mt-11">
       <div className="row">
         <div className="col-lg-7 mb-7 mb-lg-0">
           <div className="d-flex justify-content-between align-items-end border-bottom pb-3 mb-7">
@@ -156,8 +261,17 @@ function ShoppingCart(props) {
                               <a className="h5 d-block" href="#">
                                 {name}
                               </a>
-
-                              <div className="d-block d-md-none">
+                              <a
+                                className="d-block text-body font-size-1 mb-1"
+                                href="javascript:void(0);"
+                                onClick={() => removeItem(key)}
+                              >
+                                <i className="far fa-trash-alt text-hover-primary mr-1"></i>
+                                <span className="font-size-1 text-hover-primary">
+                                  移除商品
+                                </span>
+                              </a>
+                              <div className="text-body d-md-none">
                                 <span className="h5 d-block mb-1">
                                   {price * num}
                                 </span>
@@ -189,22 +303,44 @@ function ShoppingCart(props) {
                                   <i className="fa fa-plus" />
                                 </button>
                               </span>
-                              <a
-                                className="d-block text-body font-size-1 mb-1"
-                                href="javascript:void(0);"
-                                onClick={() => removeItem(key)}
-                              >
-                                <i className="far fa-trash-alt text-hover-primary mr-1"></i>
-                                <span className="font-size-1 text-hover-primary">
-                                  移除商品
-                                </span>
-                              </a>
                             </div>
-
                             <div className="col-4 col-md-2 d-none d-md-inline-block text-right">
                               <span className="h5 d-block mb-1">
                                 {price * num}
                               </span>
+                            </div>
+                            <div class="text-body font-size-1 mb-1">
+                              {Object.keys(shippingInfo).map((key) => {
+                                if (key == id) {
+                                  return (
+                                    <div>
+                                      <span>
+                                        運費：
+                                        {JSON.stringify(
+                                          shippingInfo[id]["fee"]
+                                        )}
+                                      </span>
+                                      <br />
+                                      <span>
+                                        差 ：
+                                        {JSON.stringify(
+                                          shippingInfo[id]["margin"]
+                                        )}
+                                        免運
+                                      </span>
+                                      <br />
+                                      <span>
+                                        來自：
+                                        {JSON.parse(
+                                          JSON.stringify(
+                                            shippingInfo[id]["farm"]
+                                          )
+                                        )}
+                                      </span>
+                                    </div>
+                                  );
+                                }
+                              })}
                             </div>
                           </div>
                         </div>
@@ -229,7 +365,7 @@ function ShoppingCart(props) {
               </div>
               <div className="border-bottom pb-4 mb-4">
                 <div className="media align-items-center mb-3">
-                  <span className="d-block font-size-1 mr-3">
+                  <span className="d-block font-size-2 mr-3">
                     {<span>{cartEmpty ? null : cartState.length} 產品</span>}
                   </span>
                   <div className="media-body text-right">
@@ -280,12 +416,27 @@ function ShoppingCart(props) {
                   )}
                 </div>
               </div>
+              <span className="d-block font-size-2 mr-3">運費</span>
 
+              {Object.keys(farms_fee).map((key) => {
+                return (
+                  <div className="media align-items-center mb-3">
+                    <span className="d-block font-size-1 mr-3">
+                      {JSON.parse(JSON.stringify(farms_fee[key]["farm"]))}
+                    </span>
+                    <div className="media-body text-right">
+                      <span className="text-dark font-weight-bold">
+                        {JSON.stringify(farms_fee[key]["fee"])}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
               <div className="media align-items-center mb-3">
-                <span className="d-block font-size-1 mr-3">Total</span>
+                <span className="d-block font-size-2 mr-3">總額</span>
                 <div className="media-body text-right">
                   <span className="text-dark font-weight-bold">
-                    {countBill()}
+                    {countBill() + totalFee}
                   </span>
                 </div>
               </div>
@@ -296,7 +447,7 @@ function ShoppingCart(props) {
                     className="btn btn-primary btn-block btn-pill transition-3d-hover"
                     onClick={handleItem}
                   >
-                    結帳
+                    確認訂單
                   </button>
                 </div>
               </div>

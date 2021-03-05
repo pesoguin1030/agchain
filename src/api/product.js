@@ -14,14 +14,11 @@ const fetchProducts = async () => {
 const ProductDetail = async (id) => {
   const userToken = storage.getAccessToken();
   try {
-    const { data } = await request.get(
-      `${Constants.SERVER_URL + /products/}` + id,
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
+    const { data } = await request.get(`/products/` + id, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
     // const {data} = await request.get(`/products/`+id)
     return data;
   } catch (err) {
@@ -32,14 +29,11 @@ const ProductDetail = async (id) => {
 const FarmInfo = async (id) => {
   const userToken = storage.getAccessToken();
   try {
-    const { data } = await request.get(
-      Constants.SERVER_URL + `/products/farm_info/` + id,
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
+    const { data } = await request.get(`/products/farm_info/` + id, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
     return data[0];
   } catch (error) {
     return error;

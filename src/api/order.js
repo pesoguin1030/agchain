@@ -1,6 +1,6 @@
 import request from "../utils/request";
 import Constants from "./constants";
-
+import storage from "../utils/storage";
 const createOrder = async (orders, userToken) => {
   try {
     // const { data } = await request.post(
@@ -24,7 +24,7 @@ const createOrder = async (orders, userToken) => {
 
 const createGiftOrder = async (orders, userToken) => {
   try {
-    const { data } = await request.post(
+    const response = await request.post(
       Constants.SERVER_URL + `/orders/giftorder`,
       orders,
       {
@@ -33,7 +33,7 @@ const createGiftOrder = async (orders, userToken) => {
         },
       }
     );
-    return data;
+    return response;
   } catch (err) {
     return Promise.reject(err);
   }
@@ -56,8 +56,24 @@ const getOrder = async (userToken) => {
         return "-";
     }
   };
+  const translate_order_type = (type) => {
+    switch (type) {
+      case "common":
+        return "";
+      case "gift":
+        return "修改/上傳";
+    }
+  };
+  const gift_video_url = (type, orderNumber) => {
+    switch (type) {
+      case "common":
+        return "#";
+      case "gift":
+        return `./shop/gift/${orderNumber}`;
+    }
+  };
   try {
-    const response = await request.get(`/orders`, {
+    const response = await request.get(Constants.SERVER_URL + `/orders`, {
       params: {
         buyer: "yes",
         offset: 0,
@@ -76,11 +92,18 @@ const getOrder = async (userToken) => {
       if (!temp.includes(items[i].orderNumber)) {
         temp.push(items[i].orderNumber);
         const state = translate_state(items[i].state);
+        const type = translate_order_type(items[i].order_type);
+        const video_url = gift_video_url(
+          items[i].order_type,
+          items[i].orderNumber
+        );
         orderNumber.push({
           orderNumber: items[i].orderNumber,
           time: items[i].create_at,
           state: state,
-          contractAddress: items[i].contractAddress,
+          // contractAddress: items[i].contractAddress,
+          video_url: video_url,
+          order_type: type,
         });
       }
     }
@@ -124,6 +147,31 @@ async function getDestinations() {
   }
 }
 
+async function getAllShoppingInfo(farm_ids) {
+  const userToken = storage.getAccessToken();
+  try {
+    const response = await request.get(
+      `${Constants.SERVER_URL}/destination/allshippinginfo`,
+      {
+        params: {
+          user: farm_ids,
+        },
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    const {
+      data: { items },
+    } = response;
+    return items;
+  } catch (error) {
+    alert("無法取得農夫運費資訊，請稍後再試");
+    console.log(error);
+    return false;
+  }
+}
+
 async function getPressLikeNum(orderNumber) {
   try {
     const response = await request.get(`/orders/like/${orderNumber}`);
@@ -137,8 +185,10 @@ async function getPressLikeNum(orderNumber) {
 
 export {
   createOrder,
+  createGiftOrder,
   getOrder,
   getOrderItem,
   getDestinations,
   getPressLikeNum,
+  getAllShoppingInfo,
 };

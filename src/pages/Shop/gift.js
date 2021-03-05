@@ -70,7 +70,7 @@ function GiftMaker(prop) {
         "stepsSelector": "#verticalStepFormContent"
       }'
     >
-      <div className="row">
+      <div className="row mt-10">
         <div className="col-4">
           <ul id="verticalStepFormProgress" className="js-step-progress step">
             <li className="step-item">

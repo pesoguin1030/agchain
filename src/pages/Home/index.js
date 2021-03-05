@@ -18,7 +18,7 @@ function Home(props) {
 
   return (
     <main id="content" role="main">
-      <div className="container space-top-lg-3 space-bottom-lg-2">
+      <div className="container space-top-lg-3 space-bottom-lg-2 mt-10">
         <div className="row justify-content-lg-between align-items-lg-center">
           <div className="col-lg-5 order-lg-2 mb-9 mb-lg-0">
             <div className="mb-5">
