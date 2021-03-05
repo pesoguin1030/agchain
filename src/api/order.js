@@ -1,6 +1,6 @@
 import request from "../utils/request";
 import Constants from "./constants";
-
+import storage from "../utils/storage";
 const createOrder = async (orders, userToken) => {
   try {
     // const { data } = await request.post(
@@ -151,6 +151,31 @@ async function getDestinations() {
   }
 }
 
+async function getAllShoppingInfo(farm_ids) {
+  const userToken = storage.getAccessToken();
+  try {
+    const response = await request.get(
+      `${Constants.SERVER_URL}/destination/allshippinginfo`,
+      {
+        params: {
+          user: farm_ids,
+        },
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    const {
+      data: { items },
+    } = response;
+    return items;
+  } catch (error) {
+    alert("無法取得農夫運費資訊，請稍後再試");
+    console.log(error);
+    return false;
+  }
+}
+
 async function getPressLikeNum(orderNumber) {
   try {
     const response = await request.get(`/orders/like/${orderNumber}`);
@@ -169,4 +194,5 @@ export {
   getOrderItem,
   getDestinations,
   getPressLikeNum,
+  getAllShoppingInfo,
 };

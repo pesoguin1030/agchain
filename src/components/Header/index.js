@@ -288,11 +288,10 @@ const Header = () => {
               </ul>
             </div>
           </div>
-
           <div className="container">
             <nav className="js-mega-menu navbar navbar-expand-lg">
               {/* Logo */}
-              <a className="navbar-brand" href="/">
+              <a href="/">
                 <img src="/logo.png" alt="Logo" />
               </a>
               <button

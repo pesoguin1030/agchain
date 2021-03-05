@@ -89,7 +89,7 @@ function Shop() {
     }
   };
   return (
-    <div className="container space-2 space-lg-3">
+    <div className="container space-2 space-lg-3 mt-10">
       <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
         <h2>農夫市集</h2>
       </div>
