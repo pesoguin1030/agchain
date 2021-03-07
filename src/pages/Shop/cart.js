@@ -274,7 +274,7 @@ function ShoppingCart(props) {
   };
 
   return jumpTo ? (
-    <Payment html={payHtml} orderNumber={orderNumber} />
+    <Payment html={payHtml} orderNumber={orderNumber} totalFee={totalFee} />
   ) : (
     <div className="container space-1 space-md-2 mt-11">
       <div className="row">
