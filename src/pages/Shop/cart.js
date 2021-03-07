@@ -6,12 +6,9 @@ import {
   getAllShoppingInfo,
 } from "../../api/order";
 import storage from "../../utils/storage";
-import { counter } from "@fortawesome/fontawesome-svg-core";
 import { fetchUser } from "../../api/user";
-import { FarmInfo } from "../../api/product";
+import { FarmInfo, findFeeProduct } from "../../api/product";
 import { fetchDestination } from "../../api/destination";
-import { Redirect } from "react-router-dom";
-import { useHistory } from "react-router-dom";
 import Payment from "../Payment";
 
 function ShoppingCart(props) {
@@ -28,6 +25,9 @@ function ShoppingCart(props) {
   const [shippingInfo, setShippingInfo] = useState({});
   const [farms_fee, setFarmsFee] = useState({});
   const [totalFee, setTotalFee] = useState(0);
+  const [selectedAddress, setSelectedAddress] = useState(
+    "新竹市東區復興路二段"
+  );
   useEffect(() => {
     const getDestination = async () => {
       const { items, offset } = await fetchDestination();
@@ -39,7 +39,6 @@ function ShoppingCart(props) {
     setCartEmpty(!cartState || cartState.length === 0);
     if (!(!cartState || cartState.length === 0)) {
       setItem_and_amount(countItem(cartState));
-      console.log("sdc", item_and_amount);
     }
     return () => {
       // cleanup
@@ -124,7 +123,6 @@ function ShoppingCart(props) {
       const element = Object.keys(item_and_amount)[index];
       const product_id = parseInt(JSON.parse(element)["id"], 10);
       var farm = await FarmInfo(product_id);
-      console.log("farm", farm);
       var total_price =
         (await item_and_amount[element]) *
         parseInt(JSON.parse(element)["price"], 10);
@@ -135,6 +133,7 @@ function ShoppingCart(props) {
       product_farmID[product_id] = farm.farm_id;
     }
     const result = await getAllShoppingInfo(Object.keys(farm_price));
+    const fee_as_product = await findFeeProduct(Object.keys(farm_price));
     let each_farm_fee = {};
     for (let index = 0; index < result.length; index++) {
       const ship_info = result[index];
@@ -142,16 +141,28 @@ function ShoppingCart(props) {
       var tmp;
       if (ship_info["county"] !== destinationName) {
         if (ship_info.free_threshold > farm_price[ship_info["farm_id"]]) {
+          const fee_productID = fee_as_product.find(
+            (o) =>
+              o.name === "不同縣市運費" && o.store_id === ship_info["farm_id"]
+          )["id"];
           tmp = {
             fee: ship_info["different_city"],
+            farm_id: ship_info["farm_id"],
+            fee_productID: fee_productID,
             farm: farm_name[ship_info["farm_id"]],
             margin: ship_info.free_threshold - farm_price[ship_info["farm_id"]],
             location: ship_info["county"],
             categroy: "不同縣市運費",
           };
         } else {
+          const fee_productID = fee_as_product.find(
+            (o) =>
+              o.name === "不同縣市運費" && o.store_id === ship_info["farm_id"]
+          )["id"];
           tmp = {
             fee: 0,
+            farm_id: ship_info["farm_id"],
+            fee_productID: fee_productID,
             farm: farm_name[ship_info["farm_id"]],
             margin: 0,
             location: ship_info["county"],
@@ -160,8 +171,14 @@ function ShoppingCart(props) {
         }
       } else {
         if (ship_info.free_threshold > farm_price[ship_info["farm_id"]]) {
+          const fee_productID = fee_as_product.find(
+            (o) =>
+              o.name === "同縣市運費" && o.store_id === ship_info["farm_id"]
+          )["id"];
           tmp = {
             fee: ship_info["same_city"],
+            farm_id: ship_info["farm_id"],
+            fee_productID: fee_productID,
             farm: farm_name[ship_info["farm_id"]],
             bmargin:
               ship_info.free_threshold - farm_price[ship_info["farm_id"]],
@@ -169,12 +186,18 @@ function ShoppingCart(props) {
             categroy: "同縣市運費",
           };
         } else {
+          const fee_productID = fee_as_product.find(
+            (o) =>
+              o.name === "同縣市運費" && o.store_id === ship_info["farm_id"]
+          )["id"];
           tmp = {
             fee: 0,
+            farm_id: ship_info["farm_id"],
+            fee_productID: fee_productID,
             farm: farm_name[ship_info["farm_id"]],
             margin: 0,
             location: ship_info["county"],
-            categroy: "不同縣市運費",
+            categroy: "同縣市運費",
           };
         }
       }
@@ -196,33 +219,50 @@ function ShoppingCart(props) {
     console.log(products_fee);
   };
 
+  const ship_as_orders = () => {
+    let orders = [];
+    Object.keys(farms_fee).map((product_id) => {
+      console.log("product_id", product_id);
+      orders.push({
+        productId: parseInt(farms_fee[product_id]["fee_productID"], 10),
+        amount: 1,
+        destinationId: 1,
+        address: selectedAddress,
+        price: farms_fee[product_id]["fee"],
+      });
+    });
+    return orders;
+  };
   const handleItem = async () => {
     let orders = [];
     console.log(item_and_amount);
     const orderlist = (async () => {
       const result = await Object.keys(item_and_amount).map((key) => ({
-        price: parseInt(JSON.parse(key)["price"], 10),
-        amount: item_and_amount[key],
-        destination: destinationId,
         productId: parseInt(JSON.parse(key)["id"], 10),
+        amount: item_and_amount[key],
+        price: parseInt(JSON.parse(key)["price"], 10),
+        destinationId: destinationId,
+        address: selectedAddress,
       }));
       return result;
     })();
 
     //由此拿到orderNumber 以及支付api拿到的html
-    orderlist.then(async (orders) => {
+    orderlist.then(async (product_orders) => {
       const userToken = storage.getAccessToken();
+      const shipping_order = ship_as_orders();
+      const orders = [...product_orders, ...shipping_order];
       if (giftToggled) {
-        const response = await createGiftOrder(orders, userToken);
+        const response = await createGiftOrder(orders);
         const { data } = response;
         console.log(data);
-        const encode_html = data["html"]; //.replaceAll("/", "-");
+        const encode_html = data["html"];
         const orderNumber = data["orderNumber"];
         setPayHtml(encode_html);
         setOrderNumber(orderNumber);
         setJumpTo(true);
       } else {
-        const response = await createOrder(orders, userToken);
+        const response = await createOrder(orders);
         const { data } = response;
         const encode_html = data["html"];
         const orderNumber = data["orderNumber"];
@@ -361,12 +401,12 @@ function ShoppingCart(props) {
           <div className="pl-lg-4">
             <div className="card shadow-soft p-4 mb-4">
               <div className="border-bottom pb-4 mb-4">
-                <h2 className="h3 mb-0">訂單總結</h2>
+                <h2 className="h2 mb-0">訂單總結</h2>
               </div>
               <div className="border-bottom pb-4 mb-4">
                 <div className="media align-items-center mb-3">
                   <span className="d-block font-size-2 mr-3">
-                    {<span>{cartEmpty ? null : cartState.length} 產品</span>}
+                    {<span>{cartEmpty ? null : cartState.length} 個產品</span>}
                   </span>
                   <div className="media-body text-right">
                     <span className="text-dark font-weight-bold">
@@ -420,8 +460,8 @@ function ShoppingCart(props) {
 
               {Object.keys(farms_fee).map((key) => {
                 return (
-                  <div className="media align-items-center mb-3">
-                    <span className="d-block font-size-1 mr-3">
+                  <div className="border-bottom media align-items-center mb-3">
+                    <span className="d-block mr-3">
                       {JSON.parse(JSON.stringify(farms_fee[key]["farm"]))}
                     </span>
                     <div className="media-body text-right">

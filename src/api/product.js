@@ -40,4 +40,30 @@ const FarmInfo = async (id) => {
   }
 };
 
-export { fetchProducts, ProductDetail, FarmInfo };
+const findFeeProduct = async (farmId) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const response = await request.get(
+      `${Constants.SERVER_URL}/destination/allshippingitem`,
+      {
+        params: {
+          user: farmId,
+        },
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    const {
+      data: { items },
+    } = response;
+    console.log("FP-----", items);
+    return items;
+  } catch (error) {
+    // alert('無法取得農夫運費項目，請稍後再試');
+    console.log(error);
+    return false;
+  }
+};
+
+export { fetchProducts, ProductDetail, FarmInfo, findFeeProduct };
