@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import { Redirect } from "react-router-dom";
 import { CartContext } from "../../appContext";
 import {
   createOrder,
@@ -6,7 +7,6 @@ import {
   getAllShoppingInfo,
 } from "../../api/order";
 import storage from "../../utils/storage";
-import { fetchUser } from "../../api/user";
 import { FarmInfo, findFeeProduct } from "../../api/product";
 import { fetchDestination } from "../../api/destination";
 import Payment from "../Payment";
@@ -28,6 +28,7 @@ function ShoppingCart(props) {
   const [selectedAddress, setSelectedAddress] = useState(
     "新竹市東區復興路二段"
   );
+
   useEffect(() => {
     const getDestination = async () => {
       const { items, offset } = await fetchDestination();
