@@ -76,6 +76,7 @@ const Header = () => {
       console.log(access_token);
       setIsSidebarVisible(false);
     } catch (error) {
+      alert("帳號或密碼有誤");
       console.error(error);
     }
   };

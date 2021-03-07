@@ -59,6 +59,7 @@ function Login(props) {
       });
       console.log(access_token);
     } catch (error) {
+      alert("帳號密碼有誤");
       console.error(error);
     }
   };
@@ -66,7 +67,7 @@ function Login(props) {
   return (
     <main id="content" role="main" className="main">
       <div className="container py-5 py-sm-7">
-        <a className="d-flex justify-content-center mb-5" href="index.html">
+        <a className="d-flex justify-content-center mb-5" href="/">
           <img className="z-index-2" src="logo.png" style={{ width: "8rem" }} />
         </a>
 
@@ -175,6 +176,7 @@ function Login(props) {
                     </label>
                   </div>
                 </div>
+
                 <button
                   onClick={defaultSignIn}
                   className="btn btn-block btn-primary"

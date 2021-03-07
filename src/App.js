@@ -152,7 +152,7 @@ function App() {
                   <Dapp />
                 </Route>
                 <Route path="/shop/cart">
-                  <ShoppingCart />
+                  {authState.user ? <ShoppingCart /> : <Redirect to="/login" />}
                 </Route>
                 <Route path="/shop/analysis/:orderNumber">
                   <Analysis />

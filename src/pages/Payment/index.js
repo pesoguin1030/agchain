@@ -8,7 +8,7 @@ function Payment(props) {
   const [total_price, setTotalPrice] = useState(0);
   const html = props.html;
   const orderNumber = props.orderNumber;
-  console.log(html, orderNumber);
+  const total_fee = props.totalFee;
   var decode_html = html.replaceAll("-", "/");
   // decode_html = html.replaceAll('value="submit"', 'value="結帳"');
   useEffect(() => {
@@ -20,6 +20,7 @@ function Payment(props) {
         const item = orderItem[index];
         sum += item["amount"] * item["price"];
       }
+      sum += total_fee;
       setTotalPrice(sum);
       setOrderInfo(orderItem);
       // console.log(orderItem);
@@ -33,28 +34,30 @@ function Payment(props) {
         <div className="border-bottom pb-4 mb-4">
           <h1 className="h3 mb-0">訂單總結</h1>
         </div>
-        <div>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>名稱</th>
-                <th>數量</th>
-                <th>單價</th>
-                <th>單品項總額</th>
-              </tr>
-              {orderInfo.map((item) => {
-                return (
-                  <tr>
-                    <td>{item["name"]}</td>
-                    <td>{item["amount"]}</td>
-                    <td>{item["price"]}</td>
-                    <td>{item["amount"] * item["price"]}</td>
-                  </tr>
-                );
-              })}
-            </thead>
-            <tbody></tbody>
-          </Table>
+        <div className="">
+          <div>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>名稱</th>
+                  <th>數量</th>
+                  <th>單價</th>
+                  <th>單品項總額</th>
+                </tr>
+                {orderInfo.map((item) => {
+                  return (
+                    <tr>
+                      <td>{item["name"]}</td>
+                      <td>{item["amount"]}</td>
+                      <td>{item["price"]}</td>
+                      <td>{item["amount"] * item["price"]}</td>
+                    </tr>
+                  );
+                })}
+              </thead>
+            </Table>
+            <span>運費：{total_fee}</span>
+          </div>
           <h3>總計：{total_price}</h3>
           <div dangerouslySetInnerHTML={{ __html: decode_html }} />
         </div>

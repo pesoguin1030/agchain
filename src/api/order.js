@@ -1,12 +1,10 @@
 import request from "../utils/request";
 import Constants from "./constants";
 import storage from "../utils/storage";
-const createOrder = async (orders, userToken) => {
+
+const createOrder = async (orders) => {
+  const userToken = storage.getAccessToken();
   try {
-    // const { data } = await request.post(
-    //   Constants.SERVER_URL + `/orders/giftorder`,
-    //   orders
-    // );
     const response = await request.post(
       `${Constants.SERVER_URL}/orders/newebpay`,
       orders,
@@ -22,7 +20,8 @@ const createOrder = async (orders, userToken) => {
   }
 };
 
-const createGiftOrder = async (orders, userToken) => {
+const createGiftOrder = async (orders) => {
+  const userToken = storage.getAccessToken();
   try {
     const response = await request.post(
       Constants.SERVER_URL + `/orders/giftorder`,
@@ -123,11 +122,13 @@ const getOrderItem = async (orderNumber, userToken) => {
     const { data } = response;
     let return_data = [];
     for (let index = 0; index < data.length; index++) {
-      return_data.push({
-        amount: data[index].amount,
-        name: data[index].name,
-        price: data[index].price,
-      });
+      if (!data[index].name.includes("運費")) {
+        return_data.push({
+          amount: data[index].amount,
+          name: data[index].name,
+          price: data[index].price,
+        });
+      }
     }
     return return_data;
   } catch (err) {
@@ -149,6 +150,7 @@ async function getDestinations() {
 
 async function getAllShoppingInfo(farm_ids) {
   const userToken = storage.getAccessToken();
+
   try {
     const response = await request.get(
       `${Constants.SERVER_URL}/destination/allshippinginfo`,
@@ -166,7 +168,7 @@ async function getAllShoppingInfo(farm_ids) {
     } = response;
     return items;
   } catch (error) {
-    alert("無法取得農夫運費資訊，請稍後再試");
+    // alert("無法取得農夫運費資訊，請稍後再試");
     console.log(error);
     return false;
   }
