@@ -3,8 +3,8 @@ import { Redirect, useParams } from "react-router-dom";
 import { AuthContext, CartContext } from "../../appContext";
 import { useEffect, useState, useContext } from "react";
 import { ProductDetail, FarmInfo } from "../../api/product";
+import { getAllShippingInfo } from "../../api/order";
 import { ProductCard } from "../../components/Card";
-import Header from "../../components/Header";
 
 function SingleProduct() {
   const { id } = useParams(); // main KEY in url
@@ -18,17 +18,29 @@ function SingleProduct() {
   const [farmAddress, setFarmAddress] = useState();
   const [farmPhone, setFarmPhone] = useState();
   const [farmPic, setFarmPic] = useState([]);
-  const [isInCart, setIsInCart] = useState(
-    cartState ? cartState.map((e) => e.id).includes(id) : false
-  );
+  const [farmfee, setFarmFee] = useState([]);
+  const [IntID, setIntID] = useState(0);
+  const [isInCart, setIsInCart] = useState(false);
+
   useEffect(() => {
+    setIntID(parseInt(id, 10));
     PreLoadData();
     return () => {};
   }, [cartState]);
+
   const PreLoadData = async () => {
     const data = await ProductDetail(id);
     const farm_data = await FarmInfo(id);
-    console.log(farm_data);
+    console.log([farm_data["farm_id"].toString()]);
+    const shippinginfo = await getAllShippingInfo([
+      farm_data["farm_id"].toString(),
+    ]);
+    const farm_fee = [
+      shippinginfo[0]["same_city"],
+      shippinginfo[0]["different_city"],
+    ];
+    console.log(farm_fee);
+    setFarmFee(farm_fee);
     setName(data["name"]);
     setPrice(data["price"]);
     setImgUrl(data["photo_url"]);
@@ -40,7 +52,7 @@ function SingleProduct() {
     setFarmPhone(farm_data["farm_phone"]);
     setFarmPic(getPropertyByRegex(farm_data, "farm_picture|[1-9]"));
 
-    setIsInCart(cartState ? cartState.map((e) => e.id).includes(id) : false);
+    setIsInCart(cartState ? cartState.map((e) => e.id).includes(IntID) : false);
   };
 
   function getPropertyByRegex(obj, propName) {
@@ -242,13 +254,27 @@ function SingleProduct() {
                       </span>
                       <span class="media-body">
                         <span class="d-block font-size-1 font-weight-bold">
-                          免運費
+                          運費
                         </span>
                       </span>
                     </span>
                   </span>
                 </span>
               </a>
+            </div>
+            <div
+              id="shopCardOne"
+              class="collapse"
+              aria-labelledby="shopCardHeadingOne"
+              data-parent="#shopCartAccordion"
+            >
+              <div class="card-body">
+                <p class="small mb-0">農場位於{farmAddress} 運費如下：</p>
+                <ul>
+                  <li>同縣市：{farmfee[0]}元</li>
+                  <li>不同縣市：{farmfee[1]}元</li>
+                </ul>
+              </div>
             </div>
           </div>
           <div class="card border shadow-none">
