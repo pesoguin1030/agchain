@@ -3,6 +3,8 @@ import { AuthContext, CartContext } from "../../appContext";
 import axios from "axios";
 import storage from "../../utils/storage";
 
+import validator from "validator";
+
 // TODO: 修改所有javascript:;
 
 function AccountInfo(props) {
@@ -13,6 +15,8 @@ function AccountInfo(props) {
   const [email, setEmail] = useState(null);
   const [phone, setPhone] = useState(null);
   const [gender, setGender] = useState(null);
+
+  const [emailError, setEmailError] = useState(false);
 
   // useEffect(()=>{
   // console.log("name: "+name);
@@ -259,7 +263,7 @@ function AccountInfo(props) {
                   {/* Form Group */}
                   <div class="row form-group">
                     <label class="col-sm-3 col-form-label input-label">
-                      Profile photo
+                      照片
                     </label>
 
                     <div class="col-sm-9">
@@ -278,7 +282,7 @@ function AccountInfo(props) {
 
                         <div class="media-body">
                           <div class="btn btn-sm btn-primary file-attachment-btn mb-2 mb-sm-0 mr-2">
-                            Upload Photo
+                            上傳照片
                             <input
                               type="file"
                               class="js-file-attach file-attachment-btn-label"
@@ -295,7 +299,7 @@ function AccountInfo(props) {
                             class="btn btn-sm btn-white mb-2 mb-sm-0"
                             href="javascript:;"
                           >
-                            Delete
+                            刪除
                           </a>
                         </div>
                       </div>
@@ -375,12 +379,21 @@ function AccountInfo(props) {
                           class="form-control"
                           name="email"
                           id="emailLabel"
+                          placeholder="clarice@example.com"
                           defaultValue={authState.user.email}
                           aria-label="clarice@example.com"
                           onChange={(e) => {
+                            setEmailError(!validator.isEmail(e.target.value));
                             setEmail(e.target.value);
                           }}
                         />
+                        {emailError ? (
+                          <span class="badge badge-warning">
+                            電子信箱格式錯誤！
+                          </span>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     ) : (
                       <div class="col-sm-9">
@@ -419,12 +432,15 @@ function AccountInfo(props) {
                             class="js-masked-input form-control"
                             name="phone"
                             id="phoneLabel"
-                            placeholder="+x(xxx)xxx-xx-xx"
-                            aria-label="+x(xxx)xxx-xx-xx"
-                            defaultValue="+1(605)5618929"
+                            placeholder="09xxxxxxxx"
+                            aria-label="09xx-xxx-xxx"
+                            defaultValue={authState.user.phone}
                             data-hs-mask-options='{
-															"template": "+0(000)000-00-00"
-														}'
+								"template": "0000000000"
+							}'
+                            onChange={(e) => {
+                              setPhone(e.target.value);
+                            }}
                           />
                         ) : (
                           <input
@@ -439,11 +455,11 @@ function AccountInfo(props) {
                               setPhone(e.target.value);
                             }}
                             data-hs-mask-options='{
-															"template": "+0(000)000-00-00",
-															"translation": {
-															  "*": {"pattern": "[0][9]"}
-															}
-														  }'
+								"template": "+0(000)000-00-00",
+								"translation": {
+									"*": {"pattern": "[0][9]"}
+								}
+							}'
                           />
                         )}
                       </div>
@@ -550,7 +566,7 @@ function AccountInfo(props) {
                   class="btn btn-primary"
                   onClick={() => {
                     changePersonalInfo(true);
-                    // window.location.reload();
+                    window.location.reload();
                   }}
                 >
                   儲存變更

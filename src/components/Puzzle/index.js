@@ -19,10 +19,11 @@ var images = [
 const success = () => {
   alert("success");
 };
-const ImgToPuzzle = () => {
-  const img_url =
-    "https://storage.googleapis.com/tenlife/df302260-4f4a-11eb-a316-2f179a7b75ab.jpg";
-  return <Puzzle image={img_url} size={500} onDone={success} />;
+const ImgToPuzzle = ({ img_url }) => {
+  console.log("???? " + img_url);
+  // const img_url =
+  //   "https://storage.googleapis.com/tenlife/df302260-4f4a-11eb-a316-2f179a7b75ab.jpg";
+  return <Puzzle image={img_url} size={300} onDone={success} />;
 };
 
 export { ImgToPuzzle };
