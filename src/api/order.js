@@ -148,7 +148,7 @@ async function getDestinations() {
   }
 }
 
-async function getAllShoppingInfo(farm_ids) {
+async function getAllShippingInfo(farm_ids) {
   const userToken = storage.getAccessToken();
 
   try {
@@ -192,5 +192,5 @@ export {
   getOrderItem,
   getDestinations,
   getPressLikeNum,
-  getAllShoppingInfo,
+  getAllShippingInfo,
 };

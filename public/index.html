@@ -24,7 +24,12 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+
+    <!-- additional css file -->
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/vendor/slick-carousel/slick/slick.css" />
+    
+
+    <title>農金鏈</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -39,7 +44,8 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-  </body>
+
+
     <!-- JS Global Compulsory -->
     <script src="%PUBLIC_URL%/assets/vendor/jquery/dist/jquery.min.js"></script>
     <script src="%PUBLIC_URL%/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js"></script>
@@ -60,4 +66,35 @@
     <script src="%PUBLIC_URL%/assets/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="%PUBLIC_URL%/assets/vendor/dzsparallaxer/dzsparallaxer.js"></script>
     <script src="%PUBLIC_URL%/assets/vendor/aos/dist/aos.js"></script>
+    <script src="%PUBLIC_URL%/assets/vendor/slick-carousel/slick/slick.js"></script>
+    <script src="%PUBLIC_URL%/assets/vendor/jquery-mask-plugin/dist/jquery.mask.min.js"></script>
+    <!-- JS Front -->
+    <script src="%PUBLIC_URL%/assets/js/hs.core.js"></script>
+    <!-- <script src="%PUBLIC_URL%/assets/js/components/hs.autocomplete-local-search.js"></script>   -->
+    <script src="%PUBLIC_URL%/assets/js/hs.slick-carousel.js"></script>
+    <script src="%PUBLIC_URL%/assets/js/hs.mask.js"></script>
+
+    <!-- JS Plugins Init. -->
+    <script>
+      $(document).on('ready', function () {
+        // initialization of slick carousel
+        $('.js-slick-carousel').each(function() {
+          console.log("initialization of slick carousel");
+          var slickCarousel = $.HSCore.components.HSSlickCarousel.init($(this));
+        });
+      });
+    </script>
+    <script>
+      $(document).on('ready', function () {
+        // initialization of masked input
+        $('.js-masked-input').each(function () {
+          var mask = $.HSCore.components.HSMask.init($(this));
+        });
+      });
+    </script>
+
+
+
+  </body>
+
 </html>

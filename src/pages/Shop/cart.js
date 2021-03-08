@@ -4,7 +4,7 @@ import { CartContext } from "../../appContext";
 import {
   createOrder,
   createGiftOrder,
-  getAllShoppingInfo,
+  getAllShippingInfo,
 } from "../../api/order";
 import storage from "../../utils/storage";
 import { FarmInfo, findFeeProduct } from "../../api/product";
@@ -133,7 +133,7 @@ function ShoppingCart(props) {
       farm_name[farm_id] = farm["farm_name"];
       product_farmID[product_id] = farm.farm_id;
     }
-    const result = await getAllShoppingInfo(Object.keys(farm_price));
+    const result = await getAllShippingInfo(Object.keys(farm_price));
     const fee_as_product = await findFeeProduct(Object.keys(farm_price));
     let each_farm_fee = {};
     for (let index = 0; index < result.length; index++) {
