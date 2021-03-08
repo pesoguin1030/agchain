@@ -78,112 +78,20 @@ function SingleProduct() {
     alert("hi");
   };
   return (
-    <div class="container space-top-1 space-top-sm-2">
+    <div class="container space-top-1 space-top-sm-2 mt-10">
       <div class="row pb-5 border-bottom">
-        <div class="col-lg-7 mb-7 mb-lg-0">
-          <div class="pr-lg-4">
-            <div class="position-relative">
-              <div className="js-slide">
-                <img
-                  class="img-fluid w-100 rounded"
-                  src={imgUrl}
-                  alt="Image Description"
-                />
-              </div>
-              {/* <div
-                id="heroSlider"
-                className="js-slick-carousel slick border rounded"
-                data-hs-slick-carousel-options='{
-                              "prevArrow": "<span class=\"fas fa-arrow-left slick-arrow slick-arrow-primary-white slick-arrow-left slick-arrow-centered-y shadow-soft rounded-circle ml-n3 ml-sm-2 ml-xl-4\"></span>",
-                              "nextArrow": "<span class=\"fas fa-arrow-right slick-arrow slick-arrow-primary-white slick-arrow-right slick-arrow-centered-y shadow-soft rounded-circle mr-n3 mr-sm-2 mr-xl-4\"></span>",
-                              "fade": true,
-                              "infinite": true,
-                              "autoplay": true,
-                              "autoplaySpeed": 7000,
-                              "asNavFor": "#heroSliderNav"
-                          }'
-              >
-                <div className="js-slide">
-                  <img
-                    class="img-fluid w-100 rounded"
-                    src="../../assets/img/600x600/img1.jpg"
-                    alt="Image Description"
-                  />
-                </div>
-                <div class="js-slide">
-                  <img
-                    class="img-fluid w-100 rounded"
-                    src="../../assets/img/600x600/img2.jpg"
-                    alt="Image Description"
-                  />
-                </div>
-                <div class="js-slide">
-                  <img
-                    class="img-fluid w-100 rounded"
-                    src="../../assets/img/600x600/img3.jpg"
-                    alt="Image Description"
-                  />
-                </div>
-              </div> 
-              <div class="position-absolute bottom-0 right-0 left-0 px-4 py-3">
-                <div
-                  id="heroSliderNav"
-                  class="js-slick-carousel slick slick-gutters-1 slick-transform-off max-w-27rem mx-auto"
-                  data-hs-slick-carousel-options='{
-                              "infinite": true,
-                              "autoplaySpeed": 7000,
-                              "slidesToShow": 3,
-                              "isThumbs": true,
-                              "isThumbsProgress": true,
-                              "thumbsProgressOptions": {
-                                  "color": "#377dff",
-                                  "width": 8
-                              },
-                              "thumbsProgressContainer": ".js-slick-thumb-progress",
-                              "asNavFor": "#heroSlider"
-                              }'
-                >
-                  <div class="js-slide p-1">
-                    <a
-                      class="js-slick-thumb-progress d-block avatar avatar-circle border p-1"
-                      href="javascript:;"
-                    >
-                      <img
-                        class="avatar-img"
-                        src="../../assets/img/100x100/img16.jpg"
-                        alt="Image Description"
-                      />
-                    </a>
-                  </div>
-                  <div class="js-slide p-1">
-                    <a
-                      class="js-slick-thumb-progress d-block avatar avatar-circle border p-1"
-                      href="javascript:;"
-                    >
-                      <img
-                        class="avatar-img"
-                        src="../../assets/img/100x100/img17.jpg"
-                        alt="Image Description"
-                      />
-                    </a>
-                  </div>
-                  <div class="js-slide p-1">
-                    <a
-                      class="js-slick-thumb-progress d-block avatar avatar-circle border p-1"
-                      href="javascript:;"
-                    >
-                      <img
-                        class="avatar-img"
-                        src="../../assets/img/100x100/img18.jpg"
-                        alt="Image Description"
-                      />
-                    </a>
-                  </div>
-                </div>
-              </div> */}
+        <div class="col-lg-7 mb-7 mb-lg-0 pr-lg-4">
+          <div class="position-relative">
+            <div className="js-slide">
+              <img
+                class="img-fluid w-100 rounded"
+                src={imgUrl}
+                alt="Image Description"
+              />
             </div>
           </div>
         </div>
+
         <div class="col-lg-5">
           <div class="d-flex align-items-center small mb-2">
             <div class="text-warning mr-2">
@@ -202,43 +110,7 @@ function SingleProduct() {
           <div class="mb-5">
             <h2 class="font-size-1 text-body mb-0">價格:</h2>
             <span class="text-dark font-size-2 font-weight-bold">{price}</span>
-            {/* <span class="text-body ml-2">
-              <del>1000</del>
-            </span> */}
           </div>
-
-          {/* <div class="border rounded py-2 px-3 mb-3">
-            <div class="js-quantity-counter row align-items-center">
-              <div class="col-7">
-                <small class="d-block text-body font-weight-bold">
-                  Select quantity
-                </small>
-                <input
-                  class="js-result form-control h-auto border-0 rounded p-0"
-                  type="text"
-                  value="1"
-                />
-              </div>
-              <div class="col-5 text-right">
-                <button
-                  class="js-minus btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  onClick={() => {
-                    DecreaseAmount();
-                  }}
-                >
-                  <i class="fas fa-minus"></i>
-                </button>
-                <button
-                  class="js-plus btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  onClick={() => {
-                    IncreaseAmount();
-                  }}
-                >
-                  <i class="fas fa-plus"></i>
-                </button>
-              </div>
-            </div>
-          </div> */}
 
           <div id="shopCartAccordion" class="accordion mb-4 mx-auto">
             <div class="card border shadow-none">
@@ -366,7 +238,7 @@ function SingleProduct() {
           </div>
         </div>
       </div>
-      {/* Detail of product */}
+
       <div className="container space-1 space-lg-2">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>農場資訊</h2>

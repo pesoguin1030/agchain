@@ -76,13 +76,14 @@ const Header = () => {
       console.log(access_token);
       setIsSidebarVisible(false);
     } catch (error) {
+      alert("帳號或密碼有誤");
       console.error(error);
     }
   };
 
   return (
     <>
-      <header id="header" className="header">
+      <header id="header" className="header sticky">
         <div className="header-section">
           <div className="container header-hide-content pt-2">
             <div className="d-flex align-items-center">
@@ -279,6 +280,7 @@ const Header = () => {
                         className="btn btn-xs btn-ghost-secondary"
                         onClick={() => setIsSidebarVisible(true)}
                       >
+                        <span>註冊會員</span>
                         <i className="fas fa-user-circle" />
                       </a>
                     )}
@@ -287,18 +289,11 @@ const Header = () => {
               </ul>
             </div>
           </div>
-
           <div className="container">
             <nav className="js-mega-menu navbar navbar-expand-lg">
               {/* Logo */}
-              <a className="navbar-brand" href="/">
-                <img
-                  style={{
-                    width: "5.5rem",
-                  }}
-                  src="/logo.jpg"
-                  alt="Logo"
-                />
+              <a href="/">
+                <img src="/logo.png" alt="Logo" />
               </a>
               <button
                 type="button"
@@ -362,6 +357,7 @@ const Header = () => {
               </div>
             </nav>
           </div>
+          {/* <hr class="hr-text" /> */}
         </div>
       </header>
       <Sidebar

@@ -1,38 +1,52 @@
 import React, { useEffect, useState, useContext } from "react";
-import { getOrder } from "../../api/order";
+import { getOrder, getOrderItem } from "../../api/order";
 import storage from "../../utils/storage";
 import { Table } from "react-bootstrap";
 
 function Order() {
-  const [packages, setPackages] = useState([]);
-  const [showPackage, setShowPackage] = useState([]);
+  const [orderlist, setOrderList] = useState([]);
   useEffect(() => {
-    if (packages.length === 0) {
-      getPackages();
+    if (orderlist.length === 0) {
+      getOrderList();
     }
-  }, [packages]);
-  async function getPackages() {
+  }, []);
+  async function getOrderList() {
     const userToken = storage.getAccessToken();
-    console.log(userToken);
     const orders = await getOrder(userToken);
-    console.log(orders);
-    setPackages(orders);
-    return orders;
+    getPackageItem(orders).then((full_orders) => setOrderList(full_orders));
+  }
+  async function getPackageItem(orderlist) {
+    const userToken = storage.getAccessToken();
+    var packages = [];
+    for (let index = 0; index < orderlist.length; index++) {
+      const element = orderlist[index];
+      const orderItem = await getOrderItem(element["orderNumber"], userToken);
+      var items_description = "";
+      orderItem.map((element) => {
+        items_description += element["name"] + "、";
+      });
+      packages.push({
+        ...element,
+        ["description"]: items_description.slice(0, -1),
+      });
+    }
+    return packages;
   }
   return (
     <div className="container space-1 space-md-2">
-      <div className="row">
+      <div className="row mt-10">
         <Table striped bordered hover>
           <thead>
             <tr>
               <th>訂單編號</th>
               <th>時間</th>
-              <th>訂單位置</th>
+              <th>訂單狀態</th>
+              <th>簡述</th>
               <th>電子賀卡</th>
             </tr>
           </thead>
           <tbody>
-            {packages.map((item) => {
+            {orderlist.map((item) => {
               return (
                 <tr>
                   <td>
@@ -41,9 +55,10 @@ function Order() {
                     </a>
                   </td>
                   <td>{item["time"]}</td>
-                  <td>{item["contractAddress"]}</td>
+                  <td>{item["state"]}</td>
+                  <td>{item["description"]}</td>
                   <td>
-                    <a href={"./shop/gift/" + item["orderNumber"]}>修改</a>
+                    <a href={item["video_url"]}>{item["order_type"]}</a>
                   </td>
                 </tr>
               );
