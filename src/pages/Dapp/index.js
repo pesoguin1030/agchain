@@ -1,25 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import moment from "moment";
 import CertificateCard from "../../../src/components/Card/CertificateCard";
 import TimeLine from "../../../src/components/TimeLine";
-import GiftCard from "../../../src/components/Card/GiftCard";
 import Radarchart from "../../../src/components/RadarChart";
+import { ImgToPuzzle } from "../../components/Puzzle";
+import Slideshow from "../../components/Slideshow";
+
 import {
-  fetchCultivationRecord,
   fetchOrganicCertificate,
   fetchSecureItem,
   fetchSensorAnalysis,
 } from "../../api/ethereum";
 import { getTraceData, sendPressLike } from "../../api/package";
 import { fetchVideo } from "../../api/media";
+import { getCultivationRecord } from "../../api/cultivationRecord";
 import { useParams, Redirect } from "react-router-dom";
 import ReactPlayer from "react-player";
 import Typed from "typed.js";
 
 import { Button } from "react-bootstrap";
-import { icon } from "@fortawesome/fontawesome-svg-core";
-import { ImgToPuzzle } from "../../components/Puzzle";
 
 function Dapp(props) {
   const giftTextRef = useRef();
@@ -73,23 +72,10 @@ function Dapp(props) {
     var re = new RegExp("^" + propName + "(\\[\\d*\\])?$"),
       key;
     var objs = [];
-    for (key in obj) if (re.test(key) && obj[key] != null) objs.push(obj[key]);
+    for (key in obj) {
+      if (re.test(key) && obj[key] != null) objs.push(obj[key]);
+    }
     return objs;
-  }
-
-  function sortCultivationRecord(records) {
-    // 過濾掉同一個TxHash的田間紀錄
-    let uniqueRecords = Array.from(new Set(records.map((a) => a.txHash))).map(
-      (txHash) => {
-        return records.find((a) => a.txHash === txHash);
-      }
-    );
-    // 依時間先後順序排列
-    uniqueRecords.sort(function (a, b) {
-      return a.timestamp - b.timestamp;
-    });
-
-    return uniqueRecords;
   }
 
   async function setupRequiredInformation(traceID) {
@@ -113,64 +99,11 @@ function Dapp(props) {
     setFarmIntro(farm_intro);
     setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
     setCropName(crop_name);
+    console.log(farmPic);
 
     // 田間紀錄
-    response = await fetchCultivationRecord(crop_id);
-    response = sortCultivationRecord(response);
-    // 轉換成{icon, title, description}的形式，方便用timeline顯示
-    let cultivation_records = response.map((record) => {
-      let icon_path = "../../assets/img/cultivation";
-      switch (record.action) {
-        case "播種測試":
-        case "播種":
-          icon_path = "播種.png";
-          break;
-        case "種植":
-        case "定植":
-          icon_path = "定植.png";
-          break;
-        case "施肥":
-          icon_path = "施肥.png";
-          break;
-        case "除草":
-          icon_path = "除草.png";
-          break;
-        case "粗耕":
-          icon_path = "粗耕.png";
-          break;
-        case "細耕":
-          icon_path = "細耕.png";
-          break;
-        case "割稻":
-          icon_path = "割稻.png";
-          break;
-        case "插秧":
-          icon_path = "插秧.png";
-          break;
-        case "整地":
-          icon_path = "整地.png";
-          break;
-        case "澆水":
-          icon_path = "澆水.png";
-          break;
-        case "除草":
-          icon_path = "除草.png";
-          break;
-
-        default:
-          icon_path = "agriculture.png";
-      }
-      return {
-        icon: icon_path,
-        title:
-          record.action +
-          " (" +
-          moment.unix(record.timestamp).format("YYYY-MM-DD") +
-          ")",
-        description: record.txHash,
-      };
-    });
-    setCultivationRecord(cultivation_records);
+    response = await getCultivationRecord(crop_id);
+    setCultivationRecord(response);
 
     // 出貨前照片
     response = await fetchSecureItem(traceID);
@@ -197,6 +130,7 @@ function Dapp(props) {
       console.error(err);
     }
   }
+
   return isForbidden ? (
     <Redirect to="/404" />
   ) : (
@@ -205,7 +139,7 @@ function Dapp(props) {
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>電子賀卡</h2>
         </div>
-        <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+        <div className="row w-md-80 w-lg-75 text-center mx-md-auto mb-5 mb-md-9">
           <div className="col-12">
             <div
               style={{
@@ -243,6 +177,7 @@ function Dapp(props) {
           </div>
         </div>
       </div>
+
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5">
           <img
@@ -256,6 +191,7 @@ function Dapp(props) {
           </p>
         </div>
       </div>
+
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>與收到的禮品比比看</h2>
@@ -268,18 +204,19 @@ function Dapp(props) {
 
         <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           {secureItem && secureItem.cid !== "" ? (
-            <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
-              <img
-                style={{
-                  objectFit: "contain",
-                  maxHeight: 480,
-                }}
-                src={`${secureItem?.cid}`}
-                className="responsive-img mt-2"
-              />
-              <ImgToPuzzle img={`https://ipfs.io/ipfs/${secureItem?.cid}`} />
-            </div>
+            <ImgToPuzzle img={`${secureItem?.cid}`} />
           ) : (
+            // <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
+            //   {/* <img
+            //     style={{
+            //       objectFit: "contain",
+            //       maxHeight: 480,
+            //     }}
+            //     src={`${secureItem?.cid}`}
+            //     className="responsive-img mt-2"
+            //   /> */}
+
+            // </div>
             <div className="col-12 text-center">
               <ImgToPuzzle
                 img={
@@ -295,10 +232,29 @@ function Dapp(props) {
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>田間紀錄</h2>
         </div>
-        <div className="row w-md-80 w-lg-60 mx-md-auto px-5">
+        <div className="row w-md-80 w-lg-50 mx-md-auto px-5">
           {cultivationRecord && cultivationRecord.length !== 0 ? (
-            <div className="col-12">
-              <TimeLine items={cultivationRecord} />
+            // 弄一個可以scroll的window?
+            <div className="col-12 px-auto">
+              {/* Toggle button版 
+              <div className="col-12 collapse" id="cultivationRecord">
+                <TimeLine items={cultivationRecord} />
+              </div>
+              
+              <div className=" mx-auto">
+                <button 
+                  class="btn btn-primary" type="button" 
+                  data-toggle="collapse" data-target="#cultivationRecord" 
+                  aria-expanded="false" aria-controls="collapseExample">
+                  查看田間紀錄
+                </button>
+              </div> */}
+              <div
+                id="style-2"
+                style={{ overflow: "hidden scroll", height: "480px" }}
+              >
+                <TimeLine items={cultivationRecord} />
+              </div>
             </div>
           ) : (
             <div className="col-12 text-center">
@@ -323,7 +279,40 @@ function Dapp(props) {
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>農場資訊</h2>
         </div>
-        <div className="row">
+        <Slideshow src_arr={[farmPic[0], farmPic[1], farmPic[2]]} />
+        <div className="space-1">
+          <p style={{ letterSpacing: "0.2rem" }}>{farmIntro?.farm_intro}</p>
+          <ul
+            style={{
+              listStyleType: "none",
+              paddingLeft: 0,
+              textAlign: "center",
+            }}
+          >
+            <li className="mt-1">
+              <i className="fas fa-map-marked"></i>
+              <a
+                target="_blank"
+                href={`http://maps.google.com/?q=${farmIntro?.farm_address}`}
+                className="mx-2"
+              >
+                {farmIntro?.farm_address}
+              </a>
+            </li>
+            <li className="mt-1">
+              <i className="fas fa-phone" style={{ width: 18 }}></i>
+              <a
+                target="_blank"
+                href={`tel:${farmIntro?.farm_phone}`}
+                className="mx-2"
+              >
+                {farmIntro?.farm_phone}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        {/* <div className="row">
           <div className="col-md-6 px-sm-3 mb-4 px-3">
             {
               <iframe
@@ -337,7 +326,8 @@ function Dapp(props) {
             }
             {farmPic.map((pic, index) => {
               return <img src={pic} className="responsive-img" key={index} />;
-            })}
+            })} 
+            
           </div>
           <div className="col-md-6 px-sm-3 mb-5 px-5">
             <p style={{ letterSpacing: "0.2rem" }}>{farmIntro?.farm_intro}</p>
@@ -370,7 +360,7 @@ function Dapp(props) {
               </li>
             </ul>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="container space-1 space-lg-3">

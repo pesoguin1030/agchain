@@ -58,28 +58,13 @@ const ListItem = (items) => {
           </div>
         </div>
       </li>
-      // <li className="step-item">
-      //   <div className="step-content-wrapper">
-      //     <div className="step-avatar">
-      //       <img
-      //         className="step-avatar-img"
-      //         src={item.icon}
-      //         alt="Image Description"
-      //       />
-      //     </div>
-      //     <div className="step-content">
-      //       <h4>{item.title}</h4>
-      //       <p className="text-body">{item.description}</p>
-      //     </div>
-      //   </div>
-      // </li>
     );
   });
 };
 
 const TimeLine = ({ items }) => {
   // 目前預設橫式 在寬度小於md(786px?)時會轉成直式
-  return <ul className="step step-md">{ListItem(items)}</ul>;
+  return <ul className="step step-border-last-0 ">{ListItem(items)}</ul>;
 };
 
 export default TimeLine;
