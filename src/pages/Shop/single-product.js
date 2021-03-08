@@ -269,7 +269,7 @@ function SingleProduct() {
               data-parent="#shopCartAccordion"
             >
               <div class="card-body">
-                <p class="small mb-0">農場位於{farmAddress} 運費如下：</p>
+                <p class=" mb-0">農場位於{farmAddress} 運費如下：</p>
                 <ul>
                   <li>同縣市：{farmfee[0]}元</li>
                   <li>不同縣市：{farmfee[1]}元</li>
@@ -321,7 +321,7 @@ function SingleProduct() {
               data-parent="#shopCartAccordion"
             >
               <div class="card-body">
-                <p class="small mb-0">
+                <p class=" mb-0">
                   生鮮蔬菜水果類商品類符合「通訊交易解除權合理例外情事適用準則」第二條第一項(易於腐敗、保存期限較短或解約時即將逾期之商品)，
                   將排除7日解除權時，不再適用消費者保護法（以下簡稱消保法）第19條規定之7日解除權。因此不受理商品退貨，請確定生鮮蔬菜水果類商品是您需要的商品再進行下單
                 </p>
