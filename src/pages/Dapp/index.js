@@ -204,18 +204,19 @@ function Dapp(props) {
 
         <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           {secureItem && secureItem.cid !== "" ? (
-            <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
-              <img
-                style={{
-                  objectFit: "contain",
-                  maxHeight: 480,
-                }}
-                src={`${secureItem?.cid}`}
-                className="responsive-img mt-2"
-              />
-              <ImgToPuzzle img={`https://ipfs.io/ipfs/${secureItem?.cid}`} />
-            </div>
+            <ImgToPuzzle img={`${secureItem?.cid}`} />
           ) : (
+            // <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
+            //   {/* <img
+            //     style={{
+            //       objectFit: "contain",
+            //       maxHeight: 480,
+            //     }}
+            //     src={`${secureItem?.cid}`}
+            //     className="responsive-img mt-2"
+            //   /> */}
+
+            // </div>
             <div className="col-12 text-center">
               <ImgToPuzzle
                 img={
@@ -231,10 +232,29 @@ function Dapp(props) {
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>田間紀錄</h2>
         </div>
-        <div className="row w-md-80 w-lg-70 mx-md-auto px-5">
+        <div className="row w-md-80 w-lg-50 mx-md-auto px-5">
           {cultivationRecord && cultivationRecord.length !== 0 ? (
-            <div className="col-12">
-              <TimeLine items={cultivationRecord} />
+            // 弄一個可以scroll的window?
+            <div className="col-12 px-auto">
+              {/* Toggle button版 
+              <div className="col-12 collapse" id="cultivationRecord">
+                <TimeLine items={cultivationRecord} />
+              </div>
+              
+              <div className=" mx-auto">
+                <button 
+                  class="btn btn-primary" type="button" 
+                  data-toggle="collapse" data-target="#cultivationRecord" 
+                  aria-expanded="false" aria-controls="collapseExample">
+                  查看田間紀錄
+                </button>
+              </div> */}
+              <div
+                id="style-2"
+                style={{ overflow: "hidden scroll", height: "480px" }}
+              >
+                <TimeLine items={cultivationRecord} />
+              </div>
             </div>
           ) : (
             <div className="col-12 text-center">

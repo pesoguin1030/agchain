@@ -6,8 +6,8 @@ import Puzzle from "react-image-puzzle";
 const success = () => {
   alert("success");
 };
-const ImgToPuzzle = ({ img, level }) => {
-  return <Puzzle image={img} size={300} onDone={success} level={level} />;
+const ImgToPuzzle = ({ img }) => {
+  return <Puzzle image={img} size={300} onDone={success} />;
 };
 
 export { ImgToPuzzle };

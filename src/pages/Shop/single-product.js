@@ -56,6 +56,7 @@ function SingleProduct() {
     setIsInCart(cartState ? cartState.map((e) => e.id).includes(id) : false);
 
     let crop_id = data["crop_id"];
+
     // 田間紀錄
     let response = await getCultivationRecord(crop_id);
     setCultivationRecord(response);
@@ -78,7 +79,7 @@ function SingleProduct() {
     alert("hi");
   };
   return (
-    <div class="container space-top-1 space-top-sm-2 mt-10">
+    <div class="container space-top-1 space-top-sm-2 mt-11">
       <div class="row pb-5 border-bottom">
         <div class="col-lg-7 mb-7 mb-lg-0 pr-lg-4">
           <div class="position-relative">
@@ -284,6 +285,28 @@ function SingleProduct() {
           <div className="col-12">
             <Radarchart data={sensorAnalysis} cropName={name} />
           </div>
+        </div>
+      </div>
+
+      <div className="container space-1 space-lg-3">
+        <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+          <h2>田間紀錄</h2>
+        </div>
+        <div className="row w-md-80 w-lg-70 mx-md-auto px-5">
+          {cultivationRecord && cultivationRecord.length !== 0 ? (
+            <div className="col-12 px-auto">
+              <div
+                id="style-2"
+                style={{ overflow: "hidden scroll", height: "480px" }}
+              >
+                <TimeLine items={cultivationRecord} />
+              </div>
+            </div>
+          ) : (
+            <div className="col-12 text-center">
+              <p>無相關田間紀錄</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
