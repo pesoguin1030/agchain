@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, useParams } from "react-router-dom";
+import { Redirect, useParams, Link } from "react-router-dom";
 import { AuthContext, CartContext } from "../../appContext";
 import { useEffect, useState, useContext } from "react";
 import { getAllShippingInfo } from "../../api/order";
@@ -32,20 +32,25 @@ function SingleProduct() {
   const [farmfee, setFarmFee] = useState([]);
   const [IntID, setIntID] = useState(0);
   const [isInCart, setIsInCart] = useState(false);
-
+  const [copyCartState, setCopyCartState] = useState([]);
   const [cultivationRecord, setCultivationRecord] = useState([]); // 田間紀錄
   const [sensorAnalysis, setSensorAnalysis] = useState([]); // 種植數據
 
   useEffect(() => {
     setIntID(parseInt(id, 10));
+
+    return () => {};
+  }, []);
+  useEffect(() => {
     PreLoadData();
     return () => {};
   }, [cartState]);
 
   const PreLoadData = async () => {
     const data = await ProductDetail(id);
+    console.log(data);
     const farm_data = await FarmInfo(id);
-    console.log(farm_data);
+    // console.log(farm_data);
     const shippinginfo = await getAllShippingInfo([
       farm_data["farm_id"].toString(),
     ]);
@@ -53,7 +58,7 @@ function SingleProduct() {
       shippinginfo[0]["same_city"],
       shippinginfo[0]["different_city"],
     ];
-    console.log(farm_fee);
+
     setFarmFee(farm_fee);
     setName(data["name"]);
     setPrice(data["price"]);
@@ -65,7 +70,14 @@ function SingleProduct() {
     setFarmAddress(farm_data["farm_address"]);
     setFarmPhone(farm_data["farm_phone"]);
     setFarmPic(getPropertyByRegex(farm_data, "farm_picture|[1-9]"));
-
+    if (cartState !== null) {
+      console.log(IntID);
+      cartState.map((e) => console.log(typeof e.id));
+    }
+    console.log(
+      "==",
+      cartState ? cartState.map((e) => e.id).includes(IntID) : false
+    );
     setIsInCart(cartState ? cartState.map((e) => e.id).includes(IntID) : false);
 
     let crop_id = data["crop_id"];
@@ -87,10 +99,7 @@ function SingleProduct() {
 
     return objs;
   }
-  const AddToCart = () => {
-    setIsInCart(true);
-    alert("hi");
-  };
+
   return (
     <div class="container space-top-1 space-top-sm-2 mt-11">
       <div class="row pb-5 border-bottom">
@@ -238,25 +247,31 @@ function SingleProduct() {
               新增至購物車
             </button> */}
             {isInCart ? (
-              <button
-                type="button"
-                onClick={() => {
-                  cartDispatch((prev) => prev.filter((e) => e.id !== id));
-                  setIsInCart(false);
-                }}
-                className="btn btn-block btn-outline-secondary btn-pill transition-3d-hover"
+              // <button
+              //   type="button"
+              // onClick={() => {
+              //   cartDispatch((prev) => prev.filter((e) => e.id !== id));
+              //   setIsInCart(false);
+              // }}
+              // className="btn btn-block btn-outline-secondary btn-pill transition-3d-hover"
+              // >
+              <Link
+                to="/shop/cart"
+                className="btn btn-block btn-primary btn-block btn-pill transition-3d-hover"
               >
-                從購物車中移除
-              </button>
+                前往結帳
+              </Link>
             ) : (
+              // </button>
               <button
                 type="button"
                 onClick={() => {
                   cartDispatch((prev) => [
                     ...prev,
-                    { id, name, price, img: imgUrl },
+                    { id: IntID, name, price, img: imgUrl },
                   ]);
                   setIsInCart(true);
+                  console.log("setting true!!!!");
                 }}
                 className="btn btn-block btn-outline-primary btn-pill transition-3d-hover"
               >

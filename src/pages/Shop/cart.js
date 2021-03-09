@@ -426,7 +426,9 @@ function ShoppingCart(props) {
                       <input
                         className="form-control"
                         placeholder="詳細地址"
-                        onChange={handleDestination}
+                        onChange={(e) => {
+                          setSelectedAddress(e.target.value);
+                        }}
                       />
                       <a
                         href="javascript:void(0);"

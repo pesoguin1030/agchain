@@ -238,7 +238,7 @@ const Header = () => {
                                     to="/shop/cart"
                                     className="btn btn-xs btn-primary btn-block btn-pill transition-3d-hover"
                                   >
-                                    前往購物車
+                                    前往結帳
                                   </Link>
                                 </Col>
                               ) : null}
