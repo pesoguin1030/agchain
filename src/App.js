@@ -22,6 +22,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/Exception/404";
 import storage from "./utils/storage";
 import ShoppingCart from "./pages/Shop/cart";
+import DiffShoppingCart from "./pages/Shop/diffCart";
 import Shop from "./pages/Shop";
 import Order from "./pages/Order";
 import GiftMaker from "./pages/Shop/gift";
@@ -164,6 +165,7 @@ function App() {
                 <Route path="/shop/cart">
                   {authState.user ? <ShoppingCart /> : <Redirect to="/login" />}
                 </Route>
+                <Route path="/shop/diffCart">{<DiffShoppingCart />}</Route>
                 <Route exact path="/shop/analysis/:orderNumber">
                   <Analysis />
                 </Route>
