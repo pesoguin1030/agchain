@@ -110,13 +110,14 @@ function ShoppingCart(props) {
   };
 
   const handleDestination = (e) => {
-    console.log(e.target.value);
+    const index = e.target.selectedIndex;
     setDestinationId(e.target.value);
+    setSelectedAddress(e.target[index].text);
   };
 
   const getShippingInfo = async () => {
-    var destinationName = "新竹市";
-
+    console.log("selectedAddress", selectedAddress);
+    var selectedCounty = selectedAddress.slice(0, 3);
     let farm_price = {};
     let farm_name = {};
     let product_farmID = {};
@@ -140,7 +141,7 @@ function ShoppingCart(props) {
       const ship_info = result[index];
       console.log(ship_info);
       var tmp;
-      if (ship_info["county"] !== destinationName) {
+      if (ship_info["county"] !== selectedCounty) {
         if (ship_info.free_threshold > farm_price[ship_info["farm_id"]]) {
           const fee_productID = fee_as_product.find(
             (o) =>

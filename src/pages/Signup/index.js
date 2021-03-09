@@ -2,6 +2,8 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import validator from "validator";
+import request from "../../utils/request";
+import { createDestination } from "../../api/destination";
 
 function Signup(props) {
   const [name, setName] = useState("");
@@ -13,8 +15,40 @@ function Signup(props) {
   const [password, setPassword] = useState("");
   const [passwordStatus, setPasswordStatus] = useState("basic");
   const [passwordMessage, setPasswordMessage] = useState(null);
+  const [countyStatus, setCountyStatus] = useState("basic");
+  const [countyMessage, setCountyMessage] = useState(null);
+  const [addressStatus, setAddressStatus] = useState("basic");
+  const [addressMessage, setAddressMessage] = useState(null);
   const [isSignupInProgress, setIsSignupInProgress] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const [selectedCounty, setSelectedCounty] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState("");
+
+  const [countys, setCountys] = useState([
+    { text: "基隆市" },
+    { text: "台北市" },
+    { text: "新北市" },
+    { text: "桃園市" },
+    { text: "新竹市" },
+    { text: "新竹縣" },
+    { text: "苗栗縣" },
+    { text: "台中市" },
+    { text: "彰化縣" },
+    { text: "南投縣" },
+    { text: "雲林縣" },
+    { text: "嘉義市" },
+    { text: "嘉義縣" },
+    { text: "台南市" },
+    { text: "高雄市" },
+    { text: "屏東縣" },
+    { text: "台東縣" },
+    { text: "花蓮縣" },
+    { text: "宜蘭縣" },
+    { text: "澎湖縣" },
+    { text: "金門縣" },
+    { text: "連江縣" },
+  ]);
+
   async function handleSignup() {
     setIsSignupInProgress(true);
     if (name.length > 32 || name.length < 2) {
@@ -45,34 +79,54 @@ function Signup(props) {
       setPasswordMessage(null);
     }
 
-    try {
-      const response = await axios.post(
-        `http://localhost:4000/users/signup`,
-        {
-          name: name,
-          email: email,
-          password: password,
-        },
-        {
-          headers: {
-            "Cache-Control": "no-cache, no-store",
-          },
-        }
-      );
-      console.log(response);
-      const { data } = response;
-      if (data === "success") {
-        console.log("Hii");
-        setIsSignup(true);
-        //navigation.navigate('Login');
-      } else {
-        alert("發生錯誤");
-        setIsSignupInProgress(false);
-      }
-    } catch (error) {
-      alert(error.response.data);
+    if (selectedCounty === "") {
+      setCountyStatus("danger");
+      setCountyMessage("請選擇縣市");
       setIsSignupInProgress(false);
-      return false;
+    } else {
+      setCountyStatus("success");
+      setCountyMessage(null);
+    }
+    if (selectedAddress === "") {
+      setAddressStatus("danger");
+      setAddressMessage("請填寫住址");
+      setIsSignupInProgress(false);
+    } else {
+      setAddressStatus("success");
+      setAddressMessage(null);
+    }
+    const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
+    await createDestination(selectedCounty + selectedAddress, coordinates);
+    if (isSignupInProgress) {
+      try {
+        const response = await request.post(
+          `/users/signup`,
+          {
+            name: name,
+            email: email,
+            password: password,
+          },
+          {
+            headers: {
+              "Cache-Control": "no-cache, no-store",
+            },
+          }
+        );
+
+        console.log(response);
+        const { data } = response;
+        if (data === "success") {
+          setIsSignup(true);
+          //navigation.navigate('Login');
+        } else {
+          alert("發生錯誤");
+          setIsSignupInProgress(false);
+        }
+      } catch (error) {
+        alert(error.response.data);
+        setIsSignupInProgress(false);
+        return false;
+      }
     }
   }
 
@@ -113,19 +167,31 @@ function Signup(props) {
                   </label>
                   <input
                     type="name"
-                    className="form-control form-control-lg"
+                    className="form-control form-control-lg "
                     name="name"
                     id="signupName"
                     tabIndex="1"
                     placeholder=""
                     aria-label=""
                     required
+                    status={nameStatus}
+                    caption={nameMessage}
                     data-msg="請輸入正確的名字"
                     onChange={(e) => {
                       setName(e.target.value);
                     }}
                   />
+                  {nameStatus === "danger" ? (
+                    <div>
+                      <small id="name" class="text-danger">
+                        {nameMessage}
+                      </small>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
                 </div>
+
                 <div className="js-form-message form-group">
                   <label className="input-label" htmlFor="signinSrEmail">
                     你的信箱
@@ -144,6 +210,15 @@ function Signup(props) {
                       setEmail(e.target.value);
                     }}
                   />
+                  {emailStatus === "danger" ? (
+                    <div>
+                      <small id="name" class="text-danger">
+                        {emailMessage}
+                      </small>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
                 </div>
                 <div className="js-form-message form-group">
                   <label
@@ -181,6 +256,7 @@ function Signup(props) {
                         setPassword(e.target.value);
                       }}
                     />
+
                     <div id="changePassTarget" className="input-group-append">
                       <a className="input-group-text" href="">
                         <i
@@ -190,7 +266,62 @@ function Signup(props) {
                       </a>
                     </div>
                   </div>
+                  {passwordStatus === "danger" ? (
+                    <div>
+                      <small id="name" class="text-danger">
+                        {passwordMessage}
+                      </small>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
                 </div>
+                <div className="js-form-message form-group">
+                  <label className="input-label" htmlFor="address" tabIndex="0">
+                    居住地
+                  </label>
+                  <select
+                    style={{ flex: 1 }}
+                    placeholder="請選擇縣市"
+                    className="custom-select"
+                    onChange={(e) => {
+                      setSelectedCounty(e.target.value);
+                    }}
+                  >
+                    <option>請選擇縣市</option>
+                    {countys.map((county) => {
+                      return <option value={county.text}>{county.text}</option>;
+                    })}
+                  </select>
+                  {countyStatus === "danger" ? (
+                    <div>
+                      <small id="name" class="text-danger">
+                        {countyMessage}
+                      </small>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+                  <input
+                    type="text"
+                    className=" form-control form-control-lg mt-5"
+                    name="address"
+                    placeholder="東區光復路二段101號"
+                    onChange={(e) => {
+                      setSelectedAddress(e.target.value);
+                    }}
+                  ></input>
+                  {addressStatus === "danger" ? (
+                    <div>
+                      <small id="name" class="text-danger">
+                        {addressMessage}
+                      </small>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
+
                 <div className="form-group">
                   <div className="custom-control custom-checkbox">
                     <input
@@ -213,39 +344,6 @@ function Signup(props) {
                 >
                   註冊
                 </button>
-              </div>
-            </div>
-            <div className="text-center">
-              <small className="text-cap mb-4">
-                Trusted by the world&apos;s best teams
-              </small>
-              <div className="w-85 mx-auto">
-                <div className="row justify-content-between">
-                  <div className="col">
-                    <img
-                      className="img-fluid"
-                      src="/assets/svg/brands/gitlab-gray.svg"
-                    />
-                  </div>
-                  <div className="col">
-                    <img
-                      className="img-fluid"
-                      src="/assets/svg/brands/fitbit-gray.svg"
-                    />
-                  </div>
-                  <div className="col">
-                    <img
-                      className="img-fluid"
-                      src="/assets/svg/brands/flow-xo-gray.svg"
-                    />
-                  </div>
-                  <div className="col">
-                    <img
-                      className="img-fluid"
-                      src="/assets/svg/brands/layar-gray.svg"
-                    />
-                  </div>
-                </div>
               </div>
             </div>
           </div>

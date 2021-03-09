@@ -7,7 +7,6 @@ import { ProductCard } from "../../components/Card";
 
 import Radarchart from "../../../src/components/RadarChart";
 import TimeLine from "../../../src/components/TimeLine";
-import Header from "../../components/Header";
 import Slideshow from "../../components/Slideshow";
 
 import { ProductDetail, FarmInfo } from "../../api/product";
@@ -46,7 +45,7 @@ function SingleProduct() {
   const PreLoadData = async () => {
     const data = await ProductDetail(id);
     const farm_data = await FarmInfo(id);
-    console.log([farm_data["farm_id"].toString()]);
+    console.log(farm_data);
     const shippinginfo = await getAllShippingInfo([
       farm_data["farm_id"].toString(),
     ]);
