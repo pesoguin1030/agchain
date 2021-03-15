@@ -47,7 +47,10 @@ const ProductCard = ({
           {title}
         </a>
         <span className="d-block font-size-1">
-          <a className="text-inherit" href="./single-product">
+          <a
+            className="text-inherit"
+            href={"./shop/single-product/" + product_id}
+          >
             {description}
           </a>
         </span>
