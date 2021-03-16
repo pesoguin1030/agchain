@@ -162,7 +162,11 @@ function App() {
                   <Dapp />
                 </Route>
                 <Route path="/shop/cart">
-                  {authState.user ? <ShoppingCart /> : <Redirect to="/login" />}
+                  {authState.user ? (
+                    <ShoppingCart />
+                  ) : (
+                    <Redirect to="/signup" />
+                  )}
                 </Route>
                 <Route exact path="/shop/analysis/:orderNumber">
                   <Analysis />

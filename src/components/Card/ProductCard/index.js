@@ -12,16 +12,20 @@ const ProductCard = ({
 }) => (
   <div className="card border shadow-none text-center h-100">
     <div className="position-relative">
-      <img
-        className="card-img-top"
-        style={{
-          minHeight: 180,
-          objectFit: "contain",
-        }}
-        src={img}
-        alt="商品圖片"
-      />
-
+      <a
+        className="d-inline-block text-body small font-weight-bold mb-1"
+        href={"./shop/single-product/" + product_id}
+      >
+        <img
+          className="card-img-top"
+          style={{
+            minHeight: 180,
+            objectFit: "contain",
+          }}
+          src={img}
+          alt="商品圖片"
+        />
+      </a>
       <div className="position-absolute top-0 left-0 pt-3 pl-3">
         <span className="badge badge-success badge-pill">新上市</span>
       </div>
@@ -46,8 +50,12 @@ const ProductCard = ({
         >
           {title}
         </a>
+
         <span className="d-block font-size-1">
-          <a className="text-inherit" href="./single-product">
+          <a
+            className="text-inherit"
+            href={"./shop/single-product/" + product_id}
+          >
             {description}
           </a>
         </span>

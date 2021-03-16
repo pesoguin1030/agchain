@@ -96,7 +96,8 @@ function Signup(props) {
       setAddressMessage(null);
     }
     const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
-    await createDestination(selectedCounty + selectedAddress, coordinates);
+    const address = selectedCounty + selectedAddress;
+    await createDestination(address, coordinates);
     if (isSignupInProgress) {
       try {
         const response = await request.post(
