@@ -133,8 +133,9 @@ function DiffShoppingCart(props) {
 
   const addDiffOrder = () => {
     var num = diffOrder.length;
+    destState.push({ name: "", phone: "", address: "" });
     setDiffOrder([...diffOrder, { name: "", phone: "", address: "" }]);
-    destDispatch([...destState, { name: "", phone: "", address: "" }]);
+    destDispatch([...destState]);
     console.log(destState);
     // cartDispatch([...cartState, ...cartState]);
     // setItem_and_amount({ ...item_and_amount, ...item_and_amount });
