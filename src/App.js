@@ -9,6 +9,7 @@ import { AuthContext, CartContext } from "./appContext";
 import Home from "./pages/Home";
 import request from "./utils/request";
 import Dapp from "./pages/Dapp/index";
+import Partner from "./pages/Partner/index";
 
 import AccountInfo from "./pages/Account/index";
 
@@ -162,6 +163,9 @@ function App() {
                 <Route path="/dapp/:traceID">
                   <Dapp />
                 </Route>
+                <Route path="/partner/:traceID">
+                  <Partner />
+                </Route>
                 <Route path="/shop/cart">
                   {authState.user ? <ShoppingCart /> : <Redirect to="/login" />}
                 </Route>
@@ -186,6 +190,10 @@ function App() {
 
                 <Route exact path="/dapp/:traceID">
                   <Dapp />
+                </Route>
+
+                <Route exact path="/partner/:traceID">
+                  <Partner />
                 </Route>
 
                 <Route path="/404">
