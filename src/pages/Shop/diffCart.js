@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Redirect } from "react-router-dom";
-import { CartContext } from "../../appContext";
+import { CartContext, destContext } from "../../appContext";
 import {
   createOrder,
   createGiftOrder,
@@ -15,7 +15,10 @@ function DiffShoppingCart(props) {
   const { cartState, cartDispatch } = useContext(CartContext);
   const [cartEmpty, setCartEmpty] = useState(true);
   const [item_and_amount, setItem_and_amount] = useState({});
-  const [diffOrder, setDiffOrder] = useState([{ 1: "test" }]);
+  const { destState, destDispatch } = useContext(destContext);
+  const [diffOrder, setDiffOrder] = useState([
+    { name: "", phone: "", address: "" },
+  ]);
   const [destinations, setDestinations] = useState([]);
   const [jumpTo, setJumpTo] = useState(false);
   const [payHtml, setPayHtml] = useState("");
@@ -48,6 +51,12 @@ function DiffShoppingCart(props) {
     };
   }, [cartState]);
 
+  useEffect(() => {
+    setDiffOrder([...destState]);
+    return () => {
+      // cleanup
+    };
+  }, [destState]);
   //   useEffect(() => {
   //     getShippingInfo();
   //     return () => {};
@@ -85,15 +94,15 @@ function DiffShoppingCart(props) {
     }
     cartDispatch([...cartState]);
     setItem_and_amount({ ...item_and_amount, [key]: value });
-    console.log(cartState);
+    // console.log(cartState);
   };
 
   const increment = (key) => {
     const value = item_and_amount[key] + 1;
     cartDispatch([...cartState, JSON.parse(key)]);
     setItem_and_amount({ ...item_and_amount, [key]: value });
-    console.log(cartState);
-    console.log(item_and_amount);
+    // console.log(cartState);
+    // console.log(item_and_amount);
   };
 
   const removeItem = (key) => {
@@ -107,20 +116,28 @@ function DiffShoppingCart(props) {
     cartDispatch([...cartState]);
     delete item_and_amount[key];
     setItem_and_amount(item_and_amount);
-    console.log(cartState);
-    console.log(item_and_amount);
+    // console.log(cartState);
+    // console.log(item_and_amount);
   };
 
   const handleDestination = (e) => {
-    console.log(e.target.value);
-    setDestinationId(e.target.value);
+    console.log(e);
+    let temp = e.target.id.split("_");
+    let type = temp[0];
+    let index = temp[1];
+    diffOrder[index][type] = e.target.value;
+    setDiffOrder([...diffOrder]);
+    // console.log(document.getElemendtById(e.target.id));
+    console.log(diffOrder);
   };
 
   const addDiffOrder = () => {
     var num = diffOrder.length;
-    setDiffOrder([...diffOrder, { num: "test" }]);
-    cartDispatch([...cartState, ...cartState]);
-    setItem_and_amount({ ...item_and_amount, ...item_and_amount });
+    setDiffOrder([...diffOrder, { name: "", phone: "", address: "" }]);
+    destDispatch([...destState, { name: "", phone: "", address: "" }]);
+    console.log(destState);
+    // cartDispatch([...cartState, ...cartState]);
+    // setItem_and_amount({ ...item_and_amount, ...item_and_amount });
   };
 
   //   const getShippingInfo = async () => {
@@ -294,78 +311,92 @@ function DiffShoppingCart(props) {
             <h1 className="h3 mb-0">購物車</h1>
             <span>{cartEmpty ? null : cartState.length} 產品</span>
           </div>
-
-          {Object.keys(diffOrder).map((key) => {
-            return (
-              <div className="border-bottom pb-5 mb-5">
-                {cartEmpty
-                  ? null
-                  : Object.keys(item_and_amount).map((key) => {
-                      const { id, name, price, img } = JSON.parse(key);
-                      const num = item_and_amount[key];
-                      return (
-                        <div key={id} className="media">
-                          <div className="media-body">
-                            <div className="row">
-                              <div className="col-md-7 mb-3 mb-md-0">
-                                <a className="h5 d-block" href="#">
-                                  {name}
-                                </a>
-                                <div className="text-body d-md-none">
-                                  <span className="h5 d-block mb-1">
-                                    {price * num}
-                                  </span>
-                                </div>
-                              </div>
-                              <div
-                                className="input-group input-group-sm"
-                                style={{ maxWidth: "160px" }}
-                              >
-                                <span className="input-group-btn">
-                                  <button
-                                    className="btn btn-default btn-sm"
-                                    onClick={() => decrement(key)}
-                                  >
-                                    <i className="fa fa-minus" />
-                                  </button>
-                                </span>
-                                <input
-                                  style={{ textAlign: "center" }}
-                                  className="form-control"
-                                  type="text"
-                                  value={num}
-                                />
-                                <span className="input-group-btn">
-                                  <button
-                                    onClick={() => increment(key)}
-                                    className="btn btn-default btn-sm"
-                                  >
-                                    <i className="fa fa-plus" />
-                                  </button>
-                                </span>
-                              </div>
-                              <div className="col-4 col-md-2 d-none d-md-inline-block text-right">
-                                <span className="h5 d-block mb-1">
-                                  {price * num}
-                                </span>
-                              </div>
+          <div className="border-bottom pb-5 mb-5">
+            {cartEmpty
+              ? null
+              : Object.keys(item_and_amount).map((key) => {
+                  const { id, name, price, img } = JSON.parse(key);
+                  const num = item_and_amount[key];
+                  return (
+                    <div key={id} className="border-bottom pb-2 mb-2">
+                      <div className="media-body">
+                        <div className="row">
+                          <div className="col-md-7 mb-3 mb-md-0">
+                            <a className="h5 d-block" href="#">
+                              {name}
+                            </a>
+                            <a
+                              className="d-block text-body font-size-1 mb-1"
+                              href="javascript:void(0);"
+                              onClick={() => removeItem(key)}
+                            >
+                              <i className="far fa-trash-alt text-hover-primary mr-1"></i>
+                              <span className="font-size-1 text-hover-primary">
+                                移除商品
+                              </span>
+                            </a>
+                            <div className="text-body d-md-none">
+                              <span className="h5 d-block mb-1">
+                                {price * num}
+                              </span>
                             </div>
                           </div>
+                          <div
+                            className="input-group input-group-sm"
+                            style={{ maxWidth: "160px" }}
+                          >
+                            <span className="input-group-btn">
+                              <button
+                                className="btn btn-default btn-sm"
+                                onClick={() => decrement(key)}
+                              >
+                                <i className="fa fa-minus" />
+                              </button>
+                            </span>
+                            <input
+                              style={{ textAlign: "center" }}
+                              className="form-control"
+                              type="text"
+                              value={num}
+                            />
+                            <span className="input-group-btn">
+                              <button
+                                onClick={() => increment(key)}
+                                className="btn btn-default btn-sm"
+                              >
+                                <i className="fa fa-plus" />
+                              </button>
+                            </span>
+                          </div>
+                          <div className="col-4 col-md-2 d-none d-md-inline-block text-right">
+                            <span className="h5 d-block mb-1">
+                              {price * num}
+                            </span>
+                          </div>
                         </div>
-                      );
-                    })}
+                      </div>
+                    </div>
+                  );
+                })}
+          </div>
+          {Object(diffOrder).map((anObjectMapped, index) => {
+            return (
+              <div className="media">
                 姓名
                 <input
+                  id={"name_" + index}
                   style={{ maxWidth: "70px" }}
                   onChange={handleDestination}
                 />
                 電話
                 <input
+                  id={"phone_" + index}
                   style={{ maxWidth: "130px" }}
                   onChange={handleDestination}
                 />
                 地址
                 <input
+                  id={"address_" + index}
                   style={{ maxWidth: "200px" }}
                   onChange={handleDestination}
                 />
@@ -373,12 +404,6 @@ function DiffShoppingCart(props) {
             );
           })}
           <div>
-            <div className="d-sm-flex justify-content-end">
-              <a className="font-weight-bold" href="/shop/">
-                <i className="fas fa-angle-left fa-xs mr-1"></i>
-                繼續購物
-              </a>
-            </div>
             <div className="d-sm-flex justify-content-end"></div>
             <a
               href="javascript:void(0);"
@@ -386,6 +411,12 @@ function DiffShoppingCart(props) {
               onClick={() => addDiffOrder(1)}
             >
               <i className="fas fa-plus mr-1"></i> 增加收件地址
+            </a>
+          </div>
+          <div className="d-sm-flex justify-content-end">
+            <a className="font-weight-bold" href="/shop/">
+              <i className="fas fa-angle-left fa-xs mr-1"></i>
+              繼續購物
             </a>
           </div>
         </div>
@@ -408,16 +439,12 @@ function DiffShoppingCart(props) {
                   </div>
                 </div>
                 <div>
-                  <a
-                    href="javascript:void(0);"
-                    className="form-link small"
-                    onClick={() => setIsDiffDestination(false)}
-                  >
-                    統一寄送
-                  </a>
+                  <span className="text-dark font-weight-bold">
+                    {diffOrder.length}份禮物
+                  </span>
                 </div>
               </div>
-              <span className="d-block font-size-2 mr-3">運費</span>
+              {/* <span className="d-block font-size-2 mr-3">運費</span> */}
 
               {Object.keys(farms_fee).map((key) => {
                 return (
@@ -437,7 +464,7 @@ function DiffShoppingCart(props) {
                 <span className="d-block font-size-2 mr-3">總額</span>
                 <div className="media-body text-right">
                   <span className="text-dark font-weight-bold">
-                    {countBill() + totalFee}
+                    {countBill() * diffOrder.length}
                   </span>
                 </div>
               </div>

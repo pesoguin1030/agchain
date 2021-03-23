@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import { CartContext } from "../../appContext";
 import {
   createOrder,
@@ -455,6 +455,9 @@ function ShoppingCart(props) {
                       </a>
                     </div>
                   )}
+                </div>
+                <div>
+                  <Link to="diffCart">製作禮盒</Link>
                 </div>
               </div>
               <span className="d-block font-size-2 mr-3">運費</span>

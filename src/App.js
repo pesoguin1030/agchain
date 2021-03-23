@@ -165,7 +165,13 @@ function App() {
                 <Route path="/shop/cart">
                   {authState.user ? <ShoppingCart /> : <Redirect to="/login" />}
                 </Route>
-                <Route path="/shop/diffCart">{<DiffShoppingCart />}</Route>
+                <Route path="/shop/diffCart">
+                  {authState.user ? (
+                    <DiffShoppingCart />
+                  ) : (
+                    <Redirect to="/login" />
+                  )}
+                </Route>
                 <Route exact path="/shop/analysis/:orderNumber">
                   <Analysis />
                 </Route>
