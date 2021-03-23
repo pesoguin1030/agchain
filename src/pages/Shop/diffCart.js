@@ -141,112 +141,6 @@ function DiffShoppingCart(props) {
     // setItem_and_amount({ ...item_and_amount, ...item_and_amount });
   };
 
-  //   const getShippingInfo = async () => {
-  //     var destinationName = "新竹市";
-
-  //     let farm_price = {};
-  //     let farm_name = {};
-  //     let product_farmID = {};
-  //     for (let index = 0; index < Object.keys(item_and_amount).length; index++) {
-  //       const element = Object.keys(item_and_amount)[index];
-  //       const product_id = parseInt(JSON.parse(element)["id"], 10);
-  //       var farm = await FarmInfo(product_id);
-  //       var total_price =
-  //         (await item_and_amount[element]) *
-  //         parseInt(JSON.parse(element)["price"], 10);
-  //       const farm_id = farm.farm_id;
-  //       farm_price[farm_id] = farm_price[farm_id] || 0;
-  //       farm_price[farm_id] += total_price;
-  //       farm_name[farm_id] = farm["farm_name"];
-  //       product_farmID[product_id] = farm.farm_id;
-  //     }
-  //     const result = await getAllShippingInfo(Object.keys(farm_price));
-  //     const fee_as_product = await findFeeProduct(Object.keys(farm_price));
-  //     let each_farm_fee = {};
-  //     for (let index = 0; index < result.length; index++) {
-  //       const ship_info = result[index];
-  //       console.log(ship_info);
-  //       var tmp;
-  //       if (ship_info["county"] !== destinationName) {
-  //         if (ship_info.free_threshold > farm_price[ship_info["farm_id"]]) {
-  //           const fee_productID = fee_as_product.find(
-  //             (o) =>
-  //               o.name === "不同縣市運費" && o.store_id === ship_info["farm_id"]
-  //           )["id"];
-  //           tmp = {
-  //             fee: ship_info["different_city"],
-  //             farm_id: ship_info["farm_id"],
-  //             fee_productID: fee_productID,
-  //             farm: farm_name[ship_info["farm_id"]],
-  //             margin: ship_info.free_threshold - farm_price[ship_info["farm_id"]],
-  //             location: ship_info["county"],
-  //             categroy: "不同縣市運費",
-  //           };
-  //         } else {
-  //           const fee_productID = fee_as_product.find(
-  //             (o) =>
-  //               o.name === "不同縣市運費" && o.store_id === ship_info["farm_id"]
-  //           )["id"];
-  //           tmp = {
-  //             fee: 0,
-  //             farm_id: ship_info["farm_id"],
-  //             fee_productID: fee_productID,
-  //             farm: farm_name[ship_info["farm_id"]],
-  //             margin: 0,
-  //             location: ship_info["county"],
-  //             categroy: "不同縣市運費",
-  //           };
-  //         }
-  //       } else {
-  //         if (ship_info.free_threshold > farm_price[ship_info["farm_id"]]) {
-  //           const fee_productID = fee_as_product.find(
-  //             (o) =>
-  //               o.name === "同縣市運費" && o.store_id === ship_info["farm_id"]
-  //           )["id"];
-  //           tmp = {
-  //             fee: ship_info["same_city"],
-  //             farm_id: ship_info["farm_id"],
-  //             fee_productID: fee_productID,
-  //             farm: farm_name[ship_info["farm_id"]],
-  //             bmargin:
-  //               ship_info.free_threshold - farm_price[ship_info["farm_id"]],
-  //             location: ship_info["county"],
-  //             categroy: "同縣市運費",
-  //           };
-  //         } else {
-  //           const fee_productID = fee_as_product.find(
-  //             (o) =>
-  //               o.name === "同縣市運費" && o.store_id === ship_info["farm_id"]
-  //           )["id"];
-  //           tmp = {
-  //             fee: 0,
-  //             farm_id: ship_info["farm_id"],
-  //             fee_productID: fee_productID,
-  //             farm: farm_name[ship_info["farm_id"]],
-  //             margin: 0,
-  //             location: ship_info["county"],
-  //             categroy: "同縣市運費",
-  //           };
-  //         }
-  //       }
-  //       each_farm_fee[ship_info["farm_id"]] = tmp;
-  //     }
-  //     console.log(each_farm_fee); //{farm_id:{shippinfo}}
-  //     var total_fee = 0;
-  //     Object.keys(each_farm_fee).map((key) => {
-  //       total_fee += each_farm_fee[key]["fee"];
-  //     });
-  //     setFarmsFee(each_farm_fee);
-  //     setTotalFee(total_fee);
-
-  //     let products_fee = {};
-  //     Object.keys(product_farmID).map((key) => {
-  //       products_fee[key] = each_farm_fee[product_farmID[key]];
-  //     });
-  //     setShippingInfo(products_fee);
-  //     console.log(products_fee);
-  //   };
-
   const ship_as_orders = () => {
     let orders = [];
     Object.keys(farms_fee).map((product_id) => {
@@ -382,7 +276,7 @@ function DiffShoppingCart(props) {
           </div>
           {Object(diffOrder).map((anObjectMapped, index) => {
             return (
-              <div className="media">
+              <div className="row pb-2 mb-2">
                 姓名
                 <input
                   id={"name_" + index}
