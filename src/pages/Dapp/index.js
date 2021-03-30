@@ -39,6 +39,8 @@ function Dapp(props) {
   const [orderNumber, setOrderNumber] = useState(null);
   const [localCounter, setLocalCounter] = useState("");
   const [time, setTime] = useState("");
+  const publicIp = require("public-ip");
+  const [ip, setIP] = useState("");
 
   // Running gift text
   useEffect(() => {
@@ -81,6 +83,7 @@ function Dapp(props) {
   }
 
   async function setupRequiredInformation(traceID) {
+    setIP(await publicIp.v4());
     // 去server端抓資料，TODO: We need a metainfo contract bypass our server side
     let {
       crop_id,
@@ -92,15 +95,15 @@ function Dapp(props) {
       order_number,
       counter,
       update_at,
-    } = await getTraceData(traceID);
+      ip,
+    } = await getTraceData(traceID, await publicIp.v4());
 
     let response;
-
+    setIP(ip);
     setLocalCounter(counter);
     setTime(update_at);
     // 送禮影片
     setOrderNumber(order_number);
-
     console.log(farm_intro);
     setFarmIntro(farm_intro);
     setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
@@ -187,6 +190,7 @@ function Dapp(props) {
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5">
           <h5>這是本產品頁面第{localCounter}次被溯源</h5>
+          {localCounter > 1 ? <h5>上次溯源IP為{ip}</h5> : null}
           {localCounter > 1 ? <h5>上次溯源時間{time}</h5> : null}
         </div>
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5">
