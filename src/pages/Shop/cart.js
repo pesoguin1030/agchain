@@ -493,29 +493,6 @@ function ShoppingCart(props) {
                 </div>
               </div>
             </div>
-            <div className="card shadow-soft mb-4">
-              <div className="card rounded">
-                <div className="card-header">
-                  <label className="toggle-switch d-flex align-items-center">
-                    <input
-                      type="checkbox"
-                      className="toggle-switch-input"
-                      checked={giftToggled}
-                      onChange={() => setGiftToggled((prev) => !prev)}
-                    />
-                    <span className="toggle-switch-label">
-                      <span className="toggle-switch-indicator"></span>
-                    </span>
-                    <span className="toggle-switch-content">
-                      <span className="d-block">要製作電子賀卡嗎？</span>
-                      <small className="d-block text-muted">
-                        收禮者可於溯源時查看
-                      </small>
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

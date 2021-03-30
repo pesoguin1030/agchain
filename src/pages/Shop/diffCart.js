@@ -10,15 +10,13 @@ import storage from "../../utils/storage";
 import { FarmInfo, findFeeProduct } from "../../api/product";
 import { fetchDestination } from "../../api/destination";
 import Payment from "../Payment";
+import { destroy } from "filepond";
 
 function DiffShoppingCart(props) {
   const { cartState, cartDispatch } = useContext(CartContext);
   const [cartEmpty, setCartEmpty] = useState(true);
   const [item_and_amount, setItem_and_amount] = useState({});
   const { destState, destDispatch } = useContext(DestContext);
-  const [diffOrder, setDiffOrder] = useState([
-    { name: "", phone: "", address: "" },
-  ]);
   const [destinations, setDestinations] = useState([]);
   const [jumpTo, setJumpTo] = useState(false);
   const [payHtml, setPayHtml] = useState("");
@@ -50,17 +48,6 @@ function DiffShoppingCart(props) {
       // cleanup
     };
   }, [cartState]);
-
-  useEffect(() => {
-    setDiffOrder([...destState]);
-    return () => {
-      // cleanup
-    };
-  }, [destState]);
-  //   useEffect(() => {
-  //     getShippingInfo();
-  //     return () => {};
-  //   }, [item_and_amount, destinationId]);
 
   const countItem = (arr) => {
     var counter = {};
@@ -116,8 +103,6 @@ function DiffShoppingCart(props) {
     cartDispatch([...cartState]);
     delete item_and_amount[key];
     setItem_and_amount(item_and_amount);
-    // console.log(cartState);
-    // console.log(item_and_amount);
   };
 
   const handleDestination = (e) => {
@@ -125,16 +110,18 @@ function DiffShoppingCart(props) {
     let temp = e.target.id.split("_");
     let type = temp[0];
     let index = temp[1];
-    diffOrder[index][type] = e.target.value;
-    setDiffOrder([...diffOrder]);
-    // console.log(document.getElemendtById(e.target.id));
-    console.log(diffOrder);
+    destState[index][type] = e.target.value;
+    destDispatch([...destState]);
+    console.log(destState);
+  };
+
+  const removeDest = (index) => {
+    destState.splice(index, 1);
+    destDispatch([...destState]);
   };
 
   const addDiffOrder = () => {
-    setDiffOrder([...diffOrder, { name: "", phone: "", address: "" }]);
     destDispatch([...destState, { name: "", phone: "", address: "" }]);
-    console.log(destState);
   };
 
   const ship_as_orders = () => {
@@ -274,7 +261,7 @@ function DiffShoppingCart(props) {
                   );
                 })}
           </div>
-          {Object(diffOrder).map((anObjectMapped, index) => {
+          {Object(destState).map((anObjectMapped, index) => {
             return (
               <div className="row pb-2 mb-2">
                 姓名
@@ -282,19 +269,32 @@ function DiffShoppingCart(props) {
                   id={"name_" + index}
                   style={{ maxWidth: "70px" }}
                   onChange={handleDestination}
+                  value={destState[index]["name"]}
                 />
                 電話
                 <input
                   id={"phone_" + index}
                   style={{ maxWidth: "130px" }}
                   onChange={handleDestination}
+                  value={destState[index]["phone"]}
                 />
                 地址
                 <input
                   id={"address_" + index}
                   style={{ maxWidth: "200px" }}
                   onChange={handleDestination}
+                  value={destState[index]["address"]}
                 />
+                <a
+                  className="d-block text-body font-size-1 mb-1"
+                  href="javascript:void(0);"
+                  onClick={() => removeDest(index)}
+                >
+                  <i className="far text-hover-primary mr-1"></i>
+                  <span className="font-size-1 text-hover-primary">
+                    移除地址
+                  </span>
+                </a>
               </div>
             );
           })}
@@ -335,7 +335,7 @@ function DiffShoppingCart(props) {
                 </div>
                 <div>
                   <span className="d-block font-size-1">
-                    {diffOrder.length}份禮物
+                    {destState.length}份禮物
                   </span>
                 </div>
               </div>
@@ -359,7 +359,7 @@ function DiffShoppingCart(props) {
                 <span className="d-block font-size-2 mr-3">總額</span>
                 <div className="media-body text-right">
                   <span className="text-dark font-weight-bold">
-                    {countBill() * diffOrder.length}
+                    {countBill() * destState.length}
                   </span>
                 </div>
               </div>
