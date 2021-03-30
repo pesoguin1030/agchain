@@ -37,6 +37,8 @@ function Dapp(props) {
   const [giftText, setGiftText] = useState("");
   const [cropName, setCropName] = useState("");
   const [orderNumber, setOrderNumber] = useState(null);
+  const [localCounter, setLocalCounter] = useState("");
+  const [time, setTime] = useState("");
 
   // Running gift text
   useEffect(() => {
@@ -88,10 +90,14 @@ function Dapp(props) {
       farm_intro,
       certificate_filename_arr,
       order_number,
+      counter,
+      update_at,
     } = await getTraceData(traceID);
 
     let response;
 
+    setLocalCounter(counter);
+    setTime(update_at);
     // 送禮影片
     setOrderNumber(order_number);
 
@@ -135,18 +141,19 @@ function Dapp(props) {
     <Redirect to="/404" />
   ) : (
     <div className="border-bottom">
-      <div className="container space-1 space-lg-3">
-        <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-          <h2>電子賀卡</h2>
-        </div>
-        <div className="row w-md-80 w-lg-75 text-center mx-md-auto mb-5 mb-md-9">
-          <div className="col-12">
-            <div
-              style={{
-                margin: "auto",
-              }}
-            >
-              {orderNumber ? (
+      //沒有number就電子賀卡整區別出現啊
+      {orderNumber ? (
+        <div className="container space-1 space-lg-3">
+          <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+            <h2>電子賀卡</h2>
+          </div>
+          <div className="row w-md-80 w-lg-75 text-center mx-md-auto mb-5 mb-md-9">
+            <div className="col-12">
+              <div
+                style={{
+                  margin: "auto",
+                }}
+              >
                 <iframe
                   width="100%"
                   height="720"
@@ -156,29 +163,32 @@ function Dapp(props) {
                   src={`https://gift-7ee75.web.app/show/${orderNumber}`}
                   scrolling="no"
                 />
-              ) : null}
-              {likeIsPressed ? (
-                <Button variant="success" disabled>
-                  <i className="fas fa-check"></i> 已按過讚
-                </Button>
-              ) : (
-                <Button
-                  variant="dark"
-                  style={{
-                    backgroundColor: "var(--pink)",
-                    borderColor: "var(--pink)",
-                  }}
-                  onClick={() => handlePressLike(traceID)}
-                >
-                  <i className="fas fa-heart"></i> 喜歡
-                </Button>
-              )}
+                {likeIsPressed ? (
+                  <Button variant="success" disabled>
+                    <i className="fas fa-check"></i> 已按過讚
+                  </Button>
+                ) : (
+                  <Button
+                    variant="dark"
+                    style={{
+                      backgroundColor: "var(--pink)",
+                      borderColor: "var(--pink)",
+                    }}
+                    onClick={() => handlePressLike(traceID)}
+                  >
+                    <i className="fas fa-heart"></i> 喜歡
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
+      ) : null}
       <div className="container space-1 space-lg-3">
+        <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5">
+          <h5>這是本產品頁面第{localCounter}次被溯源</h5>
+          {localCounter > 1 ? <h5>上次溯源時間{time}</h5> : null}
+        </div>
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5">
           <img
             className="img-fluid w-80"
@@ -191,7 +201,6 @@ function Dapp(props) {
           </p>
         </div>
       </div>
-
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>與收到的禮品比比看</h2>
@@ -227,7 +236,6 @@ function Dapp(props) {
           )}
         </div>
       </div>
-
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>田間紀錄</h2>
@@ -263,7 +271,6 @@ function Dapp(props) {
           )}
         </div>
       </div>
-
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9 ">
           <h2>種植數據</h2>
@@ -274,7 +281,6 @@ function Dapp(props) {
           </div>
         </div>
       </div>
-
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>農場資訊</h2>
@@ -362,7 +368,6 @@ function Dapp(props) {
           </div>
         </div> */}
       </div>
-
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>檢驗證書</h2>
