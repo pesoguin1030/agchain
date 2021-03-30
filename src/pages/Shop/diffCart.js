@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Redirect } from "react-router-dom";
-import { CartContext, destContext } from "../../appContext";
+import { CartContext, DestContext } from "../../appContext";
 import {
   createOrder,
   createGiftOrder,
@@ -15,7 +15,7 @@ function DiffShoppingCart(props) {
   const { cartState, cartDispatch } = useContext(CartContext);
   const [cartEmpty, setCartEmpty] = useState(true);
   const [item_and_amount, setItem_and_amount] = useState({});
-  const { destState, destDispatch } = useContext(destContext);
+  const { destState, destDispatch } = useContext(DestContext);
   const [diffOrder, setDiffOrder] = useState([
     { name: "", phone: "", address: "" },
   ]);
@@ -132,13 +132,9 @@ function DiffShoppingCart(props) {
   };
 
   const addDiffOrder = () => {
-    var num = diffOrder.length;
-    destState.push({ name: "", phone: "", address: "" });
     setDiffOrder([...diffOrder, { name: "", phone: "", address: "" }]);
-    destDispatch([...destState]);
+    destDispatch([...destState, { name: "", phone: "", address: "" }]);
     console.log(destState);
-    // cartDispatch([...cartState, ...cartState]);
-    // setItem_and_amount({ ...item_and_amount, ...item_and_amount });
   };
 
   const ship_as_orders = () => {
@@ -216,6 +212,9 @@ function DiffShoppingCart(props) {
                     <div key={id} className="border-bottom pb-2 mb-2">
                       <div className="media-body">
                         <div className="row">
+                          <div className="max-w-15rem w-100 mr-3">
+                            <img className="img-fluid" src={img} alt={img} />
+                          </div>
                           <div className="col-md-7 mb-3 mb-md-0">
                             <a className="h5 d-block" href="#">
                               {name}
@@ -235,34 +234,35 @@ function DiffShoppingCart(props) {
                                 {price * num}
                               </span>
                             </div>
+                            <div
+                              className="input-group input-group-sm"
+                              style={{ maxWidth: "160px" }}
+                            >
+                              <span className="input-group-btn">
+                                <button
+                                  className="btn btn-default btn-sm"
+                                  onClick={() => decrement(key)}
+                                >
+                                  <i className="fa fa-minus" />
+                                </button>
+                              </span>
+                              <input
+                                style={{ textAlign: "center" }}
+                                className="form-control"
+                                type="text"
+                                value={num}
+                              />
+                              <span className="input-group-btn">
+                                <button
+                                  onClick={() => increment(key)}
+                                  className="btn btn-default btn-sm"
+                                >
+                                  <i className="fa fa-plus" />
+                                </button>
+                              </span>
+                            </div>
                           </div>
-                          <div
-                            className="input-group input-group-sm"
-                            style={{ maxWidth: "160px" }}
-                          >
-                            <span className="input-group-btn">
-                              <button
-                                className="btn btn-default btn-sm"
-                                onClick={() => decrement(key)}
-                              >
-                                <i className="fa fa-minus" />
-                              </button>
-                            </span>
-                            <input
-                              style={{ textAlign: "center" }}
-                              className="form-control"
-                              type="text"
-                              value={num}
-                            />
-                            <span className="input-group-btn">
-                              <button
-                                onClick={() => increment(key)}
-                                className="btn btn-default btn-sm"
-                              >
-                                <i className="fa fa-plus" />
-                              </button>
-                            </span>
-                          </div>
+
                           <div className="col-4 col-md-2 d-none d-md-inline-block text-right">
                             <span className="h5 d-block mb-1">
                               {price * num}
@@ -334,7 +334,7 @@ function DiffShoppingCart(props) {
                   </div>
                 </div>
                 <div>
-                  <span className="text-dark font-weight-bold">
+                  <span className="d-block font-size-1">
                     {diffOrder.length}份禮物
                   </span>
                 </div>

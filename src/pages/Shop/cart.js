@@ -456,9 +456,6 @@ function ShoppingCart(props) {
                     </div>
                   )}
                 </div>
-                <div>
-                  <Link to="diffCart">製作禮盒</Link>
-                </div>
               </div>
               <span className="d-block font-size-2 mr-3">運費</span>
 
