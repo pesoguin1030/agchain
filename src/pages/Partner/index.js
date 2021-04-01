@@ -38,19 +38,23 @@ function Partner(props) {
 
   async function setupRequiredInformation(traceID) {
     // 去server端抓資料
-    let temp_picture = [];
-    const infoList = await getPartnerData(traceID);
-    if (infoList) {
-      setBrandName(infoList[0].name);
-      setIntro(infoList[0].intro);
-      setPhone(infoList[0].phone);
-      setAddress(infoList[0].address);
-      for (var i = 0; i < 2; i++) {
-        temp_picture.push(infoList[0].picture[i].picture_url);
+    try {
+      let temp_picture = [];
+      const infoList = await getPartnerData(traceID);
+      if (infoList) {
+        setBrandName(infoList[0].name);
+        setIntro(infoList[0].intro);
+        setPhone(infoList[0].phone);
+        setAddress(infoList[0].address);
+        for (var i = 0; i < 2; i++) {
+          temp_picture.push(infoList[0].picture[i].picture_url);
+        }
+        setPicture(temp_picture);
+        console.log(infoList[0].trace);
+        setTrace(infoList[0].trace);
       }
-      setPicture(temp_picture);
-      console.log(infoList[0].trace);
-      setTrace(infoList[0].trace);
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -101,8 +105,8 @@ function Partner(props) {
       </div>
       <div className="container">
         <div className="text-center">
-          <h2>提供溯源產品</h2>
-          <h4>請點擊產品名稱進行溯源</h4>
+          <h2>目前僅提供三光米溯源</h2>
+          <h4>請點擊農作物名稱進行溯源</h4>
         </div>
         <div>
           {trace.map(({ id, link_url, name, type }) => (

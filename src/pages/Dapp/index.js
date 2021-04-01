@@ -83,7 +83,6 @@ function Dapp(props) {
   }
 
   async function setupRequiredInformation(traceID) {
-    setIP(await publicIp.v4());
     // 去server端抓資料，TODO: We need a metainfo contract bypass our server side
     let {
       crop_id,
@@ -207,7 +206,7 @@ function Dapp(props) {
       </div>
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-          <h2>與收到的禮品比比看</h2>
+          <h2>與收到的產品比比看</h2>
         </div>
         {/* <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <div className="row w-md-80 w-lg-40 mx-md-auto px-5">

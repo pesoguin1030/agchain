@@ -10,9 +10,9 @@ const TraceCard = ({ crop_id, name, type, link_url }) => (
           objectFit: "contain",
         }}
         src={
-          "https://storage.googleapis.com/tenlife/28695440-85ad-11eb-a41d-353d12689eba.webp"
+          "https://storage.googleapis.com/tenlife/e992ec60-9293-11eb-aa1e-994fc2b48f41.webp"
         }
-        alt="米類"
+        alt="三光米"
       />
     </div>
 
