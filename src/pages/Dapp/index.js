@@ -14,7 +14,7 @@ import {
 import { getTraceData, sendPressLike } from "../../api/package";
 import { fetchVideo } from "../../api/media";
 import { getCultivationRecord } from "../../api/cultivationRecord";
-import { useParams, Redirect } from "react-router-dom";
+import { useParams, Redirect, useLocation } from "react-router-dom";
 import ReactPlayer from "react-player";
 import Typed from "typed.js";
 
@@ -41,7 +41,18 @@ function Dapp(props) {
   const [time, setTime] = useState("");
   const publicIp = require("public-ip");
   const [ip, setIP] = useState("");
+  const [onShip, setOnship] = useState(true);
+  const location = useLocation();
 
+  //parameter
+  useEffect(() => {
+    console.log("----", new URLSearchParams(location.search).get("onShip"));
+    const onShipOrNot = !(
+      new URLSearchParams(location.search).get("onShip") == "false"
+    ); //||true
+    setOnship(onShipOrNot);
+  }, []);
+  //
   // Running gift text
   useEffect(() => {
     if (giftText === "" || !giftTextRef.current) return;
@@ -143,8 +154,7 @@ function Dapp(props) {
     <Redirect to="/404" />
   ) : (
     <div className="border-bottom">
-      //沒有number就電子賀卡整區別出現啊
-      {orderNumber ? (
+      {onShip ? (
         <div className="container space-1 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>電子賀卡</h2>
@@ -204,41 +214,43 @@ function Dapp(props) {
           </p>
         </div>
       </div>
-      <div className="container space-1 space-lg-3">
-        <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-          <h2>與收到的產品比比看</h2>
-        </div>
-        {/* <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-          <div className="row w-md-80 w-lg-40 mx-md-auto px-5">
-            <ImgToPuzzle/>
+      {onShip ? (
+        <div className="container space-1 space-lg-3">
+          <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+            <h2>與收到的產品比比看</h2>
           </div>
-        </div> */}
-
-        <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-          {secureItem && secureItem.cid !== "" ? (
-            <ImgToPuzzle img={`${secureItem?.cid}`} />
-          ) : (
-            // <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
-            //   {/* <img
-            //     style={{
-            //       objectFit: "contain",
-            //       maxHeight: 480,
-            //     }}
-            //     src={`${secureItem?.cid}`}
-            //     className="responsive-img mt-2"
-            //   /> */}
-
-            // </div>
-            <div className="col-12 text-center">
-              <ImgToPuzzle
-                img={
-                  "https://storage.googleapis.com/tenlife/df302260-4f4a-11eb-a316-2f179a7b75ab.jpg"
-                }
-              />
+          {/* <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+            <div className="row w-md-80 w-lg-40 mx-md-auto px-5">
+              <ImgToPuzzle/>
             </div>
-          )}
+          </div> */}
+
+          <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+            {secureItem && secureItem.cid !== "" ? (
+              <ImgToPuzzle img={`${secureItem?.cid}`} />
+            ) : (
+              // <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
+              //   {/* <img
+              //     style={{
+              //       objectFit: "contain",
+              //       maxHeight: 480,
+              //     }}
+              //     src={`${secureItem?.cid}`}
+              //     className="responsive-img mt-2"
+              //   /> */}
+
+              // </div>
+              <div className="col-12 text-center">
+                <ImgToPuzzle
+                  img={
+                    "https://storage.googleapis.com/tenlife/df302260-4f4a-11eb-a316-2f179a7b75ab.jpg"
+                  }
+                />
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      ) : null}
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>田間紀錄</h2>

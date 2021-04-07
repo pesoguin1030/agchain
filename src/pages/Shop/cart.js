@@ -25,6 +25,7 @@ function ShoppingCart(props) {
   const [shippingInfo, setShippingInfo] = useState({});
   const [farms_fee, setFarmsFee] = useState({});
   const [totalFee, setTotalFee] = useState(0);
+  const [getFreeThreshold, setGetFreeThreshold] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(
     "新竹市東區復興路二段"
   );
@@ -157,6 +158,7 @@ function ShoppingCart(props) {
             categroy: "不同縣市運費",
           };
         } else {
+          setGetFreeThreshold(true);
           const fee_productID = fee_as_product.find(
             (o) =>
               o.name === "不同縣市運費" && o.store_id === ship_info["farm_id"]
@@ -188,6 +190,7 @@ function ShoppingCart(props) {
             categroy: "同縣市運費",
           };
         } else {
+          setGetFreeThreshold(true);
           const fee_productID = fee_as_product.find(
             (o) =>
               o.name === "同縣市運費" && o.store_id === ship_info["farm_id"]
@@ -252,7 +255,7 @@ function ShoppingCart(props) {
     //由此拿到orderNumber 以及支付api拿到的html
     orderlist.then(async (product_orders) => {
       const userToken = storage.getAccessToken();
-      const shipping_order = ship_as_orders();
+      const shipping_order = getFreeThreshold ? [] : ship_as_orders();
       const orders = [...product_orders, ...shipping_order];
       if (giftToggled) {
         const response = await createGiftOrder(orders);
