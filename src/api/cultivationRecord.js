@@ -19,6 +19,7 @@ async function getCultivationRecord(crop_id) {
         icon_path = "定植.png";
         break;
       case "施肥":
+      case "追肥":
         icon_path = "施肥.png";
         break;
       case "除草":
@@ -36,10 +37,20 @@ async function getCultivationRecord(crop_id) {
       case "插秧":
         icon_path = "插秧.png";
         break;
+      case "抽穗":
+        icon_path = "抽穗.png";
+        break;
+      case "曬田":
+        icon_path = "曬田.png";
+        break;
+      case "收割":
+        icon_path = "收割.png";
+        break;
       case "整地":
         icon_path = "整地.png";
         break;
       case "澆水":
+      case "灌溉":
         icon_path = "澆水.png";
         break;
       case "除草":

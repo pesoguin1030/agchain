@@ -10,7 +10,12 @@ const ProductCard = ({
   onRemoveFromCart,
   onAddToCart,
 }) => (
-  <div className="card border shadow-none text-center h-100">
+  <div
+    className="card border shadow-none text-center h-100"
+    onClick={(e) => {
+      window.location.href = "./shop/single-product/" + product_id;
+    }}
+  >
     <div className="position-relative">
       <img
         className="card-img-top"
@@ -73,7 +78,10 @@ const ProductCard = ({
       {isInCart ? (
         <button
           type="button"
-          onClick={onRemoveFromCart}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemoveFromCart();
+          }}
           className="btn btn-sm btn-outline-secondary btn-pill transition-3d-hover"
         >
           從購物車中移除
@@ -81,7 +89,10 @@ const ProductCard = ({
       ) : (
         <button
           type="button"
-          onClick={onAddToCart}
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToCart();
+          }}
           className="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
         >
           加入購物車

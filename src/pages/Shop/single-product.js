@@ -28,9 +28,10 @@ function SingleProduct() {
   const [farmAddress, setFarmAddress] = useState();
   const [farmPhone, setFarmPhone] = useState();
   const [farmPic, setFarmPic] = useState([]);
-  const [isInCart, setIsInCart] = useState(
-    cartState ? cartState.map((e) => e.id).includes(id) : false
-  );
+  const [farmfee, setFarmFee] = useState([]);
+  const [cropName, setCropName] = useState("");
+  const [IntID, setIntID] = useState(0);
+  const [isInCart, setIsInCart] = useState(false);
 
   const [cultivationRecord, setCultivationRecord] = useState([]); // 田間紀錄
   const [sensorAnalysis, setSensorAnalysis] = useState([]); // 種植數據
@@ -39,13 +40,25 @@ function SingleProduct() {
     PreLoadData();
     return () => {};
   }, [cartState]);
-  const PreLoadData = async () => {
+
+  async function PreLoadData() {
     const data = await ProductDetail(id);
     const farm_data = await FarmInfo(id);
+    // console.log([farm_data["farm_id"].toString()]);
+    const shippinginfo = await getAllShippingInfo([
+      farm_data["farm_id"].toString(),
+    ]);
+    const farm_fee = [
+      shippinginfo[0]["same_city"],
+      shippinginfo[0]["different_city"],
+    ];
+    // console.log(farm_fee);
+    setFarmFee(farm_fee);
     setName(data["name"]);
     setPrice(data["price"]);
     setImgUrl(data["photo_url"]);
     setDescription(data["description"]);
+    setCropName(data["crop_name"]);
     //farm data
     setFarmName("農場資訊");
     setFarmIntro(farm_data["farm_intro"]);
@@ -61,16 +74,17 @@ function SingleProduct() {
     let response = await getCultivationRecord(crop_id);
     setCultivationRecord(response);
 
-    // 數據分析
+    // 數據分析雷達圖
     response = await fetchSensorAnalysis(crop_id);
     setSensorAnalysis(response);
-  };
+  }
 
   function getPropertyByRegex(obj, propName) {
     var re = new RegExp("^" + propName + "(\\[\\d*\\])?$"),
       key;
     var objs = [];
     for (key in obj) if (re.test(key) && obj[key] != null) objs.push(obj[key]);
+    console.log(objs);
 
     return objs;
   }
@@ -246,6 +260,7 @@ function SingleProduct() {
         </div>
         <div className="w-md-80 w-lg-60 text-center mx-md-auto mb-5 mb-md-9">
           <Slideshow src_arr={[farmPic[0], farmPic[1], farmPic[2]]} />
+          {/* <Slideshow src_arr={farmPic} /> */}
         </div>
 
         <div className="w-md-80 w-lg-60 text-center mx-md-auto mb-5 mb-md-9">
@@ -283,7 +298,7 @@ function SingleProduct() {
         </div>
         <div className="row mx-n2 mx-sm-n3 mb-3">
           <div className="col-12">
-            <Radarchart data={sensorAnalysis} cropName={name} />
+            <Radarchart data={sensorAnalysis} cropName={cropName} />
           </div>
         </div>
       </div>
