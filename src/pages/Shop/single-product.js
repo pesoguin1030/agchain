@@ -2,6 +2,8 @@ import React from "react";
 import { Redirect, useParams } from "react-router-dom";
 import { AuthContext, CartContext } from "../../appContext";
 import { useEffect, useState, useContext } from "react";
+import { getAllShippingInfo } from "../../api/order";
+import { ProductCard } from "../../components/Card";
 
 import Radarchart from "../../../src/components/RadarChart";
 import TimeLine from "../../../src/components/TimeLine";
@@ -37,6 +39,7 @@ function SingleProduct() {
   const [sensorAnalysis, setSensorAnalysis] = useState([]); // 種植數據
 
   useEffect(() => {
+    setIntID(parseInt(id, 10));
     PreLoadData();
     return () => {};
   }, [cartState]);
@@ -66,7 +69,7 @@ function SingleProduct() {
     setFarmPhone(farm_data["farm_phone"]);
     setFarmPic(getPropertyByRegex(farm_data, "farm_picture|[1-9]"));
 
-    setIsInCart(cartState ? cartState.map((e) => e.id).includes(id) : false);
+    setIsInCart(cartState ? cartState.map((e) => e.id).includes(IntID) : false);
 
     let crop_id = data["crop_id"];
 
@@ -139,7 +142,7 @@ function SingleProduct() {
                   aria-expanded="false"
                   aria-controls="shopCardOne"
                 >
-                  <span class="row align-items-center">
+                  <span class="span_row align-items-center">
                     <span class="col-9">
                       <span class="media align-items-center">
                         <span class="w-100 max-w-6rem mr-3">
@@ -151,13 +154,27 @@ function SingleProduct() {
                         </span>
                         <span class="media-body">
                           <span class="d-block font-size-1 font-weight-bold">
-                            免運費
+                            運費
                           </span>
                         </span>
                       </span>
                     </span>
                   </span>
                 </a>
+              </div>
+              <div
+                id="shopCardOne"
+                class="collapse"
+                aria-labelledby="shopCardHeadingOne"
+                data-parent="#shopCartAccordion"
+              >
+                <div class="card-body">
+                  <p class=" mb-0">農場位於{farmAddress} 運費如下：</p>
+                  <ul>
+                    <li>同縣市：{farmfee[0]}元</li>
+                    <li>不同縣市：{farmfee[1]}元</li>
+                  </ul>
+                </div>
               </div>
             </div>
             <div class="card border shadow-none">

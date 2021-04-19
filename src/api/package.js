@@ -1,10 +1,11 @@
 import request from "../utils/request";
 
-async function getTraceData(traceID) {
+async function getTraceData(traceID, ip) {
   try {
     const { data } = await request.get(`/dapp`, {
       params: {
         traceID,
+        ip,
       },
     });
     return data;
