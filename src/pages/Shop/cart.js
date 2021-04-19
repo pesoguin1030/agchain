@@ -25,6 +25,7 @@ function ShoppingCart(props) {
   const [shippingInfo, setShippingInfo] = useState({});
   const [farms_fee, setFarmsFee] = useState({});
   const [totalFee, setTotalFee] = useState(0);
+  const [getFreeThreshold, setGetFreeThreshold] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(
     "新竹市東區復興路二段"
   );
@@ -110,13 +111,14 @@ function ShoppingCart(props) {
   };
 
   const handleDestination = (e) => {
-    console.log(e.target.value);
+    const index = e.target.selectedIndex;
     setDestinationId(e.target.value);
+    setSelectedAddress(e.target[index].text);
   };
 
   const getShippingInfo = async () => {
-    var destinationName = "新竹市";
-
+    console.log("selectedAddress", selectedAddress);
+    var selectedCounty = selectedAddress.slice(0, 3);
     let farm_price = {};
     let farm_name = {};
     let product_farmID = {};
@@ -140,7 +142,7 @@ function ShoppingCart(props) {
       const ship_info = result[index];
       console.log(ship_info);
       var tmp;
-      if (ship_info["county"] !== destinationName) {
+      if (ship_info["county"] !== selectedCounty) {
         if (ship_info.free_threshold > farm_price[ship_info["farm_id"]]) {
           const fee_productID = fee_as_product.find(
             (o) =>
@@ -156,6 +158,7 @@ function ShoppingCart(props) {
             categroy: "不同縣市運費",
           };
         } else {
+          setGetFreeThreshold(true);
           const fee_productID = fee_as_product.find(
             (o) =>
               o.name === "不同縣市運費" && o.store_id === ship_info["farm_id"]
@@ -187,6 +190,7 @@ function ShoppingCart(props) {
             categroy: "同縣市運費",
           };
         } else {
+          setGetFreeThreshold(true);
           const fee_productID = fee_as_product.find(
             (o) =>
               o.name === "同縣市運費" && o.store_id === ship_info["farm_id"]
@@ -251,7 +255,7 @@ function ShoppingCart(props) {
     //由此拿到orderNumber 以及支付api拿到的html
     orderlist.then(async (product_orders) => {
       const userToken = storage.getAccessToken();
-      const shipping_order = ship_as_orders();
+      const shipping_order = getFreeThreshold ? [] : ship_as_orders();
       const orders = [...product_orders, ...shipping_order];
       if (giftToggled) {
         const response = await createGiftOrder(orders);
@@ -425,7 +429,9 @@ function ShoppingCart(props) {
                       <input
                         className="form-control"
                         placeholder="詳細地址"
-                        onChange={handleDestination}
+                        onChange={(e) => {
+                          setSelectedAddress(e.target.value);
+                        }}
                       />
                       <a
                         href="javascript:void(0);"
