@@ -447,7 +447,6 @@ function ShoppingCart(props) {
                         className="custom-select"
                         onChange={handleDestination}
                       >
-                        <option value="36">清華大學台達館305室</option>
                         {destinations.map(({ address, id }) => (
                           <option value={id}>{address}</option>
                         ))}

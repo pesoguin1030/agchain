@@ -4,7 +4,7 @@ import storage from "../utils/storage";
 
 const fetchDestination = async () => {
   try {
-    const { data } = await request.get(`/destination`);
+    const { data } = await request.get(`/destination/oldAddress`);
     return data;
   } catch (err) {
     return Promise.reject(err);
