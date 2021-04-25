@@ -12,6 +12,12 @@ const storage = {
   getShoppingCart: () => {
     return JSON.parse(localStorage.getItem("shopping_cart"));
   },
+  setShoppingDest: (dest) => {
+    localStorage.setItem("shopping_dest", JSON.stringify(dest));
+  },
+  getShoppingDest: () => {
+    return JSON.parse(localStorage.getItem("shopping_dest"));
+  },
   clear: () => {
     localStorage.clear();
   },
