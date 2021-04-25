@@ -5,15 +5,11 @@ import storage from "../utils/storage";
 const createOrder = async (orders) => {
   const userToken = storage.getAccessToken();
   try {
-    const response = await request.post(
-      `${Constants.SERVER_URL}/orders/newebpay`,
-      orders,
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
+    const response = await request.post(`/orders/newebpay`, orders, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
     return response;
   } catch (err) {
     return Promise.reject(err);
@@ -175,14 +171,11 @@ async function getDestinations() {
 
 async function getAllShippingInfo(farm_ids) {
   try {
-    const response = await request.get(
-      `${Constants.SERVER_URL}/destination/allshippinginfo`,
-      {
-        params: {
-          user: farm_ids,
-        },
-      }
-    );
+    const response = await request.get(`/destination/allshippinginfo`, {
+      params: {
+        user: farm_ids,
+      },
+    });
     const {
       data: { items },
     } = response;

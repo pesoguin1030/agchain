@@ -50,7 +50,7 @@ function ShoppingCart(props) {
   useEffect(() => {
     getShippingInfo();
     return () => {};
-  }, [item_and_amount, destinationId]);
+  }, [item_and_amount, destinationId, selectedAddress]);
 
   const countItem = (arr) => {
     var counter = {};
