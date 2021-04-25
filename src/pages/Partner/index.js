@@ -61,7 +61,7 @@ function Partner(props) {
   return isForbidden ? (
     <Redirect to="/404" />
   ) : (
-    <div className="border-bottom ">
+    <div className="border-bottom mt-4">
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h4>本服務由愛便當委託農金鏈提供</h4>
@@ -119,7 +119,7 @@ function Partner(props) {
                 crop_id={id}
                 name={name}
                 type={type}
-                link_url={link_url}
+                link_url={link_url + `?onShip=false`}
               />
             </div>
           ))}

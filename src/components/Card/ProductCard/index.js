@@ -10,18 +10,27 @@ const ProductCard = ({
   onRemoveFromCart,
   onAddToCart,
 }) => (
-  <div className="card border shadow-none text-center h-100">
+  <div
+    className="card border shadow-none text-center h-100"
+    onClick={(e) => {
+      window.location.href = "./shop/single-product/" + product_id;
+    }}
+  >
     <div className="position-relative">
-      <img
-        className="card-img-top"
-        style={{
-          minHeight: 180,
-          objectFit: "contain",
-        }}
-        src={img}
-        alt="商品圖片"
-      />
-
+      <a
+        className="d-inline-block text-body small font-weight-bold mb-1"
+        href={"./shop/single-product/" + product_id}
+      >
+        <img
+          className="card-img-top"
+          style={{
+            minHeight: 180,
+            objectFit: "contain",
+          }}
+          src={img}
+          alt="商品圖片"
+        />
+      </a>
       <div className="position-absolute top-0 left-0 pt-3 pl-3">
         <span className="badge badge-success badge-pill">新上市</span>
       </div>
@@ -46,6 +55,7 @@ const ProductCard = ({
         >
           {title}
         </a>
+
         <span className="d-block font-size-1">
           <a
             className="text-inherit"
@@ -76,7 +86,10 @@ const ProductCard = ({
       {isInCart ? (
         <button
           type="button"
-          onClick={onRemoveFromCart}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemoveFromCart();
+          }}
           className="btn btn-sm btn-outline-secondary btn-pill transition-3d-hover"
         >
           從購物車中移除
@@ -84,7 +97,10 @@ const ProductCard = ({
       ) : (
         <button
           type="button"
-          onClick={onAddToCart}
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToCart();
+          }}
           className="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
         >
           加入購物車

@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, useParams } from "react-router-dom";
+import { Redirect, useParams, Link } from "react-router-dom";
 import { AuthContext, CartContext } from "../../appContext";
 import { useEffect, useState, useContext } from "react";
 import { getAllShippingInfo } from "../../api/order";
@@ -7,7 +7,6 @@ import { ProductCard } from "../../components/Card";
 
 import Radarchart from "../../../src/components/RadarChart";
 import TimeLine from "../../../src/components/TimeLine";
-import Header from "../../components/Header";
 import Slideshow from "../../components/Slideshow";
 
 import { ProductDetail, FarmInfo } from "../../api/product";
@@ -31,22 +30,28 @@ function SingleProduct() {
   const [farmPhone, setFarmPhone] = useState();
   const [farmPic, setFarmPic] = useState([]);
   const [farmfee, setFarmFee] = useState([]);
+  const [cropName, setCropName] = useState("");
   const [IntID, setIntID] = useState(0);
   const [isInCart, setIsInCart] = useState(false);
-
+  const [copyCartState, setCopyCartState] = useState([]);
   const [cultivationRecord, setCultivationRecord] = useState([]); // 田間紀錄
   const [sensorAnalysis, setSensorAnalysis] = useState([]); // 種植數據
 
   useEffect(() => {
     setIntID(parseInt(id, 10));
+
+    return () => {};
+  }, []);
+  useEffect(() => {
     PreLoadData();
     return () => {};
   }, [cartState]);
 
-  const PreLoadData = async () => {
+  async function PreLoadData() {
     const data = await ProductDetail(id);
+    console.log(data);
     const farm_data = await FarmInfo(id);
-    console.log([farm_data["farm_id"].toString()]);
+    // console.log(farm_data);
     const shippinginfo = await getAllShippingInfo([
       farm_data["farm_id"].toString(),
     ]);
@@ -54,19 +59,26 @@ function SingleProduct() {
       shippinginfo[0]["same_city"],
       shippinginfo[0]["different_city"],
     ];
-    console.log(farm_fee);
     setFarmFee(farm_fee);
     setName(data["name"]);
     setPrice(data["price"]);
     setImgUrl(data["photo_url"]);
     setDescription(data["description"]);
+    setCropName(data["crop_name"]);
     //farm data
     setFarmName("農場資訊");
     setFarmIntro(farm_data["farm_intro"]);
     setFarmAddress(farm_data["farm_address"]);
     setFarmPhone(farm_data["farm_phone"]);
     setFarmPic(getPropertyByRegex(farm_data, "farm_picture|[1-9]"));
-
+    if (cartState !== null) {
+      console.log(IntID);
+      cartState.map((e) => console.log(typeof e.id));
+    }
+    console.log(
+      "==",
+      cartState ? cartState.map((e) => e.id).includes(IntID) : false
+    );
     setIsInCart(cartState ? cartState.map((e) => e.id).includes(IntID) : false);
 
     let crop_id = data["crop_id"];
@@ -75,23 +87,21 @@ function SingleProduct() {
     let response = await getCultivationRecord(crop_id);
     setCultivationRecord(response);
 
-    // 數據分析
+    // 數據分析雷達圖
     response = await fetchSensorAnalysis(crop_id);
     setSensorAnalysis(response);
-  };
+  }
 
   function getPropertyByRegex(obj, propName) {
     var re = new RegExp("^" + propName + "(\\[\\d*\\])?$"),
       key;
     var objs = [];
     for (key in obj) if (re.test(key) && obj[key] != null) objs.push(obj[key]);
+    console.log(objs);
 
     return objs;
   }
-  const AddToCart = () => {
-    setIsInCart(true);
-    alert("hi");
-  };
+
   return (
     <div class="container space-top-1 space-top-sm-2 mt-11">
       <div class="row pb-5 border-bottom">
@@ -239,25 +249,31 @@ function SingleProduct() {
               新增至購物車
             </button> */}
             {isInCart ? (
-              <button
-                type="button"
-                onClick={() => {
-                  cartDispatch((prev) => prev.filter((e) => e.id !== id));
-                  setIsInCart(false);
-                }}
-                className="btn btn-block btn-outline-secondary btn-pill transition-3d-hover"
+              // <button
+              //   type="button"
+              // onClick={() => {
+              //   cartDispatch((prev) => prev.filter((e) => e.id !== id));
+              //   setIsInCart(false);
+              // }}
+              // className="btn btn-block btn-outline-secondary btn-pill transition-3d-hover"
+              // >
+              <Link
+                to="/shop/cart"
+                className="btn btn-block btn-primary btn-block btn-pill transition-3d-hover"
               >
-                從購物車中移除
-              </button>
+                前往結帳
+              </Link>
             ) : (
+              // </button>
               <button
                 type="button"
                 onClick={() => {
                   cartDispatch((prev) => [
                     ...prev,
-                    { id, name, price, img: imgUrl },
+                    { id: IntID, name, price, img: imgUrl },
                   ]);
                   setIsInCart(true);
+                  console.log("setting true!!!!");
                 }}
                 className="btn btn-block btn-outline-primary btn-pill transition-3d-hover"
               >
@@ -274,6 +290,7 @@ function SingleProduct() {
         </div>
         <div className="w-md-80 w-lg-60 text-center mx-md-auto mb-5 mb-md-9">
           <Slideshow src_arr={[farmPic[0], farmPic[1], farmPic[2]]} />
+          {/* <Slideshow src_arr={farmPic} /> */}
         </div>
 
         <div className="w-md-80 w-lg-60 text-center mx-md-auto mb-5 mb-md-9">
@@ -311,7 +328,7 @@ function SingleProduct() {
         </div>
         <div className="row mx-n2 mx-sm-n3 mb-3">
           <div className="col-12">
-            <Radarchart data={sensorAnalysis} cropName={name} />
+            <Radarchart data={sensorAnalysis} cropName={cropName} />
           </div>
         </div>
       </div>

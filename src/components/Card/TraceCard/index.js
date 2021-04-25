@@ -1,7 +1,12 @@
 import React from "react";
 
 const TraceCard = ({ crop_id, name, type, link_url }) => (
-  <div className="card border shadow-none text-center h-100">
+  <div
+    className="card border shadow-none text-center h-100"
+    onClick={() => {
+      window.location.href = link_url;
+    }}
+  >
     <div className="position-relative">
       <img
         className="card-img-top"
