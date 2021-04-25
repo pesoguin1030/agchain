@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import { CartContext } from "../../appContext";
 import {
   createOrder,
@@ -26,9 +26,35 @@ function ShoppingCart(props) {
   const [farms_fee, setFarmsFee] = useState({});
   const [totalFee, setTotalFee] = useState(0);
   const [getFreeThreshold, setGetFreeThreshold] = useState(false);
+  const [selectedCounty, setSelectedCounty] = useState();
   const [selectedAddress, setSelectedAddress] = useState(
     "新竹市東區復興路二段"
   );
+
+  const countys = [
+    { text: "基隆市" },
+    { text: "台北市" },
+    { text: "新北市" },
+    { text: "桃園市" },
+    { text: "新竹市" },
+    { text: "新竹縣" },
+    { text: "苗栗縣" },
+    { text: "台中市" },
+    { text: "彰化縣" },
+    { text: "南投縣" },
+    { text: "雲林縣" },
+    { text: "嘉義市" },
+    { text: "嘉義縣" },
+    { text: "台南市" },
+    { text: "高雄市" },
+    { text: "屏東縣" },
+    { text: "台東縣" },
+    { text: "花蓮縣" },
+    { text: "宜蘭縣" },
+    { text: "澎湖縣" },
+    { text: "金門縣" },
+    { text: "連江縣" },
+  ];
 
   useEffect(() => {
     const getDestination = async () => {
@@ -48,9 +74,19 @@ function ShoppingCart(props) {
   }, [cartState]);
 
   useEffect(() => {
-    getShippingInfo();
+    if (cartState.length === 0) {
+      setFarmsFee({});
+      setItem_and_amount({});
+      setTotalFee(0);
+    }
+  }, [cartState]);
+
+  useEffect(() => {
+    if (cartState.length !== 0) {
+      getShippingInfo();
+    }
     return () => {};
-  }, [item_and_amount, destinationId, selectedAddress]);
+  }, [item_and_amount, destinationId, selectedCounty]);
 
   const countItem = (arr) => {
     var counter = {};
@@ -106,19 +142,17 @@ function ShoppingCart(props) {
     cartDispatch([...cartState]);
     delete item_and_amount[key];
     setItem_and_amount(item_and_amount);
-    console.log(cartState);
-    console.log(item_and_amount);
   };
 
   const handleDestination = (e) => {
     const index = e.target.selectedIndex;
     setDestinationId(e.target.value);
-    setSelectedAddress(e.target[index].text);
+    setSelectedAddress(selectedAddress + e.target[index].text);
   };
 
   const getShippingInfo = async () => {
     console.log("selectedAddress", selectedAddress);
-    var selectedCounty = selectedAddress.slice(0, 3);
+    // var selectedCounty = selectedAddress.slice(0, 3);
     let farm_price = {};
     let farm_name = {};
     let product_farmID = {};
@@ -184,8 +218,7 @@ function ShoppingCart(props) {
             farm_id: ship_info["farm_id"],
             fee_productID: fee_productID,
             farm: farm_name[ship_info["farm_id"]],
-            bmargin:
-              ship_info.free_threshold - farm_price[ship_info["farm_id"]],
+            margin: ship_info.free_threshold - farm_price[ship_info["farm_id"]],
             location: ship_info["county"],
             categroy: "同縣市運費",
           };
@@ -425,12 +458,27 @@ function ShoppingCart(props) {
                 </div>
                 <div className="card shadow-none mb-3">
                   {destinationInputVisible ? (
-                    <div className="card-body p-0">
+                    <div className="card-body p-0 mb-2">
+                      <select
+                        style={{ flex: 1 }}
+                        placeholder="請選擇縣市"
+                        className="custom-select"
+                        onChange={(e) => {
+                          setSelectedCounty(e.target.value);
+                        }}
+                      >
+                        <option>請選擇縣市</option>
+                        {countys.map((county) => {
+                          return (
+                            <option value={county.text}>{county.text}</option>
+                          );
+                        })}
+                      </select>
                       <input
                         className="form-control"
-                        placeholder="詳細地址"
+                        placeholder="請輸入詳細地址"
                         onChange={(e) => {
-                          setSelectedAddress(e.target.value);
+                          setSelectedAddress(selectedCounty + e.target.value);
                         }}
                       />
                       <a
@@ -495,29 +543,6 @@ function ShoppingCart(props) {
                   >
                     確認訂單
                   </button>
-                </div>
-              </div>
-            </div>
-            <div className="card shadow-soft mb-4">
-              <div className="card rounded">
-                <div className="card-header">
-                  <label className="toggle-switch d-flex align-items-center">
-                    <input
-                      type="checkbox"
-                      className="toggle-switch-input"
-                      checked={giftToggled}
-                      onChange={() => setGiftToggled((prev) => !prev)}
-                    />
-                    <span className="toggle-switch-label">
-                      <span className="toggle-switch-indicator"></span>
-                    </span>
-                    <span className="toggle-switch-content">
-                      <span className="d-block">要製作電子賀卡嗎？</span>
-                      <small className="d-block text-muted">
-                        收禮者可於溯源時查看
-                      </small>
-                    </span>
-                  </label>
                 </div>
               </div>
             </div>
