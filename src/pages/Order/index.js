@@ -29,6 +29,8 @@ function Order() {
     var packages = [];
     for (let index = 0; index < orderlist.length; index++) {
       const element = orderlist[index];
+      console.log("element", element);
+      element.time = element.time.replace(/([a-zA-Z ])/g, " ").slice(0, -5);
       const orderItem = await getOrderItem(element["orderNumber"], userToken);
       var items_description = "";
       orderItem.map((element) => {

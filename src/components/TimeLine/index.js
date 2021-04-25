@@ -64,7 +64,25 @@ const ListItem = (items) => {
 
 const TimeLine = ({ items }) => {
   // 目前預設橫式 在寬度小於md(786px?)時會轉成直式
-  return <ul className="step step-border-last-0 ">{ListItem(items)}</ul>;
+  return (
+    <div>
+      <ul className="step step-border-last-0 ">{ListItem(items)}</ul>
+      <div style={{ opacity: 0.5 }}>
+        Icons made by{" "}
+        <a href="https://www.flaticon.com/authors/good-ware" title="Good Ware">
+          Good Ware
+        </a>{" "}
+        and{" "}
+        <a href="https://www.freepik.com" title="Freepik">
+          Freepik
+        </a>{" "}
+        from{" "}
+        <a href="https://www.flaticon.com/" title="Flaticon">
+          www.flaticon.com
+        </a>
+      </div>
+    </div>
+  );
 };
 
 export default TimeLine;

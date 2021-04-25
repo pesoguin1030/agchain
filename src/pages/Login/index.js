@@ -7,7 +7,7 @@ function Login(props) {
   const { authDispatch } = useContext(AuthContext);
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
-
+  const [loggingStatus, setLoggingStatus] = useState(true);
   const googleSignIn = () => {
     let provider = new firebase.auth.GoogleAuthProvider();
     firebase
@@ -59,7 +59,7 @@ function Login(props) {
       });
       console.log(access_token);
     } catch (error) {
-      alert("帳號密碼有誤");
+      setLoggingStatus(false);
       console.error(error);
     }
   };
@@ -177,6 +177,15 @@ function Login(props) {
                   </div>
                 </div>
 
+                {loggingStatus ? (
+                  <div></div>
+                ) : (
+                  <div className="text-center">
+                    <sapn id="name" class="text-danger">
+                      帳號密碼有誤
+                    </sapn>
+                  </div>
+                )}
                 <button
                   onClick={defaultSignIn}
                   className="btn btn-block btn-primary"

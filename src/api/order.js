@@ -5,15 +5,11 @@ import storage from "../utils/storage";
 const createOrder = async (orders) => {
   const userToken = storage.getAccessToken();
   try {
-    const response = await request.post(
-      `${Constants.SERVER_URL}/orders/newebpay`,
-      orders,
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
+    const response = await request.post(`/orders/newebpay`, orders, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
     return response;
   } catch (err) {
     return Promise.reject(err);
@@ -135,6 +131,31 @@ const getOrderItem = async (orderNumber, userToken) => {
     return Promise.reject(err);
   }
 };
+const getFeeItem = async (orderNumber) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const response = await request.get(`/orders/orderItem/${orderNumber}`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    const { data } = response;
+    let return_data = [];
+    for (let index = 0; index < data.length; index++) {
+      if (data[index].name.includes("運費")) {
+        return_data.push({
+          amount: data[index].amount,
+          name: data[index].name,
+          price: data[index].price,
+        });
+      }
+    }
+    console.log("return_data", return_data);
+    return return_data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
 
 async function getDestinations() {
   try {
@@ -149,20 +170,12 @@ async function getDestinations() {
 }
 
 async function getAllShippingInfo(farm_ids) {
-  const userToken = storage.getAccessToken();
-
   try {
-    const response = await request.get(
-      `${Constants.SERVER_URL}/destination/allshippinginfo`,
-      {
-        params: {
-          user: farm_ids,
-        },
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
+    const response = await request.get(`/destination/allshippinginfo`, {
+      params: {
+        user: farm_ids,
+      },
+    });
     const {
       data: { items },
     } = response;
@@ -193,4 +206,5 @@ export {
   getDestinations,
   getPressLikeNum,
   getAllShippingInfo,
+  getFeeItem,
 };

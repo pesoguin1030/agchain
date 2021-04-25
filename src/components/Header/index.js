@@ -279,7 +279,7 @@ const Header = () => {
                                     className="btn btn-xs btn-primary btn-block btn-pill transition-3d-hover"
                                     onClick={() => setEditingShow(true)}
                                   >
-                                    前往購物車
+                                    前往結帳
                                   </Link>
                                 </Col>
                               ) : null}

@@ -138,17 +138,20 @@ function Shop() {
                             ? cartState.map((e) => e.id).includes(id)
                             : false
                         }
-                        onRemoveFromCart={() =>
+                        onRemoveFromCart={(e) => {
+                          e.stopPropagation();
                           cartDispatch((prev) =>
                             prev.filter((e) => e.id !== id)
-                          )
-                        }
-                        onAddToCart={() =>
+                          );
+                        }}
+                        onAddToCart={(e) => {
+                          console.log(e);
+                          e.stopPropagation();
                           cartDispatch((prev) => [
                             ...prev,
                             { id, name, price, img: photo_url },
-                          ])
-                        }
+                          ]);
+                        }}
                       />
                     </div>
                   )

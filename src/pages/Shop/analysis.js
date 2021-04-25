@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import $ from "jquery";
 import { useParams } from "react-router-dom";
 import storage from "../../utils/storage";
-import { getPressLikeNum, getOrderItem } from "../../api/order";
+import { getPressLikeNum, getOrderItem, getFeeItem } from "../../api/order";
 import { Table } from "react-bootstrap";
 
 function Analysis(prop) {
@@ -11,6 +11,7 @@ function Analysis(prop) {
   const [likeNum, setLikeNum] = useState(0);
   const [orderInfo, setOrderInfo] = useState([]);
   const [total_price, setTotalPrice] = useState(0);
+  const [feeItem, setFeeItem] = useState([]);
   useEffect(() => {
     if (chartVisible) {
       $(".js-counter").each(function () {
@@ -20,12 +21,20 @@ function Analysis(prop) {
     (async (orderNumber) => {
       const userToken = storage.getAccessToken();
       const orderItem = await getOrderItem(orderNumber, userToken);
+      const fee_item = await getFeeItem(orderNumber);
+      setFeeItem(fee_item);
+      // console.lo
       var sum = 0;
       for (let index = 0; index < orderItem.length; index++) {
         const item = orderItem[index];
         sum += item["amount"] * item["price"];
       }
-      setTotalPrice(sum);
+      var fee = 0;
+      for (let index = 0; index < fee_item.length; index++) {
+        const item = fee_item[index];
+        fee += item["amount"] * item["price"];
+      }
+      setTotalPrice(sum + fee);
       setOrderInfo(orderItem);
       console.log(orderItem);
     })(orderNumber);
@@ -97,15 +106,20 @@ function Analysis(prop) {
               </thead>
               <tbody></tbody>
             </Table>
+            <h3>運費</h3>
+            {feeItem.map((item) => {
+              return <span>{item["price"]}</span>;
+            })}
+
             <h2>總計：{total_price}</h2>
           </div>
-          <a
+          {/* <a
             onClick={() => setChartVisible(true)}
             class="btn btn-primary btn-pill transition-3d-hover px-5"
             href="#"
           >
             查看幾個人喜歡
-          </a>
+          </a> */}
         </div>
       </div>
     </div>
