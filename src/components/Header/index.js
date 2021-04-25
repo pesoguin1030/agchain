@@ -2,7 +2,15 @@ import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Card, ListGroup, Container, Row, Col } from "react-bootstrap";
+import {
+  Card,
+  ListGroup,
+  Container,
+  Row,
+  Col,
+  Modal,
+  Button,
+} from "react-bootstrap";
 import {
   DropdownCard,
   DropdownItem,
@@ -22,6 +30,7 @@ const Header = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
+  const [editingShow, setEditingShow] = useState(false);
 
   const googleSignIn = () => {
     let provider = new firebase.auth.GoogleAuthProvider();
@@ -59,6 +68,37 @@ const Header = () => {
       });
   };
 
+  const EditingWindow = ({ onHide, show, state }) => (
+    <Modal
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      {...{ onHide, show }}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          請選擇商品用途
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Footer>
+        <Link
+          className="btn btn-xs btn-primary btn-block btn-pill transition-3d-hover"
+          to="/shop/diffCart"
+          onClick={onHide}
+        >
+          送禮
+        </Link>
+        <Link
+          className="btn btn-xs btn-primary btn-block btn-pill transition-3d-hover"
+          to="/shop/cart"
+          onClick={onHide}
+        >
+          自用
+        </Link>
+      </Modal.Footer>
+    </Modal>
+  );
+
   const defaultSignIn = async (e) => {
     e.preventDefault();
     try {
@@ -88,6 +128,7 @@ const Header = () => {
           <div className="container header-hide-content pt-2">
             <div className="d-flex align-items-center">
               {/*  Language */}
+
               <DropdownMenu title="語言">
                 <DropdownList
                   style={{
@@ -235,8 +276,8 @@ const Header = () => {
                               {cartState && cartState.length > 0 ? (
                                 <Col>
                                   <Link
-                                    to="/shop/cart"
                                     className="btn btn-xs btn-primary btn-block btn-pill transition-3d-hover"
+                                    onClick={() => setEditingShow(true)}
                                   >
                                     前往結帳
                                   </Link>
@@ -249,6 +290,13 @@ const Header = () => {
                     </DropdownCard>
                   </DropdownMenu>
                 </li>
+                {editingShow && (
+                  <EditingWindow /** 編輯視窗 */
+                    show={editingShow}
+                    onHide={() => setEditingShow(false)}
+                    state="editing"
+                  />
+                )}
                 {/* Account */}
                 <li className="list-inline-item">
                   <div className="hs-unfold">

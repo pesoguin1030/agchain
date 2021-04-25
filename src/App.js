@@ -5,7 +5,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import { AuthContext, CartContext } from "./appContext";
+import { AuthContext, CartContext, DestContext } from "./appContext";
 import Home from "./pages/Home";
 import request from "./utils/request";
 import Dapp from "./pages/Dapp/index";
@@ -23,6 +23,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/Exception/404";
 import storage from "./utils/storage";
 import ShoppingCart from "./pages/Shop/cart";
+import DiffShoppingCart from "./pages/Shop/diffCart";
 import Shop from "./pages/Shop";
 import Order from "./pages/Order";
 import GiftMaker from "./pages/Shop/gift";
@@ -76,6 +77,7 @@ function App() {
   );
   // Shopping cart
   const [cart, setCart] = useState(null);
+  const [dest, setDest] = useState(null);
 
   // Setup
   useEffect(() => {
@@ -104,6 +106,12 @@ function App() {
       } else {
         setCart([]);
       }
+      const dest = storage.getShoppingDest();
+      if (Array.isArray(dest)) {
+        setDest(dest);
+      } else {
+        setDest([]);
+      }
     };
     bootstrapAsync();
     // console.log((authState.user));
@@ -115,6 +123,12 @@ function App() {
     }
   }, [cart]);
 
+  useEffect(() => {
+    if (dest) {
+      storage.setShoppingDest(dest);
+    }
+  }, [dest]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -123,83 +137,94 @@ function App() {
       }}
     >
       <CartContext.Provider value={{ cartState: cart, cartDispatch: setCart }}>
-        <Router>
-          <Switch>
-            <Route path="/admin">
-              {authState.user ? <Admin /> : <Login />}
-            </Route>
-            <Route path="/login">
-              {authState.user ? <Redirect to="/" /> : <Login />}
-            </Route>
-            <Route exact path="/signup">
-              <Signup />
-            </Route>
-            <Route path="/order">
-              <Header />
-              <Order />
-            </Route>
-            <Route path="/user">
-              <Header />
-              <Switch>
-                <Route exact path="/user/account/info">
-                  {authState.user ? <AccountInfo /> : <Login />}
-                </Route>
-                {/* TODO */}
-              </Switch>
-            </Route>
-            <Route path="/shop">
-              <Header />
-              <Switch>
-                <Route exact path="/shop">
-                  <Shop />
-                </Route>
-                <Route exact path="/shop/single-product/:id">
-                  <SingleProduct />
-                </Route>
-                <Route exact path="/shop/gift/:orderNumber">
-                  <GiftMaker />
-                </Route>
-                <Route path="/dapp/:traceID">
-                  <Dapp />
-                </Route>
-                <Route path="/partner/:traceID">
-                  <Partner />
-                </Route>
-                <Route path="/shop/cart">
-                  {authState.user ? (
-                    <ShoppingCart />
-                  ) : (
-                    <Redirect to="/signup" />
-                  )}
-                </Route>
-                <Route exact path="/shop/analysis/:orderNumber">
-                  <Analysis />
-                </Route>
-              </Switch>
-            </Route>
-            <Route path="/">
-              <Header />
-              <Switch>
-                <Route exact path="/">
-                  <Home />
-                </Route>
+        <DestContext.Provider
+          value={{ destState: dest, destDispatch: setDest }}
+        >
+          <Router>
+            <Switch>
+              <Route path="/admin">
+                {authState.user ? <Admin /> : <Login />}
+              </Route>
+              <Route path="/login">
+                {authState.user ? <Redirect to="/" /> : <Login />}
+              </Route>
+              <Route exact path="/signup">
+                <Signup />
+              </Route>
+              <Route path="/order">
+                <Header />
+                <Order />
+              </Route>
+              <Route path="/user">
+                <Header />
+                <Switch>
+                  <Route exact path="/user/account/info">
+                    {authState.user ? <AccountInfo /> : <Login />}
+                  </Route>
+                  {/* TODO */}
+                </Switch>
+              </Route>
+              <Route path="/shop">
+                <Header />
+                <Switch>
+                  <Route exact path="/shop">
+                    <Shop />
+                  </Route>
+                  <Route exact path="/shop/single-product/:id">
+                    <SingleProduct />
+                  </Route>
+                  <Route exact path="/shop/gift/:orderNumber">
+                    <GiftMaker />
+                  </Route>
+                  <Route path="/dapp/:traceID">
+                    <Dapp />
+                  </Route>
+                  <Route path="/partner/:traceID">
+                    <Partner />
+                  </Route>
+                  <Route path="/shop/cart">
+                    {authState.user ? (
+                      <ShoppingCart />
+                    ) : (
+                      <Redirect to="/login" />
+                    )}
+                  </Route>
+                  <Route path="/shop/diffCart">
+                    {authState.user ? (
+                      <DiffShoppingCart />
+                    ) : (
+                      <Redirect to="/login" />
+                    )}
+                  </Route>
+                  <Route exact path="/shop/analysis/:orderNumber">
+                    <Analysis />
+                  </Route>
+                </Switch>
+              </Route>
+              <Route path="/">
+                <Header />
+                <Switch>
+                  <Route exact path="/">
+                    <Home />
+                  </Route>
 
-                <Route exact path="/dapp/:traceID">
-                  <Dapp />
-                </Route>
+                  <Route exact path="/dapp/:traceID">
+                    <Dapp />
+                  </Route>
 
-                <Route exact path="/partner/:traceID">
-                  <Partner />
-                </Route>
+                  <Route exact path="/partner/:traceID">
+                    <Partner />
+                  </Route>
 
-                <Route path="/404">
-                  <NotFound />
-                </Route>
-              </Switch>
-              <Footer />
-            </Route>
-          </Switch>
-        </Router>
+                  <Route path="/404">
+                    <NotFound />
+                  </Route>
+                </Switch>
+                <Footer />
+              </Route>
+            </Switch>
+          </Router>
+        </DestContext.Provider>
       </CartContext.Provider>
     </AuthContext.Provider>
   );

@@ -2,8 +2,17 @@ import React, { useEffect, useState, useContext } from "react";
 import { getOrder, getOrderItem } from "../../api/order";
 import storage from "../../utils/storage";
 import { Table } from "react-bootstrap";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
+import Typography from "@material-ui/core/Typography";
 
 function Order() {
+  const labelProps = {};
+  const stepProps = {};
+  labelProps.optional = <Typography variant="caption">Optional</Typography>;
+  stepProps.completed = false;
+
   const [orderlist, setOrderList] = useState([]);
   useEffect(() => {
     if (orderlist.length === 0) {
