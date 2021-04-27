@@ -17,6 +17,8 @@ import { getCultivationRecord } from "../../api/cultivationRecord";
 import { useParams, Redirect, useLocation } from "react-router-dom";
 import ReactPlayer from "react-player";
 import Typed from "typed.js";
+import ReactStars from "react-rating-stars-component";
+import request from "../../utils/request";
 
 import { Button } from "react-bootstrap";
 
@@ -32,6 +34,7 @@ function Dapp(props) {
   const [isForbidden, setIsForbidden] = useState(false);
   const [giftCardVisible, setGiftCardVisible] = useState(true);
   const [likeIsPressed, setLikeIsPressed] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [giftVideo, setGiftVideo] = useState(null);
   const [giftFrom, setGiftFrom] = useState("");
   const [giftText, setGiftText] = useState("");
@@ -43,6 +46,22 @@ function Dapp(props) {
   const [ip, setIP] = useState("");
   const [onShip, setOnship] = useState(true);
   const location = useLocation();
+  const [point, setPoint] = useState(null);
+  const [givePoint, setGivePoint] = useState(0);
+  const [advice, setAdvice] = useState("");
+  const [alert, setAlert] = useState("");
+
+  const rating_stars = {
+    size: 30,
+    count: 10,
+    isHalf: false,
+    value: 4,
+    color: "gray",
+    activeColor: "yellow",
+    onChange: (newValue) => {
+      setGivePoint(newValue);
+    },
+  };
 
   //parameter
   useEffect(() => {
@@ -83,6 +102,33 @@ function Dapp(props) {
     }
   }, []);
 
+  async function handleUpload() {
+    if (givePoint == 0) {
+      setAlert("請給予評分");
+      return;
+    }
+    try {
+      const response = await request.post(
+        `/packages/feedback`,
+        {
+          packageItemID: traceID,
+          comment: advice,
+          rating: givePoint,
+        },
+        {
+          headers: {
+            "Cache-Control": "no-cache, no-store",
+          },
+        }
+      );
+      setSubmitSuccess(true);
+      setAlert("完成評分！");
+    } catch (error) {
+      alert("無法預期的錯誤");
+      console.log(error);
+    }
+  }
+
   function getPropertyByRegex(obj, propName) {
     var re = new RegExp("^" + propName + "(\\[\\d*\\])?$"),
       key;
@@ -106,9 +152,11 @@ function Dapp(props) {
       counter,
       update_at,
       ip,
+      product_point,
     } = await getTraceData(traceID, await publicIp.v4());
 
     let response;
+    setPoint(product_point);
     setIP(ip);
     setLocalCounter(counter);
     setTime(update_at);
@@ -407,6 +455,38 @@ function Dapp(props) {
           )}
         </div>
       </div>
+      {!point ? (
+        <div className="container space-1 space-lg-3">
+          <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+            <h2>評價與建議{givePoint}分</h2>
+          </div>
+          <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+            <ReactStars {...rating_stars} />
+          </div>
+          <div className="text-center">
+            <textarea
+              cols="40"
+              rows="10"
+              value={advice}
+              onChange={(e) => {
+                setAdvice(e.target.value);
+              }}
+            />
+          </div>
+          <div className="text-center">
+            <button
+              className="btn btn-lg btn-primary"
+              onClick={handleUpload}
+              disabled={submitSuccess}
+            >
+              提交
+            </button>
+          </div>
+          <div className="text-center">
+            <h3>{alert}</h3>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

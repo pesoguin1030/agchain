@@ -36,6 +36,7 @@
     "react-filepond": "^7.1.0",
     "react-image-puzzle": "^0.1.1",
     "react-player": "^2.7.0",
+    "react-rating-stars-component": "^2.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "typed.js": "^2.0.11",
