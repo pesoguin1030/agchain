@@ -227,7 +227,17 @@ function Dapp(props) {
 
           <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             {secureItem && secureItem.cid !== "" ? (
-              <ImgToPuzzle img={`${secureItem?.cid}`} />
+              // <ImgToPuzzle img={`${secureItem?.cid}`} />
+              <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
+                <img
+                  style={{
+                    objectFit: "contain",
+                    maxHeight: 600,
+                  }}
+                  src={`${secureItem?.cid}`}
+                  className="responsive-img mt-2"
+                />
+              </div>
             ) : (
               // <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
               //   {/* <img
