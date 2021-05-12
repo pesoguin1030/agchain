@@ -214,7 +214,7 @@ function Dapp(props) {
           </p>
         </div>
       </div>
-      {onShip ? (
+      {onShip && secureItem?.cid !== null ? (
         <div className="container space-1 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>與收到的產品比比看</h2>
