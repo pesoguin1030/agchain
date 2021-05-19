@@ -59,7 +59,6 @@ const fetchOrganicCertificate = async (farmID) => {
       httpProvider
     );
     const record = await contract.Database(`${farmID}`);
-    console.log(record);
     return {
       timestamp: record[0],
       name: record[1],
