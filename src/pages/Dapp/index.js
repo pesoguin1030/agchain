@@ -14,12 +14,12 @@ import {
 import { getTraceData, sendPressLike } from "../../api/package";
 import { fetchVideo } from "../../api/media";
 import { getCultivationRecord } from "../../api/cultivationRecord";
+import { FarmInfo } from "../../api/product";
 import { useParams, Redirect, useLocation } from "react-router-dom";
-import ReactPlayer from "react-player";
+import ReactPlayer from "react-player/youtube";
 import Typed from "typed.js";
 import ReactStars from "react-rating-stars-component";
 import request from "../../utils/request";
-
 import { Button } from "react-bootstrap";
 
 function Dapp(props) {
@@ -29,10 +29,12 @@ function Dapp(props) {
   const [sensorAnalysis, setSensorAnalysis] = useState([]); // 種植數據
   const [farmIntro, setFarmIntro] = useState([]); // 農場介紹
   const [farmPic, setFarmPic] = useState([]); // 農場照片(1~3張?)
+  const [farmVideo, setFarmVideo] = useState([]); // 農場介紹影片
   const [secureItem, setSecureItem] = useState(null); // 出貨前照片
-  const [organicCerftificates, setOrganicCertificates] = useState([]); // 檢驗證書
+  const [organicCertificates, setOrganicCertificates] = useState([]); // 檢驗證書
   const [isForbidden, setIsForbidden] = useState(false);
   const [giftCardVisible, setGiftCardVisible] = useState(true);
+  const [farmVideoVisible, setFarmVideoVisible] = useState(true); // 農場是否提供影片
   const [likeIsPressed, setLikeIsPressed] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [giftVideo, setGiftVideo] = useState(null);
@@ -61,6 +63,17 @@ function Dapp(props) {
     onChange: (newValue) => {
       setGivePoint(newValue);
     },
+  };
+
+  const player_wrapper = {
+    position: "relative",
+    paddingTop: "56.25%",
+  };
+
+  const react_player = {
+    position: "absolute",
+    top: 0,
+    left: 0,
   };
 
   //parameter
@@ -168,6 +181,14 @@ function Dapp(props) {
     setCropName(crop_name);
     console.log(farmPic);
 
+    // 農場介紹影片
+    console.log(farm_intro.farm_video);
+    if (farm_intro.farm_video !== "") {
+      setFarmVideo(farm_intro.farm_video);
+    } else {
+      setFarmVideoVisible(false);
+    }
+
     // 田間紀錄
     response = await getCultivationRecord(crop_id);
     setCultivationRecord(response);
@@ -186,6 +207,7 @@ function Dapp(props) {
     // 有機檢驗證書
     response = await fetchOrganicCertificate(farm_id);
     setOrganicCertificates(certificate_filename_arr);
+    console.log("Certificate: ", response);
   }
 
   async function handlePressLike(traceID) {
@@ -390,6 +412,17 @@ function Dapp(props) {
             </li>
           </ul>
         </div>
+        {farmVideoVisible === true ? (
+          <div style={player_wrapper}>
+            <ReactPlayer
+              style={react_player}
+              url={farmVideo}
+              width="100%"
+              height="100%"
+              controls={true}
+            />
+          </div>
+        ) : null}
 
         {/* <div className="row">
           <div className="col-md-6 px-sm-3 mb-4 px-3">
@@ -446,8 +479,8 @@ function Dapp(props) {
           <h2>檢驗證書</h2>
         </div>
         <div className="row mx-n2 mx-sm-n3 mb-3">
-          {organicCerftificates.length > 0 ? (
-            organicCerftificates.map((e, index) => {
+          {organicCertificates.length > 0 ? (
+            organicCertificates.map((e, index) => {
               return (
                 <div
                   className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
