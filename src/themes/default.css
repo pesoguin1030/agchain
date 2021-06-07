@@ -4673,22 +4673,21 @@ input[type="button"].btn-block {
 
 .layoutBox {
   display: flex;
-  flex: 1;
 
   .leftLayout {
     width: 200px;
     background: #000;
     height: 100%;
     color: #fff;
-    flex-shrink: 0;
   }
+}
 
-  .rightLayout {
-    width: 100%;
-    background: #fff;
-    height: 100%;
-    padding-top: 100px;
-  }
+.rightLayout {
+  width: 100%;
+  background: #fff;
+  height: 100%;
+  padding-top: 100px;
+  justify-content: end;
 }
 
 .custom-file-input:focus ~ .custom-file-label {

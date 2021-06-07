@@ -107,48 +107,52 @@ function Partner(props) {
           </div>
         </div>
       </div>
-      <div className="container">
-        <div className="text-center">
-          <h2>目前僅提供三光米溯源</h2>
-          <h4>請點擊農作物名稱進行溯源</h4>
-        </div>
-        <div>
-          {foodlist.map(([name, link_url, types, vendor, create_at]) => (
-            <div
-              key={link_url}
-              className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
-            >
-              <TraceCard
+      {manilist.length > 0 ? (
+        <div className="container">
+          <div className="text-center">
+            <h2>目前僅提供三光米溯源</h2>
+            <h4>請點擊農作物名稱進行溯源</h4>
+          </div>
+          <div>
+            {foodlist.map(([name, link_url, types, vendor, create_at]) => (
+              <div
                 key={link_url}
-                name={name}
-                type={types}
-                link_url={link_url + `?onShip=false`}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="container">
-        <div className="text-center">
-          <h2>便當實際製作照片</h2>
-        </div>
-        <div>
-          {manilist.map(([action, photo_url, active, tackle_time]) => (
-            <div key={tackle_time} className="layoutBox">
-              <div className="leftLayout">
-                <ManipulateCard
-                  key={tackle_time}
-                  action={action}
-                  photo_url={photo_url}
+                className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
+              >
+                <TraceCard
+                  key={link_url}
+                  name={name}
+                  type={types}
+                  link_url={link_url + `?onShip=false`}
                 />
               </div>
-              <div className="rightLayout">
-                <h2>{action}</h2>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
+      {manilist.length > 0 ? (
+        <div className="container">
+          <div className="text-center">
+            <h2>便當實際製作照片</h2>
+          </div>
+          <div>
+            {manilist.map(([action, photo_url, active, tackle_time]) => (
+              <div key={tackle_time} className="layoutBox ">
+                <div className="leftLayout">
+                  <ManipulateCard
+                    key={tackle_time}
+                    action={action}
+                    photo_url={photo_url}
+                  />
+                </div>
+                <div className="rightLayout">
+                  <h2>{action}</h2>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
