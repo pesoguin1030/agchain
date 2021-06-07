@@ -1,6 +1,6 @@
 import React from "react";
 
-const TraceCard = ({ crop_id, name, type, link_url }) => (
+const TraceCard = ({ crop_id, name, type, link_url, picture_url }) => (
   <div
     className="card border shadow-none text-center h-100"
     onClick={() => {
@@ -15,7 +15,9 @@ const TraceCard = ({ crop_id, name, type, link_url }) => (
           objectFit: "contain",
         }}
         src={
-          "https://storage.googleapis.com/tenlife/e992ec60-9293-11eb-aa1e-994fc2b48f41.webp"
+          /*"https://storage.googleapis.com/tenlife/e992ec60-9293-11eb-aa1e-994fc2b48f41.webp"
+          {picture_url}*/
+          "https://i.imgur.com/ucvVA3d.png"
         }
         alt="三光米"
       />

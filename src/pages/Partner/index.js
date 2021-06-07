@@ -19,11 +19,11 @@ function Partner(props) {
   const [trace, setTrace] = useState([]);
   const [address, setAddress] = useState("");
   const [picture, setPicture] = useState([
-    "https://storage.googleapis.com/tenlife/11c46d30-14f9-11eb-b97c-8d2f74c07adb.jpg",
+    "https://storage.googleapis.com/tenlife/173a21b0-14f9-11eb-b97c-8d2f74c07adb.jpg",
     "https://storage.googleapis.com/tenlife/11c46d30-14f9-11eb-b97c-8d2f74c07adb.jpg",
   ]);
   let defaultPicture =
-    "https://storage.googleapis.com/tenlife/11c46d30-14f9-11eb-b97c-8d2f74c07adb.jpg";
+    "https://storage.googleapis.com/tenlife/173a21b0-14f9-11eb-b97c-8d2f74c07adb.jpg";
 
   useEffect(() => {
     // 從url取得溯源參數
@@ -63,9 +63,9 @@ function Partner(props) {
   ) : (
     <div className="border-bottom mt-4">
       <div className="container space-1 space-lg-3">
-        <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+        {/*<div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h4>本服務由愛便當委託農金鏈提供</h4>
-        </div>
+        </div>*/}
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>愛便當合作夥伴</h2>
           <h2>{brandName}</h2>
@@ -105,11 +105,11 @@ function Partner(props) {
       </div>
       <div className="container">
         <div className="text-center">
-          <h2>目前僅提供三光米溯源</h2>
-          <h4>請點擊農作物名稱進行溯源</h4>
+          <h2>區塊鏈溯源品項</h2>
+          <h4>點擊圖片瀏覽溯源數據</h4>
         </div>
         <div>
-          {trace.map(({ id, link_url, name, type }) => (
+          {trace.map(({ id, link_url, name, type, picture_url }) => (
             <div
               key={id}
               className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
@@ -119,6 +119,7 @@ function Partner(props) {
                 crop_id={id}
                 name={name}
                 type={type}
+                picture_url={picture_url}
                 link_url={link_url + `?onShip=false`}
               />
             </div>
