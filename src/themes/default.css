@@ -4671,6 +4671,26 @@ input[type="button"].btn-block {
   opacity: 0;
 }
 
+.layoutBox {
+  display: flex;
+  flex: 1;
+
+  .leftLayout {
+    width: 200px;
+    background: #000;
+    height: 100%;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .rightLayout {
+    width: 100%;
+    background: #fff;
+    height: 100%;
+    padding-top: 100px;
+  }
+}
+
 .custom-file-input:focus ~ .custom-file-label {
   border-color: rgba(55, 125, 255, 0.4);
   box-shadow: 0 0 10px rgba(55, 125, 255, 0.1);

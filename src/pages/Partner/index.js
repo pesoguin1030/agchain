@@ -5,7 +5,7 @@ import { getPartnerData } from "../../api/partner";
 import { useParams, Redirect } from "react-router-dom";
 import ReactPlayer from "react-player";
 import Typed from "typed.js";
-import { TraceCard } from "../../components/Card";
+import { TraceCard, ManipulateCard } from "../../components/Card";
 
 import { Button } from "react-bootstrap";
 
@@ -25,6 +25,7 @@ function Partner(props) {
   let defaultPicture =
     "https://storage.googleapis.com/tenlife/11c46d30-14f9-11eb-b97c-8d2f74c07adb.jpg";
   const [foodlist, setFoodList] = useState([]);
+  const [manilist, setManiList] = useState([]);
 
   useEffect(() => {
     // 從url取得溯源參數
@@ -54,6 +55,7 @@ function Partner(props) {
         console.log(infoList[0].trace);
         setTrace(infoList[0].trace);
         setFoodList(infoList[0].foodlist);
+        setManiList(infoList[0].manilist);
       }
     } catch (err) {
       console.log(err);
@@ -122,6 +124,27 @@ function Partner(props) {
                 type={types}
                 link_url={link_url + `?onShip=false`}
               />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="container">
+        <div className="text-center">
+          <h2>便當實際製作照片</h2>
+        </div>
+        <div>
+          {manilist.map(([action, photo_url, active, tackle_time]) => (
+            <div key={tackle_time} className="layoutBox">
+              <div className="leftLayout">
+                <ManipulateCard
+                  key={tackle_time}
+                  action={action}
+                  photo_url={photo_url}
+                />
+              </div>
+              <div className="rightLayout">
+                <h2>{action}</h2>
+              </div>
             </div>
           ))}
         </div>
