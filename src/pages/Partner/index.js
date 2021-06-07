@@ -24,6 +24,7 @@ function Partner(props) {
   ]);
   let defaultPicture =
     "https://storage.googleapis.com/tenlife/173a21b0-14f9-11eb-b97c-8d2f74c07adb.jpg";
+  const [foodlist, setFoodList] = useState([]);
 
   useEffect(() => {
     // 從url取得溯源參數
@@ -52,6 +53,7 @@ function Partner(props) {
         setPicture(temp_picture);
         console.log(infoList[0].trace);
         setTrace(infoList[0].trace);
+        setFoodList(infoList[0].foodlist);
       }
     } catch (err) {
       console.log(err);
@@ -109,16 +111,15 @@ function Partner(props) {
           <h4>點擊圖片瀏覽溯源數據</h4>
         </div>
         <div>
-          {trace.map(({ id, link_url, name, type, picture_url }) => (
+          {foodlist.map(([name, link_url, types, vendor, create_at]) => (
             <div
-              key={id}
+              key={link_url}
               className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
             >
               <TraceCard
-                key={id}
-                crop_id={id}
+                key={link_url}
                 name={name}
-                type={type}
+                type={types}
                 picture_url={picture_url}
                 link_url={link_url + `?onShip=false`}
               />
