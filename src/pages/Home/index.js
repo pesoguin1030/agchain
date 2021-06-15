@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { fetchProducts } from "../../api/product";
 import { ProductCard } from "../../components/Card";
 import { CartContext } from "../../appContext";
+import Zmage from "react-zmage";
 
 function Home(props) {
   const { cartState, cartDispatch } = useContext(CartContext);

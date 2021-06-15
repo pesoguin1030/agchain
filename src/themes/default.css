@@ -4690,6 +4690,12 @@ input[type="button"].btn-block {
   justify-content: end;
 }
 
+.helpstar {
+  justifycontent: center;
+  alignitems: center;
+  padding-left: 50px;
+}
+
 .custom-file-input:focus ~ .custom-file-label {
   border-color: rgba(55, 125, 255, 0.4);
   box-shadow: 0 0 10px rgba(55, 125, 255, 0.1);
@@ -23798,6 +23804,11 @@ label.btn {
   max-width: 100%;
   height: auto;
   border-radius: 50%;
+}
+
+.step .step-avatar-img-rec {
+  max-width: 100%;
+  height: auto;
 }
 
 .step .step-avatar::after {

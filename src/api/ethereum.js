@@ -13,6 +13,9 @@ import {
 } from "../abi/sensorAnalysis";
 import { secureItemABI, secureItemAddress } from "../abi/secureItem";
 
+import storage from "../utils/storage";
+import request from "../utils/request";
+
 const httpProvider = ethers.getDefaultProvider("goerli");
 
 const fetchCultivationRecord = async (cropId) => {
@@ -90,9 +93,32 @@ const fetchSensorAnalysis = async (cropID) => {
     return null;
   }
 };
+
+async function checkInfo(id, crop_id, action, timestamp, photoURL, soundURL) {
+  try {
+    const response = await request.get(`/dapp/checkInfo`, {
+      params: {
+        id: id,
+        crop_id: crop_id,
+        action: action,
+        timestamp: timestamp,
+        photoURL: photoURL,
+        soundURL: soundURL,
+      },
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    // alert("無法取得農夫運費資訊，請稍後再試");
+    console.log(error);
+    return false;
+  }
+}
+
 export {
   fetchCultivationRecord,
   fetchSecureItem,
   fetchOrganicCertificate,
   fetchSensorAnalysis,
+  checkInfo,
 };

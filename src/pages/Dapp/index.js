@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import CertificateCard from "../../../src/components/Card/CertificateCard";
 import TimeLine from "../../../src/components/TimeLine";
+import TimeLine_try from "../../../src/components/TimeLine_try";
 import Radarchart from "../../../src/components/RadarChart";
 import { ImgToPuzzle } from "../../components/Puzzle";
 import Slideshow from "../../components/Slideshow";
@@ -26,6 +27,7 @@ function Dapp(props) {
   const giftTextRef = useRef();
   const { traceID } = useParams(); // main KEY in url
   const [cultivationRecord, setCultivationRecord] = useState([]); // 田間紀錄
+  const [newCultivationRecord, setNewCultivationRecord] = useState([]); // 田間紀錄
   const [sensorAnalysis, setSensorAnalysis] = useState([]); // 種植數據
   const [farmIntro, setFarmIntro] = useState([]); // 農場介紹
   const [farmPic, setFarmPic] = useState([]); // 農場照片(1~3張?)
@@ -166,20 +168,20 @@ function Dapp(props) {
       update_at,
       ip,
       product_point,
+      db_fieldLog,
     } = await getTraceData(traceID, await publicIp.v4());
 
     let response;
     setPoint(product_point);
     setIP(ip);
+    setNewCultivationRecord(db_fieldLog);
     setLocalCounter(counter);
     setTime(update_at);
     // 送禮影片
     setOrderNumber(order_number);
-    console.log(farm_intro);
     setFarmIntro(farm_intro);
     setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
     setCropName(crop_name);
-    console.log(farmPic);
 
     // 農場介紹影片
     console.log(farm_intro.farm_video);
@@ -219,15 +221,15 @@ function Dapp(props) {
       console.error(err);
     }
   }
-
+  //需要同時符合不是加工後產品+有orderNumber才會有賀卡
   return isForbidden ? (
     <Redirect to="/404" />
   ) : (
     <div className="border-bottom">
-      {onShip ? (
+      {onShip && orderNumber ? (
         <div className="container space-1 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-            <h2>電子賀卡</h2>
+            <h2>電子賀卡{orderNumber}</h2>
           </div>
           <div className="row w-md-80 w-lg-75 text-center mx-md-auto mb-5 mb-md-9">
             <div className="col-12">
@@ -284,10 +286,11 @@ function Dapp(props) {
           </p>
         </div>
       </div>
-      {onShip && secureItem?.cid !== null ? (
+      {/*onship也可以有照片*/}
+      {secureItem?.cid !== null ? (
         <div className="container space-1 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-            <h2>與收到的產品比比看</h2>
+            {onShip ? <h2>與收到的產品比比看</h2> : <h2>這是商家的食材照片</h2>}
           </div>
           {/* <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <div className="row w-md-80 w-lg-40 mx-md-auto px-5">
@@ -357,6 +360,15 @@ function Dapp(props) {
                 style={{ overflow: "hidden scroll", height: "480px" }}
               >
                 <TimeLine items={cultivationRecord} />
+              </div>
+            </div>
+          ) : newCultivationRecord && newCultivationRecord.length !== 0 ? (
+            <div className="col-12 px-auto">
+              <div
+                id="style-2"
+                style={{ overflow: "hidden scroll", height: "480px" }}
+              >
+                <TimeLine_try items={newCultivationRecord} />
               </div>
             </div>
           ) : (
@@ -501,9 +513,13 @@ function Dapp(props) {
       {!point ? (
         <div className="container space-1 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-            <h2>評價與建議{givePoint}分</h2>
+            {givePoint == 0 ? (
+              <h2>評價與建議(請點擊給分)</h2>
+            ) : (
+              <h2>評價與建議({givePoint}分)</h2>
+            )}
           </div>
-          <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+          <div className="w-md-80 w-lg-40 mx-md-auto mb-5 mb-md-9 helpstar text-center">
             <ReactStars {...rating_stars} />
           </div>
           <div className="text-center">
