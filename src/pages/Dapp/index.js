@@ -229,7 +229,7 @@ function Dapp(props) {
       {onShip && orderNumber ? (
         <div className="container space-1 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-            <h2>電子賀卡{orderNumber}</h2>
+            <h2>電子賀卡</h2>
           </div>
           <div className="row w-md-80 w-lg-75 text-center mx-md-auto mb-5 mb-md-9">
             <div className="col-12">

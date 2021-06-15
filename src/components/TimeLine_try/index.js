@@ -95,7 +95,9 @@ const ListItem = (items) => {
             )}
           </span>
           <div className="step-content">
-            <h4>{item.action}</h4>
+            <h4>
+              {item.action}({item.tackle_time.substring(0, 10)})
+            </h4>
             <button
               type="button"
               className="btn btn-outline-secondary btn-xs"
