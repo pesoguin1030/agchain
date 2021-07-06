@@ -1,10 +1,11 @@
 import React from "react";
 
-const TraceCard = ({ crop_id, name, type, link_url }) => (
+const TraceCard = ({ crop_id, name, type, link_url, picture_url }) => (
   <div
     className="card border shadow-none text-center h-100"
     onClick={() => {
       window.location.href = link_url;
+      console.log(picture_url);
     }}
   >
     <div className="position-relative">
@@ -14,9 +15,7 @@ const TraceCard = ({ crop_id, name, type, link_url }) => (
           minHeight: 180,
           objectFit: "contain",
         }}
-        src={
-          "https://storage.googleapis.com/tenlife/e992ec60-9293-11eb-aa1e-994fc2b48f41.webp"
-        }
+        src={picture_url}
         alt="三光米"
       />
     </div>

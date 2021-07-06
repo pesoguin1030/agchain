@@ -8,6 +8,7 @@ const CertificateCard = ({ idx, img, title }) => (
           className="card-img-top"
           style={{
             minHeight: 180,
+            maxHeight: 360,
             objectFit: "contain",
           }}
           src={img}
@@ -84,4 +85,4 @@ const CertificateCard = ({ idx, img, title }) => (
   </div>
 );
 
-export default CertificateCard;
+export { CertificateCard };

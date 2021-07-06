@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-
-import CertificateCard from "../../../src/components/Card/CertificateCard";
+//import CertificateCard from "../../../src/components/Card/CertificateCard";
+import { CertificateCard } from "../../components/Card";
 import TimeLine from "../../../src/components/TimeLine";
 import TimeLine_try from "../../../src/components/TimeLine_try";
 import Radarchart from "../../../src/components/RadarChart";
@@ -21,7 +21,7 @@ import ReactPlayer from "react-player/youtube";
 import Typed from "typed.js";
 import ReactStars from "react-rating-stars-component";
 import request from "../../utils/request";
-import { Button } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 
 function Dapp(props) {
   const giftTextRef = useRef();
@@ -495,7 +495,7 @@ function Dapp(props) {
             organicCertificates.map((e, index) => {
               return (
                 <div
-                  className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
+                  className="col-sm-6 col-lg-4 px-2 px-sm-3 mb-3 mb-sm-5"
                   key={index}
                 >
                   <CertificateCard idx={index} img={e} title={"農場檢驗證書"} />
