@@ -82,12 +82,16 @@ const fetchSensorAnalysis = async (cropID) => {
     );
     const record = await contract.get(cropID);
     console.log("record__", record);
-    return record.map((el) => ({
+
+    const record_return = record.map((el) => ({
       key: el[0],
       value: parseInt(el[1]),
       unit: el[2],
       updateAt: el[3],
     }));
+    const result = record_return.filter((el) => el.key.indexOf("管理") == -1);
+    console.log("result___", result);
+    return result;
   } catch (err) {
     console.log(err);
     return null;

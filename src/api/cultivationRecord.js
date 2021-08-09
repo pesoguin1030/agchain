@@ -9,17 +9,33 @@ async function getCultivationRecord(crop_id) {
   // 轉換成{icon, title, description}的形式，方便用timeline顯示
   let cultivation_records = response.map((record) => {
     let icon_path = "../../assets/img/cultivation";
-    switch (record.action) {
-      case "播種測試":
+    let record_action = "";
+    if (record.action.includes("播種")) {
+      record_action = "播種";
+    } else if (
+      record.action.includes("種植") ||
+      record.action.includes("定植")
+    ) {
+      record_action = "種植";
+    } else if (record.action.includes("肥")) {
+      record_action = "施肥";
+    } else if (record.action.includes("收")) {
+      record_action = "收割";
+    } else if (record.action.includes("整地")) {
+      record_action = "整地";
+    } else {
+      record_action = record.action;
+    }
+
+    switch (record_action) {
       case "播種":
         icon_path = "播種.png";
         break;
       case "種植":
-      case "定植":
+        //case "定植":
         icon_path = "定植.png";
         break;
       case "施肥":
-      case "追肥":
         icon_path = "施肥.png";
         break;
       case "除草":
@@ -51,12 +67,9 @@ async function getCultivationRecord(crop_id) {
         break;
       case "澆水":
       case "灌溉":
+      case "噴藥":
         icon_path = "澆水.png";
         break;
-      case "除草":
-        icon_path = "除草.png";
-        break;
-
       default:
         icon_path = "agriculture.png";
     }

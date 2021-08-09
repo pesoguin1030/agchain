@@ -13,4 +13,17 @@ async function getPartnerData(shortcut) {
   }
 }
 
-export { getPartnerData };
+async function getPartnerInvisibleData(shortcut) {
+  try {
+    const result = await request.get(`/wutau/partner-invisible`, {
+      params: {
+        shortcut,
+      },
+    });
+    return result.data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+export { getPartnerData, getPartnerInvisibleData };

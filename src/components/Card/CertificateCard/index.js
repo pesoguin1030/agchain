@@ -1,36 +1,35 @@
 import React from "react";
 
 const CertificateCard = ({ idx, img, title }) => (
-  <div>
-    <div className="card border shadow-none text-center h-100">
-      <div className="position-relative">
-        <img
-          className="card-img-top"
-          style={{
-            minHeight: 180,
-            maxHeight: 360,
-            objectFit: "contain",
-          }}
-          src={img}
-          alt="證書圖片"
-        />
-        <div className="position-absolute top-0 right-0 pt-3 pr-3">
-          <button
-            type="button"
-            className="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-            title="點擊放大圖片"
-            data-toggle="modal"
-            data-target={"#modal_" + idx}
-          >
-            <i className="fas fa-search-plus"></i>
-          </button>
-        </div>
-      </div>
-
-      <div className="card-body pt-4 px-4 pb-0">
-        <div className="mb-2">{title}</div>
+  <div className="col-xs-12 col-sm-6 col-lg-4">
+    <div className="position-relative">
+      <img
+        className="card-img-top"
+        style={{
+          minHeight: 180,
+          maxHeight: 360,
+          objectFit: "contain",
+        }}
+        src={img}
+        alt="證書圖片"
+      />
+      <div className="position-absolute top-0 right-0 pt-3 pr-3">
+        <button
+          type="button"
+          className="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
+          title="點擊放大圖片"
+          data-toggle="modal"
+          data-target={"#modal_" + idx}
+        >
+          <i className="fas fa-search-plus"></i>
+        </button>
       </div>
     </div>
+
+    <div className="card-body pt-4 px-4 pb-0">
+      <div className="mb-2">{title}</div>
+    </div>
+    {/* </div> */}
     <div
       id={"modal_" + idx}
       className="modal fade"
