@@ -43,6 +43,7 @@ function PartnerInvisible(props) {
   const [isOnepage, setIsOnepage] = useState(false);
   const [organicCertificates, setOrganicCertificates] = useState([]); // 檢驗證書
   const [fieldRecords, setFieldRecords] = useState([]); // 田間紀錄
+  const [farmVideo, setFarmVideo] = useState([]); // 農場影片
 
   useEffect(() => {
     // 從url取得溯源參數
@@ -72,6 +73,7 @@ function PartnerInvisible(props) {
         }
         setPicture(temp_picture);
         console.log(picture);
+        setFarmVideo(infoList[0].video_link);
         setTrace(infoList[0].trace);
         setOrganicCertificates(infoList[0].certificates);
 
@@ -162,9 +164,7 @@ function PartnerInvisible(props) {
           <div style={player_wrapper}>
             <ReactPlayer
               style={react_player}
-              url={
-                "https://drive.google.com/file/d/1Ieb70H7jA_pmaW1XRp19gIYpzEdLOfpa/view?usp=sharing"
-              }
+              url={farmVideo}
               width="100%"
               height="100%"
               controls={true}
