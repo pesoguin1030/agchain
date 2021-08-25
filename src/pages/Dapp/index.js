@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-//import CertificateCard from "../../../src/components/Card/CertificateCard";
 import { CertificateCard } from "../../components/Card";
 import TimeLine from "../../../src/components/TimeLine";
 import TimeLine_try from "../../../src/components/TimeLine_try";
@@ -16,6 +15,7 @@ import { getTraceData, sendPressLike } from "../../api/package";
 import { fetchVideo } from "../../api/media";
 import { getCultivationRecord } from "../../api/cultivationRecord";
 import { FarmInfo } from "../../api/product";
+import { getCertificates } from "../../api/farm";
 import { useParams, Redirect, useLocation } from "react-router-dom";
 import ReactPlayer from "react-player/youtube";
 import Typed from "typed.js";
@@ -179,14 +179,15 @@ function Dapp(props) {
     setTime(update_at);
     // 送禮影片
     setOrderNumber(order_number);
-    setFarmIntro(farm_intro);
-    setFarmPic(getPropertyByRegex(farm_intro, "farm_picture|[1-9]"));
+    setFarmIntro(farm_intro[0]);
+    setFarmPic(getPropertyByRegex(farm_intro[0], "farm_picture|[1-9]"));
     setCropName(crop_name);
 
     // 農場介紹影片
-    console.log(farm_intro.farm_video);
-    if (farm_intro.farm_video !== "") {
-      setFarmVideo(farm_intro.farm_video);
+    console.log(farm_intro);
+    console.log(farm_intro[0].farm_video);
+    if (farm_intro[0].farm_video !== "") {
+      setFarmVideo(farm_intro[0].farm_video);
     } else {
       setFarmVideoVisible(false);
     }
@@ -207,8 +208,10 @@ function Dapp(props) {
     setSensorAnalysis(response);
 
     // 有機檢驗證書
-    response = await fetchOrganicCertificate(farm_id);
-    setOrganicCertificates(certificate_filename_arr);
+    //response = await fetchOrganicCertificate(farm_id);
+    //setOrganicCertificates(certificate_filename_arr);
+    response = await getCertificates(farm_id);
+    setOrganicCertificates(response);
     console.log("Certificate: ", response);
   }
 
@@ -490,17 +493,11 @@ function Dapp(props) {
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>檢驗證書</h2>
         </div>
-        <div className="row mx-n2 mx-sm-n3 mb-3">
+        <div className="container text-center h-100 row">
           {organicCertificates.length > 0 ? (
             organicCertificates.map((e, index) => {
               return (
-                <div
-                  className="col-sm-6 col-lg-4 px-2 px-sm-3 mb-3 mb-sm-5"
-                  key={index}
-                >
-                  <CertificateCard idx={index} img={e} title={"農場檢驗證書"} />
-                  {/* <CertificateCard idx={index} img={`https://ipfs.io/ipfs/${e?.cid}`} title={e.name} /> */}
-                </div>
+                <CertificateCard idx={index} img={e.filename} title={e.title} />
               );
             })
           ) : (

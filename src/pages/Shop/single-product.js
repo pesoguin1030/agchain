@@ -4,6 +4,7 @@ import { AuthContext, CartContext } from "../../appContext";
 import { useEffect, useState, useContext } from "react";
 import { getAllShippingInfo } from "../../api/order";
 import { ProductCard } from "../../components/Card";
+import { CertificateCard } from "../../components/Card";
 
 import Radarchart from "../../../src/components/RadarChart";
 import TimeLine from "../../../src/components/TimeLine";
@@ -11,6 +12,7 @@ import Slideshow from "../../components/Slideshow";
 
 import { ProductDetail, FarmInfo } from "../../api/product";
 import { getCultivationRecord } from "../../api/cultivationRecord";
+import { getCertificates } from "../../api/farm";
 import {
   fetchOrganicCertificate,
   fetchSecureItem,
@@ -25,6 +27,7 @@ function SingleProduct() {
   const [imgUrl, setImgUrl] = useState();
   const [description, setDescription] = useState();
   const [farmName, setFarmName] = useState();
+  const [farmId, setFarmId] = useState();
   const [farmIntro, setFarmIntro] = useState("");
   const [farmAddress, setFarmAddress] = useState();
   const [farmPhone, setFarmPhone] = useState();
@@ -36,6 +39,7 @@ function SingleProduct() {
   const [copyCartState, setCopyCartState] = useState([]);
   const [cultivationRecord, setCultivationRecord] = useState([]); // 田間紀錄
   const [sensorAnalysis, setSensorAnalysis] = useState([]); // 種植數據
+  const [organicCertificates, setOrganicCertificates] = useState([]); // 檢驗證書
 
   useEffect(() => {
     setIntID(parseInt(id, 10));
@@ -67,6 +71,7 @@ function SingleProduct() {
     setCropName(data["crop_name"]);
     //farm data
     setFarmName("農場資訊");
+    setFarmId(farm_data["farm_id"]);
     setFarmIntro(farm_data["farm_intro"]);
     setFarmAddress(farm_data["farm_address"]);
     setFarmPhone(farm_data["farm_phone"]);
@@ -90,6 +95,10 @@ function SingleProduct() {
     // 數據分析雷達圖
     response = await fetchSensorAnalysis(crop_id);
     setSensorAnalysis(response);
+
+    // 有機檢驗證書
+    response = await getCertificates(farm_data["farm_id"]);
+    setOrganicCertificates(response);
   }
 
   function getPropertyByRegex(obj, propName) {
@@ -333,7 +342,7 @@ function SingleProduct() {
         </div>
       </div>
 
-      <div className="container space-1 space-lg-3">
+      <div className="container space-1">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>田間紀錄</h2>
         </div>
@@ -353,7 +362,39 @@ function SingleProduct() {
             </div>
           )}
         </div>
+        {farmId === 59 ? (
+          <div className="w-md-80 w-lg-60 text-right mx-md-auto mb-5 mb-md-9 space-2">
+            <p>
+              參考資料： <a href="/3lightrice-sop">台農82號水稻標準作業模式</a>
+            </p>
+          </div>
+        ) : null}
       </div>
+
+      {farmId === 59 ? (
+        <div className="container space-1">
+          <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+            <h2>檢驗證書</h2>
+          </div>
+          <div className="container text-center h-100 row">
+            {organicCertificates.length > 0 ? (
+              organicCertificates.map((e, index) => {
+                return (
+                  <CertificateCard
+                    idx={index}
+                    img={e.filename}
+                    title={e.title}
+                  />
+                );
+              })
+            ) : (
+              <div className="col-12 text-center">
+                <p>無相關證書</p>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

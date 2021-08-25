@@ -27,4 +27,17 @@ const getFarmList = async (cart) => {
   return farmlist;
 };
 
-export { getFarmList };
+async function getCertificates(farm_id) {
+  try {
+    const result = await request.get(`/wutau/farm-certificates`, {
+      params: {
+        farm_id,
+      },
+    });
+    return result.data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+export { getFarmList, getCertificates };

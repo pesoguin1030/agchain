@@ -11,6 +11,7 @@ import request from "./utils/request";
 import Dapp from "./pages/Dapp/index";
 import Partner from "./pages/Partner/index";
 import PartnerInvisible from "./pages/Partner/invisible";
+import Threelightrice from "./pages/Partner/3lightrice";
 
 import AccountInfo from "./pages/Account/index";
 
@@ -219,6 +220,10 @@ function App() {
 
                   <Route exact path="/partner-invisible/:traceID">
                     <PartnerInvisible />
+                  </Route>
+
+                  <Route exact path="/3lightrice-sop">
+                    <Threelightrice />
                   </Route>
 
                   <Route path="/404">
