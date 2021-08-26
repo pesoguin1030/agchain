@@ -15,7 +15,7 @@ async function getPartnerData(shortcut) {
 
 async function getPartnerInvisibleData(shortcut) {
   try {
-    const result = await request.get(`/wutau/farm-certificates`, {
+    const result = await request.get(`/wutau/partner-invisible`, {
       params: {
         shortcut,
       },
