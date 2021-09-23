@@ -2,7 +2,7 @@ kind: pipeline
 name: default
 
 steps:
-- name: build
+- name: test
   environment:
     USERNAME:
       from_secret: USERNAME
