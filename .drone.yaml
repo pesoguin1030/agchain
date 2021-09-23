@@ -1,0 +1,10 @@
+kind: pipeline
+name: default
+
+steps:
+- name: build
+  environment:
+    USERNAME:
+      from_secret: USERNAME
+    commands: 
+    - echo $USERNAME
