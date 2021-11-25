@@ -106,6 +106,7 @@ function Dapp(props) {
 
   useEffect(() => {
     // 從url取得溯源參數
+    console.log("traceID: ", traceID);
     if (traceID) {
       // Farm & crop information
       setupRequiredInformation(traceID);

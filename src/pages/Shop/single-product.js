@@ -371,7 +371,7 @@ function SingleProduct() {
         ) : null}
       </div>
 
-      {farmId === 59 ? (
+      {farmId === 59 || farmId === 68 ? (
         <div className="container space-1">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             <h2>檢驗證書</h2>
