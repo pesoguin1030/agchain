@@ -79,22 +79,22 @@ function Signup(props) {
       setPasswordMessage(null);
     }
 
-    if (selectedCounty === "") {
-      setCountyStatus("danger");
-      setCountyMessage("請選擇縣市");
-      setIsSignupInProgress(false);
-    } else {
-      setCountyStatus("success");
-      setCountyMessage(null);
-    }
-    if (selectedAddress === "") {
-      setAddressStatus("danger");
-      setAddressMessage("請填寫住址");
-      setIsSignupInProgress(false);
-    } else {
-      setAddressStatus("success");
-      setAddressMessage(null);
-    }
+    // if (selectedCounty === "") {
+    //   setCountyStatus("danger");
+    //   setCountyMessage("請選擇縣市");
+    //   setIsSignupInProgress(false);
+    // } else {
+    //   setCountyStatus("success");
+    //   setCountyMessage(null);
+    // }
+    // if (selectedAddress === "") {
+    //   setAddressStatus("danger");
+    //   setAddressMessage("請填寫住址");
+    //   setIsSignupInProgress(false);
+    // } else {
+    //   setAddressStatus("success");
+    //   setAddressMessage(null);
+    // }
     const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
     const address = selectedCounty + selectedAddress;
     await createDestination(address, coordinates);
@@ -277,7 +277,7 @@ function Signup(props) {
                     <div></div>
                   )}
                 </div>
-                <div className="js-form-message form-group">
+                {/* <div className="js-form-message form-group">
                   <label className="input-label" htmlFor="address" tabIndex="0">
                     居住地
                   </label>
@@ -321,7 +321,7 @@ function Signup(props) {
                   ) : (
                     <div></div>
                   )}
-                </div>
+                </div> */}
 
                 <div className="form-group">
                   <div className="custom-control custom-checkbox">
