@@ -48,7 +48,7 @@ function Dapp(props) {
   const [time, setTime] = useState("");
   const publicIp = require("public-ip");
   const [ip, setIP] = useState("");
-  const [onShip, setOnship] = useState(true);
+  const [onShip, setOnship] = useState(false);
   const location = useLocation();
   const [point, setPoint] = useState(null);
   const [givePoint, setGivePoint] = useState(0);
@@ -84,7 +84,8 @@ function Dapp(props) {
     const onShipOrNot = !(
       new URLSearchParams(location.search).get("onShip") == "false"
     ); //||true
-    setOnship(onShipOrNot);
+    //setOnship(onShipOrNot);
+    setOnship(false);
   }, []);
   //
   // Running gift text
@@ -196,17 +197,21 @@ function Dapp(props) {
     // 田間紀錄
     response = await getCultivationRecord(crop_id);
     setCultivationRecord(response);
+    console.log("record: ", response);
 
     // 出貨前照片
-    response = await fetchSecureItem(traceID);
+    /*response = await fetchSecureItem(traceID);
     setSecureItem({
       timestamp: response?.timestamp,
       cid: photo_url,
-    });
+    });*/
+    setSecureItem(null);
 
     // 數據分析
-    response = await fetchSensorAnalysis(crop_id);
+    if (crop_id == 282) response = await fetchSensorAnalysis(275);
+    else response = await fetchSensorAnalysis(crop_id);
     setSensorAnalysis(response);
+    console.log("sensor analysis: ", response);
 
     // 有機檢驗證書
     //response = await fetchOrganicCertificate(farm_id);
@@ -291,16 +296,16 @@ function Dapp(props) {
         </div>
       </div>
       {/*onship也可以有照片*/}
-      {secureItem?.cid !== null ? (
-        <div className="container space-1 space-lg-3">
+      {/* {secureItem?.cid !== null ? (
+         <div className="container space-1 space-lg-3">
           <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             {onShip ? <h2>與收到的產品比比看</h2> : <h2>這是商家的食材照片</h2>}
           </div>
-          {/* <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-            <div className="row w-md-80 w-lg-40 mx-md-auto px-5">
-              <ImgToPuzzle/>
-            </div>
-          </div> */}
+          // <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
+          //  <div className="row w-md-80 w-lg-40 mx-md-auto px-5">
+          //    <ImgToPuzzle/>
+          //  </div>
+          // </div>
 
           <div className="row w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
             {secureItem && secureItem.cid !== "" ? (
@@ -317,15 +322,14 @@ function Dapp(props) {
               </div>
             ) : (
               // <div className="row w-md-100 w-lg-50 mx-md-auto px-5">
-              //   {/* <img
+              //    <img
               //     style={{
               //       objectFit: "contain",
               //       maxHeight: 480,
               //     }}
               //     src={`${secureItem?.cid}`}
               //     className="responsive-img mt-2"
-              //   /> */}
-
+              //   />
               // </div>
               <div className="col-12 text-center">
                 <ImgToPuzzle
@@ -337,7 +341,7 @@ function Dapp(props) {
             )}
           </div>
         </div>
-      ) : null}
+      ) : null} */}
       <div className="container space-1 space-lg-3">
         <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
           <h2>田間紀錄</h2>
@@ -346,15 +350,15 @@ function Dapp(props) {
           {cultivationRecord && cultivationRecord.length !== 0 ? (
             // 弄一個可以scroll的window?
             <div className="col-12 px-auto">
-              {/* Toggle button版 
+              {/* Toggle button版
               <div className="col-12 collapse" id="cultivationRecord">
                 <TimeLine items={cultivationRecord} />
               </div>
-              
+
               <div className=" mx-auto">
-                <button 
-                  class="btn btn-primary" type="button" 
-                  data-toggle="collapse" data-target="#cultivationRecord" 
+                <button
+                  class="btn btn-primary" type="button"
+                  data-toggle="collapse" data-target="#cultivationRecord"
                   aria-expanded="false" aria-controls="collapseExample">
                   查看田間紀錄
                 </button>
@@ -454,8 +458,8 @@ function Dapp(props) {
             }
             {farmPic.map((pic, index) => {
               return <img src={pic} className="responsive-img" key={index} />;
-            })} 
-            
+            })}
+
           </div>
           <div className="col-md-6 px-sm-3 mb-5 px-5">
             <p style={{ letterSpacing: "0.2rem" }}>{farmIntro?.farm_intro}</p>

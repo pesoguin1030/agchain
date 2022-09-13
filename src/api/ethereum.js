@@ -81,6 +81,7 @@ const fetchSensorAnalysis = async (cropID) => {
       httpProvider
     );
     const record = await contract.get(cropID);
+    console.log("cropID = ", cropID);
     console.log("record__", record);
 
     const record_return = record.map((el) => ({

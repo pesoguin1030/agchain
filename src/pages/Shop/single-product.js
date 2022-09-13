@@ -93,7 +93,9 @@ function SingleProduct() {
     setCultivationRecord(response);
 
     // 數據分析雷達圖
-    response = await fetchSensorAnalysis(crop_id);
+    // response = await fetchSensorAnalysis(crop_id);
+    if (crop_id == 282) response = await fetchSensorAnalysis(275);
+    else response = await fetchSensorAnalysis(crop_id);
     setSensorAnalysis(response);
 
     // 有機檢驗證書
@@ -338,6 +340,9 @@ function SingleProduct() {
         <div className="row mx-n2 mx-sm-n3 mb-3">
           <div className="col-12">
             <Radarchart data={sensorAnalysis} cropName={cropName} />
+            {/* <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9 ">
+              <p>無權限瀏覽</p>
+            </div> */}
           </div>
         </div>
       </div>
