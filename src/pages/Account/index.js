@@ -192,8 +192,14 @@ function AccountInfo(props) {
                           個人資料
                         </a>
                       </li>
+                      <li className="nav-item">
+                        <a className="nav-link" href="/carbon/wallet">
+                          <i className="fas fa-wallet nav-icon"></i>
+                          碳權錢包
+                        </a>
+                      </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="./123456">
+                        <a class="nav-link" href="#">
                           <i class="fas fa-shield-alt nav-icon"></i>
                           更改密碼
                         </a>
