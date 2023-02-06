@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import CarbonWalletApi from "../../../api/carbon/wallet";
-import carbonWallet from "../../../api/carbon/wallet";
 
 function CarbonWallet() {
   const [walletAddress, setWalletAddress] = useState("");
@@ -17,7 +16,7 @@ function CarbonWallet() {
       getWallet();
       getBalance();
     }
-  });
+  }, []);
   const getWallet = async () => {
     try {
       const result = await CarbonWalletApi.getWallet();
@@ -55,7 +54,7 @@ function CarbonWallet() {
       console.log("address=", address);
 
       //获取Nonce
-      const nonceMessage = await carbonWallet.getNonce();
+      const nonceMessage = await CarbonWalletApi.getNonce();
       const nonce = nonceMessage.message;
       console.log("nonce=", nonce);
 
@@ -67,7 +66,7 @@ function CarbonWallet() {
       console.log("signature=", signature);
 
       //验证signature
-      const result = await carbonWallet.bindWallet(address, signature);
+      const result = await CarbonWalletApi.bindWallet(address, signature);
       console.log("bindWallet=", result);
 
       alert(result.message);
@@ -127,7 +126,7 @@ function CarbonWallet() {
             </button>
           </div>
           <div className="mb-3 row">
-            <label htmlFor="inputAddress" className="col-sm-2 col-form-label">
+            <label htmlFor="inputBalance" className="col-sm-2 col-form-label">
               碳權餘額
             </label>
             <div className="col-sm-6">
@@ -158,4 +157,4 @@ function CarbonWallet() {
   );
 }
 
-export default CarbonWallet;
+export default React.memo(CarbonWallet);

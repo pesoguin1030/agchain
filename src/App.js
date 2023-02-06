@@ -31,6 +31,8 @@ import Order from "./pages/Order";
 import GiftMaker from "./pages/Shop/gift";
 import SingleProduct from "./pages/Shop/single-product";
 import CarbonWallet from "./pages/Carbon/Wallet/index";
+import CarbonNft from "./pages/Carbon/Nft/index";
+import CarbonNftList from "./pages/Carbon/Nft/list";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -209,6 +211,12 @@ function App() {
                 <Switch>
                   <Route exact path="/carbon/wallet">
                     {authState.user ? <CarbonWallet /> : <Login />}
+                  </Route>
+                  <Route exact path="/carbon/nft">
+                    {authState.user ? <CarbonNft /> : <Login />}
+                  </Route>
+                  <Route exact path="/carbon/nftlist">
+                    {authState.user ? <CarbonNftList /> : <Login />}
                   </Route>
                 </Switch>
               </Route>

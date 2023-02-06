@@ -5,8 +5,10 @@ class CarbonWallet {
     try {
       const { data } = await request.get(`/carbon/wallet/getWallet`);
       return data;
-    } catch (err) {
-      return Promise.reject(err);
+    } catch (error) {
+      const errorMessage = `getWallet error=${error.message}`;
+      console.log(errorMessage);
+      throw new Error(errorMessage);
     }
   }
 
@@ -14,8 +16,10 @@ class CarbonWallet {
     try {
       const { data } = await request.get(`/carbon/wallet/getNonce`);
       return data;
-    } catch (err) {
-      return Promise.reject(err);
+    } catch (error) {
+      const errorMessage = `getNonce error=${error.message}`;
+      console.log(errorMessage);
+      throw new Error(errorMessage);
     }
   }
 
@@ -26,8 +30,10 @@ class CarbonWallet {
         signature,
       });
       return data;
-    } catch (err) {
-      return Promise.reject(err);
+    } catch (error) {
+      const errorMessage = `bindWallet error=${error.message}`;
+      console.log(errorMessage);
+      throw new Error(errorMessage);
     }
   }
 
@@ -35,8 +41,10 @@ class CarbonWallet {
     try {
       const { data } = await request.post(`/carbon/wallet/unbindWallet`);
       return data;
-    } catch (err) {
-      return Promise.reject(err);
+    } catch (error) {
+      const errorMessage = `unbindWallet error=${error.message}`;
+      console.log(errorMessage);
+      throw new Error(errorMessage);
     }
   }
 
@@ -44,8 +52,10 @@ class CarbonWallet {
     try {
       const { data } = await request.get(`/carbon/wallet/getBalance`);
       return data;
-    } catch (err) {
-      return Promise.reject(err);
+    } catch (error) {
+      const errorMessage = `getBalance error=${error.message}`;
+      console.log(errorMessage);
+      throw new Error(errorMessage);
     }
   }
 }

@@ -17,7 +17,6 @@
     "bootstrap-switch-button-react": "^1.2.0",
     "chart.js": "^2.9.4",
     "classnames": "^2.2.6",
-    "eslint-config-react-app": "^5.2.1",
     "ethers": "^5.0.22",
     "filepond": "^4.23.1",
     "filepond-plugin-file-validate-type": "^1.2.5",
@@ -44,6 +43,7 @@
     "react-slick": "^0.28.1",
     "react-zmage": "^0.8.5-beta.37",
     "typed.js": "^2.0.11",
+    "uuid4": "^2.0.3",
     "validator": "^13.1.17"
   },
   "scripts": {
@@ -51,9 +51,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
