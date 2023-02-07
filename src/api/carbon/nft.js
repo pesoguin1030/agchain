@@ -51,17 +51,18 @@ class CarbonNft {
 
     // 查詢每個NFT的詳細資料
     let tokenInfoList = [];
-    for (let tokenURIListElement of tokenURIList) {
-      const [source, issueBy] = await Promise.all([
-        await contractInstance.sourceList(tokenURIListElement.sourceId),
-        await contractInstance.issueByList(tokenURIListElement.issueById),
-      ]);
+    // 查詢 證書來源 簽發機構 清單
+    const [sourceList, issueByList] = await Promise.all([
+      await contractInstance.getSourceList(),
+      await contractInstance.getIssueByList(),
+    ]);
 
+    for (let tokenURIListElement of tokenURIList) {
       const tokenInfo = {
         tokenId: tokenURIListElement.tokenId,
         certId: tokenURIListElement.certId,
-        source,
-        issueBy,
+        source: sourceList[tokenURIListElement.sourceId],
+        issueBy: issueByList[tokenURIListElement.issueById],
         weight: tokenURIListElement.weight,
         date: tokenURIListElement.date,
       };
