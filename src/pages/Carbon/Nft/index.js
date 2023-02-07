@@ -135,7 +135,7 @@ function CarbonNft() {
               onClick={buttonGetTokenList}
               // disabled={disableButtonGetTokenList}
             >
-              查看擁有的碳權NFT
+              碎片化擁有的碳權NFT
             </button>
           </div>
           <hr />
