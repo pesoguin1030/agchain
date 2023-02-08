@@ -147,7 +147,7 @@ function CarbonWallet() {
               className="col-sm-2 btn btn-primary"
               onClick={buttonRefresh}
             >
-              刷新
+              更新
             </button>
             <button
               className="col-sm-2 btn btn-primary"
