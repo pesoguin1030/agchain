@@ -311,6 +311,9 @@ const Header = () => {
                           <DropdownItem>
                             <i className="fas fa-user-circle" />
                           </DropdownItem>
+                          <DropdownItem href="/user/account/info">
+                            帳戶資訊
+                          </DropdownItem>
                           <DropdownItem href="/order">我的訂單</DropdownItem>
                           <DropdownItem
                             onClick={() =>
@@ -392,10 +395,21 @@ const Header = () => {
                       to="/dapp"
                       title="產品履歷"
                     />
+                    <MegaMenuItem
+                      icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-59.svg`}
+                      to="/carbon/wallet"
+                      title="碳權錢包"
+                    />
+                    <MegaMenuItem
+                      icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-48.svg`}
+                      to="/carbon/nft"
+                      title="碳權證書"
+                    />
                   </MegaMenu>
                   <li className="navbar-nav-last-item">
                     <Link
-                      to="/admin"
+                      // to="/admin"
+                      to="/login"
                       className="btn btn-sm btn-primary transition-3d-hover"
                     >
                       開始使用
