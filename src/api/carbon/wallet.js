@@ -23,11 +23,12 @@ class CarbonWallet {
     }
   }
 
-  async bindWallet(address, signature) {
+  async bindWallet(address, signature, cypherText) {
     try {
       const { data } = await request.post(`/carbon/wallet/bindWallet`, {
         address,
         signature,
+        cypherText,
       });
       return data;
     } catch (error) {

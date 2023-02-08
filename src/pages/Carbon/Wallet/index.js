@@ -55,8 +55,9 @@ function CarbonWallet() {
 
       //获取Nonce
       const nonceMessage = await CarbonWalletApi.getNonce();
-      const nonce = nonceMessage.message;
-      console.log("nonce=", nonce);
+      const nonce = nonceMessage.message.nonce;
+      const cypherText = nonceMessage.message.cypherText;
+      console.log("nonceMessage=", nonceMessage.message);
 
       //生成signature
       const signature = await window.ethereum.request({
@@ -66,7 +67,11 @@ function CarbonWallet() {
       console.log("signature=", signature);
 
       //验证signature
-      const result = await CarbonWalletApi.bindWallet(address, signature);
+      const result = await CarbonWalletApi.bindWallet(
+        address,
+        signature,
+        cypherText
+      );
       console.log("bindWallet=", result);
 
       alert(result.message);

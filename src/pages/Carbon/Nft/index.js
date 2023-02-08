@@ -6,9 +6,7 @@ import CarbonNftApi from "../../../api/carbon/nft";
 function CarbonNft() {
   const history = useHistory();
 
-  const [carbonCreditCertId, setCarbonCreditCertId] = useState(
-    "xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
-  );
+  const [carbonCreditCertId, setCarbonCreditCertId] = useState("");
   const [carbonCreditCertSrouce, setCarbonCreditCertSrouce] = useState("");
   const [carbonCreditCertIssueBy, setCarbonCreditCertIssueBy] = useState("");
   const [carbonCreditCertWeight, setCarbonCreditCertWeight] = useState("");
@@ -124,18 +122,19 @@ function CarbonNft() {
           </div>
           <div className="mb-3 row">
             <button
-              className="col-sm-6 btn btn-danger"
+              className="col-sm-5 btn btn-danger"
               onClick={buttonCreateToken}
               disabled={disableButtonCreateToken}
             >
-              從碳權證書鑄造碳權NFT
+              鑄造碳權NFT
             </button>
+            <div className="col-sm-2"></div>
             <button
-              className="col-sm-6 btn btn-primary"
+              className="col-sm-5 btn btn-primary"
               onClick={buttonGetTokenList}
               // disabled={disableButtonGetTokenList}
             >
-              碎片化擁有的碳權NFT
+              管理碳權NFT
             </button>
           </div>
           <hr />
@@ -143,7 +142,7 @@ function CarbonNft() {
             <h1>模擬碳權證書生成（測試）</h1>
           </div>
           <div className="mb-3 row">
-            <label className="col-sm-2 col-form-label">碳權證書ID</label>
+            <label className="col-sm-2 col-form-label">證書ID</label>
             <div className="col-sm-8">
               <input
                 onChange={(e) => {
@@ -152,6 +151,7 @@ function CarbonNft() {
                 type="text"
                 className="form-control"
                 value={carbonCreditCertId}
+                placeholder="UUID，例如：xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
               />
             </div>
             <button
@@ -162,7 +162,7 @@ function CarbonNft() {
             </button>
           </div>
           <div className="mb-3 row">
-            <label className="col-sm-2 col-form-label">碳權證書來源</label>
+            <label className="col-sm-2 col-form-label">證書來源</label>
             <div className="col-sm-8">
               <input
                 onChange={(e) => {
@@ -170,11 +170,12 @@ function CarbonNft() {
                 }}
                 type="text"
                 className="form-control"
+                placeholder="證書原所有者，例如：台炭科技股份有限公司"
               />
             </div>
           </div>
           <div className="mb-3 row">
-            <label className="col-sm-2 col-form-label">碳權簽發機構</label>
+            <label className="col-sm-2 col-form-label">簽發機構</label>
             <div className="col-sm-8">
               <input
                 onChange={(e) => {
@@ -182,6 +183,7 @@ function CarbonNft() {
                 }}
                 type="text"
                 className="form-control"
+                placeholder="認證機構，例如：CIX"
               />
             </div>
           </div>
@@ -194,6 +196,7 @@ function CarbonNft() {
                 }}
                 type="number"
                 className="form-control"
+                placeholder="單位公噸，例如：10000"
               />
             </div>
           </div>
