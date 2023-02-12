@@ -8,6 +8,11 @@ import {
 
 const provider = new ethers.providers.JsonRpcProvider(polygonProvider);
 class CarbonNft {
+  async getGasPrice() {
+    let feeData = await provider.getFeeData()
+    return feeData.gasPrice
+  }
+
   async createToken(file) {
     try {
       const { data } = await request.post(`/carbon/nft/createToken`, file, {
@@ -70,6 +75,40 @@ class CarbonNft {
     }
 
     return tokenInfoList;
+  }
+
+
+
+  async safeTransferFrom(signer,from,to,tokenId){
+    // 創建合約實例
+    const contractInstance = new ethers.Contract(
+        carbonCreditNFTAddress,
+        carbonCreditNftAbi,
+        signer
+    );
+
+    const nonce = await signer.getTransactionCount();
+    const gasPrice = await this.getGasPrice();
+
+    // 創建交易
+    const txn = await contractInstance["safeTransferFrom(address,address,uint256)"](
+        from,
+        to,
+        tokenId,
+        {
+          gasPrice,
+          nonce,
+        }
+    );
+
+    const txnReciept = await txn.wait();
+
+    if(txnReciept && txnReciept.status === 1){
+      return txnReciept.transactionHash;
+    }
+    else {
+      return txnReciept;
+    }
   }
 }
 
