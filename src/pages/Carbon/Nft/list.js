@@ -9,6 +9,7 @@ import jsonFile from "../../../utils/jsonFile";
 function CarbonNftList() {
   const history = useHistory();
   let [rowData, setRowData] = useState([]);
+  let [buttonDisable, setButtonDisable] = useState(false);
   useEffect(function () {
     getUserNftList();
   }, []);
@@ -38,25 +39,33 @@ function CarbonNftList() {
       console.log("Error: getUserNftList=", error);
     }
   };
-
+  
   const buttonNftFragmentation = async (tokenId) => {
+    setButtonDisable(true);
+
     alert("TODO: 碎片化NFT id=" + tokenId);
 
-    // 重新載入頁面
+    //重新載入頁面
     history.go(0)
+
+    setButtonDisable(false);
   };
 
   const buttonNftTransfer = async (tokenId) => {
+    setButtonDisable(true);
+
     // 獲取tokenId
     if(!tokenId){
-      return
+          setButtonDisable(false);
+        return;
     }
 
     // 獲取轉賬目標的錢包地址
     const toAddress = prompt("請輸入對方的錢包地址");
     if(!toAddress || toAddress.length!==42){
       alert("請輸入正確的錢包地址")
-      return
+          setButtonDisable(false);
+        return;
     }
 
     // 獲取用戶錢包地址
@@ -72,13 +81,15 @@ function CarbonNftList() {
     }catch (e) {
       alert("獲取錢包地址出錯！",e.message)
       console.log("Debug: getWallet error=",e.message)
-      return
+      setButtonDisable(false);
+    return;
     }
 
     // 獲取signer
     if(!window.ethereum){
       alert("請安裝MetaMask錢包")
-      return;
+      setButtonDisable(false);
+    return;
     }
     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
     console.log("Debug: provider=",provider)
@@ -91,12 +102,14 @@ function CarbonNftList() {
     if(fromAddress.toLowerCase()!== walletAddress.toLowerCase() ){
       console.log("Debug: walletAddress=",walletAddress.toLowerCase())
       alert("請使用在本平臺綁定的錢包")
-      return;
+      setButtonDisable(false);
+    return;
     }
 
     if(toAddress.toLowerCase() === fromAddress.toLowerCase()){
       alert("不允許自己轉賬給自己")
-      return;
+      setButtonDisable(false);
+    return;
     }
 
     // 切換network
@@ -111,14 +124,16 @@ function CarbonNftList() {
     }catch (e) {
       alert("請允許將MetaMask錢包切換到Polygon network")
       console.log("Debug: wallet_switchEthereumChain error=",e.message)
-      return;
+      setButtonDisable(false);
+    return;
     }
 
     const nowChain = await signer.getChainId()
     console.log("Debug: nowChain=",nowChain)
     if(nowChain.toString() !== chainId.toString()){
       alert("請允許將MetaMask錢包切換到Polygon network")
-      return;
+      setButtonDisable(false);
+    return;
     }
 
     let safeTransferFromResult = ""
@@ -128,7 +143,8 @@ function CarbonNftList() {
     }catch (e) {
       alert("轉賬失敗，請查看日志")
       console.log("Debug: safeTransferFrom error=",e.message)
-      return
+      setButtonDisable(false);
+    return;
     }
     console.log("Debug: safeTransferFrom hash=",safeTransferFromResult)
 
@@ -138,11 +154,14 @@ function CarbonNftList() {
       window.open(url, "_blank");
     }
 
+    setButtonDisable(false);
     // 重新載入頁面
     history.go(0)
   };
 
   const buttonNftView = async (tokenId) =>{
+    setButtonDisable(true);
+
     // 獲取用戶錢包地址
     let walletAddress = "";
     try {
@@ -156,14 +175,19 @@ function CarbonNftList() {
     }catch (e) {
       alert("獲取錢包地址出錯！",e.message)
       console.log("Debug: getWallet error=",e.message)
-      return
+      setButtonDisable(false);
+      return;
     }
 
     const url = polygonscan + "/token/" + walletAddress + "?a=" + tokenId;
     window.open(url, "_blank");
+
+    setButtonDisable(false);
   }
 
     const buttonNftRetrieve = async (tokenId) =>{
+      setButtonDisable(true);
+
       // 獲取用戶錢包地址
       let walletAddress = "";
       try {
@@ -177,13 +201,15 @@ function CarbonNftList() {
       }catch (e) {
         alert("獲取錢包地址出錯！",e.message)
         console.log("Debug: getWallet error=",e.message)
-        return
+        setButtonDisable(false);
+    return;
       }
 
       // 獲取signer
       if(!window.ethereum){
         alert("請安裝MetaMask錢包")
-        return;
+        setButtonDisable(false);
+    return;
       }
       const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
       console.log("Debug: provider=",provider)
@@ -196,6 +222,31 @@ function CarbonNftList() {
       if(fromAddress.toLowerCase()!== walletAddress.toLowerCase() ){
         console.log("Debug: walletAddress=",walletAddress.toLowerCase())
         alert("請使用在本平臺綁定的錢包")
+        setButtonDisable(false);
+    return;
+      }
+
+      // 切換network
+      const polyginChainId = "0x" + chainId.toString(16);
+      console.log("Debug: polyginChainId=",polyginChainId)
+
+      try{
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId:polyginChainId }], // chainId must be in hexadecimal numbers
+        });
+      }catch (e) {
+        alert("請允許將MetaMask錢包切換到Polygon network")
+        console.log("Debug: wallet_switchEthereumChain error=",e.message)
+        setButtonDisable(false);
+        return;
+      }
+
+      const nowChain = await signer.getChainId()
+      console.log("Debug: nowChain=",nowChain)
+      if(nowChain.toString() !== chainId.toString()){
+        alert("請允許將MetaMask錢包切換到Polygon network")
+        setButtonDisable(false);
         return;
       }
 
@@ -205,7 +256,8 @@ function CarbonNftList() {
       }catch (e) {
         console.log("Debug: approve error=",e.message)
         alert("操作失敗！\n",e.message)
-        return
+        setButtonDisable(false);
+        return;
       }
 
       // 平臺burn碳權，取回token資料
@@ -222,13 +274,15 @@ function CarbonNftList() {
       }catch (e) {
         console.log("Debug: burnToken error=",e.message)
         alert("銷毀NFT碳權出錯！\n" + e.message);
-        return
+        setButtonDisable(false);
+        return;
       }
 
       // 下載json檔案
       jsonFile.GenerateJsonFileFromJsonObject(tokenInfo.certId,tokenInfo);
 
       alert("碳權證書取回成功！")
+      setButtonDisable(false);
 
       // 重新載入頁面
       history.go(0)
@@ -289,8 +343,9 @@ function CarbonNftList() {
                             onClick={() => {
                               buttonNftFragmentation(tokenId);
                             }}
+                            disabled={buttonDisable}
                           >
-                            碎片化
+                            兌換
                           </button>
 
                           <button
@@ -298,6 +353,7 @@ function CarbonNftList() {
                             onClick={() => {
                               buttonNftTransfer(tokenId);
                             }}
+                            disabled={buttonDisable}
                           >
                             轉賬
                           </button>
@@ -307,6 +363,7 @@ function CarbonNftList() {
                               onClick={() => {
                                 buttonNftView(tokenId);
                               }}
+                              disabled={buttonDisable}
                           >
                             查看
                           </button>
@@ -316,6 +373,7 @@ function CarbonNftList() {
                               onClick={() => {
                                 buttonNftRetrieve(tokenId);
                               }}
+                              disabled={buttonDisable}
                           >
                             取回
                           </button>
