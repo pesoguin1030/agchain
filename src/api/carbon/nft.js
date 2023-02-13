@@ -77,8 +77,6 @@ class CarbonNft {
     return tokenInfoList;
   }
 
-
-
   async safeTransferFrom(signer,from,to,tokenId){
     // 創建合約實例
     const contractInstance = new ethers.Contract(
@@ -110,6 +108,52 @@ class CarbonNft {
       return txnReciept;
     }
   }
+
+// approve碳權NFT
+    async approve(signer,to,tokenId){
+        // 創建合約實例
+        const contractInstance = new ethers.Contract(
+            carbonCreditNFTAddress,
+            carbonCreditNftAbi,
+            signer
+        );
+
+        const nonce = await signer.getTransactionCount();
+        const gasPrice = await this.getGasPrice();
+
+        // 創建交易
+        const txn = await contractInstance.approve(
+            to,
+            tokenId,
+            {
+                gasPrice,
+                nonce,
+            }
+        );
+
+        const txnReciept = await txn.wait();
+
+        if(txnReciept && txnReciept.status === 1){
+            return txnReciept.transactionHash;
+        }
+        else {
+            return txnReciept;
+        }
+    }
+
+    // 由平臺burn碳權，確保碳權真的有被燒掉
+    async burnToken(tokenId){
+        try {
+            const { data } = await request.post(`/carbon/nft/burnToken`, {
+                tokenId
+            });
+            return data;
+        } catch (error) {
+            const errorMessage = `burnToken error=${error.message}`;
+            console.log(errorMessage);
+            throw new Error(errorMessage);
+        }
+    }
 }
 
 const carbonNft = new CarbonNft();
