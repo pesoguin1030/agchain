@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import uuid4 from "uuid4";
 import CarbonNftApi from "../../../api/carbon/nft";
+import jsonFile from "../../../utils/jsonFile";
 
 function CarbonNft() {
   const history = useHistory();
@@ -40,22 +41,7 @@ function CarbonNft() {
       weight: carbonCreditCertWeight,
     };
 
-    // create file in browser
-    const fileName = carbonCreditCertId;
-    const json = JSON.stringify(carbonCreditCert, null, 4);
-    const blob = new Blob([json], { type: "application/json" });
-    const href = URL.createObjectURL(blob);
-
-    // create "a" HTLM element with href to file
-    const link = document.createElement("a");
-    link.href = href;
-    link.download = fileName + ".json";
-    document.body.appendChild(link);
-    link.click();
-
-    // clean up "a" element & remove ObjectURL
-    document.body.removeChild(link);
-    URL.revokeObjectURL(href);
+    jsonFile.GenerateJsonFileFromJsonObject(carbonCreditCertId,carbonCreditCert);
   };
 
   const buttonCreateToken = async () => {
@@ -76,7 +62,7 @@ function CarbonNft() {
 
       console.log("buttonCreateToken result=", result);
 
-      if (result && result.code == 200) {
+      if (result && result.code === 200) {
         alert("碳權NFT鑄造成功！\n您必須將碳權NFT碎片化以匯入碳權錢包");
       } else {
         alert("碳權NFT鑄造失敗，錯誤：\n" + result.message);
@@ -170,7 +156,7 @@ function CarbonNft() {
                 }}
                 type="text"
                 className="form-control"
-                placeholder="證書原所有者，例如：台炭科技股份有限公司"
+                placeholder="證書原所有者，例如：臺炭科技股份有限公司"
               />
             </div>
           </div>
