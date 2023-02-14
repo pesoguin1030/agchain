@@ -150,10 +150,40 @@ function CarbonWallet() {
               更新
             </button>
             <button
-              className="col-sm-2 btn btn-primary"
+              className="col-sm-2 btn btn-danger"
               onClick={buttonExchange}
             >
               兌換
+            </button>
+          </div>
+          <hr />
+          <div className="mb-3 row">
+            <h1>碳權點數授權</h1>
+          </div>
+          <div className="mb-3 row">
+            <label htmlFor="inputBalance" className="col-sm-2 col-form-label">
+              授權餘額
+            </label>
+            <div className="col-sm-6">
+              <input
+                  value={0}
+                  type="text"
+                  className="form-control"
+                  id="inputBalance"
+                  readOnly
+              />
+            </div>
+            <button
+                className="col-sm-2 btn btn-primary"
+                // onClick={buttonRefresh}
+            >
+              添加
+            </button>
+            <button
+                className="col-sm-2 btn btn-danger"
+                // onClick={buttonExchange}
+            >
+              清除
             </button>
           </div>
         </div>

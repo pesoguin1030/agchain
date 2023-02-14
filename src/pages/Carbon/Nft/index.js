@@ -63,7 +63,7 @@ function CarbonNft() {
       console.log("buttonCreateToken result=", result);
 
       if (result && result.code === 200) {
-        alert("碳權NFT鑄造成功！\n您必須將碳權NFT碎片化以匯入碳權錢包");
+        alert("碳權NFT鑄造成功！\n請進入【管理碳權NFT】頁面，將碳權NFT兌換為碳權點數");
       } else {
         alert("碳權NFT鑄造失敗，錯誤：\n" + result.message);
       }
