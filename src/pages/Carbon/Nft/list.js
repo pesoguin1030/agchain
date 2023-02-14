@@ -308,7 +308,7 @@ function CarbonNftList() {
             </button>
           </div>
           <div className="mb-3 row">
-            <h1>擁有的碳權NFT</h1>
+            <h1>管理碳權NFT</h1>
           </div>
           <div className="mb-3 row">
             <table className="table table-hover">
@@ -339,27 +339,7 @@ function CarbonNftList() {
                         <td>{new Date(date * 1000).toLocaleString()}</td>
                         <td>
                           <button
-                            className="btn btn-primary mr-2"
-                            onClick={() => {
-                              buttonNftFragmentation(tokenId);
-                            }}
-                            disabled={buttonDisable}
-                          >
-                            兌換
-                          </button>
-
-                          <button
-                            className="btn btn-warning mr-2"
-                            onClick={() => {
-                              buttonNftTransfer(tokenId);
-                            }}
-                            disabled={buttonDisable}
-                          >
-                            轉賬
-                          </button>
-
-                          <button
-                              className="btn btn-success mr-2"
+                              className="btn btn-success mr-2 mb-2"
                               onClick={() => {
                                 buttonNftView(tokenId);
                               }}
@@ -369,7 +349,27 @@ function CarbonNftList() {
                           </button>
 
                           <button
-                              className="btn btn-danger"
+                            className="btn btn-primary mr-2 mb-2"
+                            onClick={() => {
+                              buttonNftFragmentation(tokenId);
+                            }}
+                            disabled={buttonDisable}
+                          >
+                            兌換
+                          </button>
+
+                          <button
+                            className="btn btn-warning mr-2 mb-2"
+                            onClick={() => {
+                              buttonNftTransfer(tokenId);
+                            }}
+                            disabled={buttonDisable}
+                          >
+                            轉賬
+                          </button>
+
+                          <button
+                              className="btn btn-danger mr-2 mb-2"
                               onClick={() => {
                                 buttonNftRetrieve(tokenId);
                               }}
