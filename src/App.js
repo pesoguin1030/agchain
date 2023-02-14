@@ -33,6 +33,7 @@ import SingleProduct from "./pages/Shop/single-product";
 import CarbonWallet from "./pages/Carbon/Wallet/index";
 import CarbonNft from "./pages/Carbon/Nft/index";
 import CarbonNftList from "./pages/Carbon/Nft/list";
+import EnterpriseProduct from "./pages/Enterprise/index";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -220,13 +221,21 @@ function App() {
                   </Route>
                 </Switch>
               </Route>
+              <Route path="/enterprise">
+                <Header />
+                <Switch>
+                  <Route exact path="/enterprise/product">
+                    {authState.user ? <EnterpriseProduct /> : <Login />}
+                    {<EnterpriseProduct />}
+                  </Route>
+                </Switch>
+              </Route>
               <Route path="/">
                 <Header />
                 <Switch>
                   <Route exact path="/">
                     <Home />
                   </Route>
-
                   <Route exact path="/dapp/:traceID">
                     <Dapp />
                   </Route>

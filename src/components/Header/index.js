@@ -389,6 +389,13 @@ const Header = () => {
                       農夫市集
                     </Link>
                   </li>
+                  <MegaMenu title="企業">
+                    <MegaMenuItem
+                      icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-29.svg`}
+                      to="/enterprise/product"
+                      title="商品管理"
+                    />
+                  </MegaMenu>
                   <MegaMenu title="區塊鏈服務">
                     <MegaMenuItem
                       icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-54.svg`}
