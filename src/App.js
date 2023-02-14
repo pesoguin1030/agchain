@@ -35,6 +35,7 @@ import CarbonNft from "./pages/Carbon/Nft/index";
 import CarbonNftList from "./pages/Carbon/Nft/list";
 import CarbonApprovalRecord from "./pages/Carbon/Wallet/approvalRecord";
 import CarbonConsumeRecord from "./pages/Carbon/Wallet/consumeRecord";
+import EnterpriseProduct from "./pages/Enterprise/index";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -220,6 +221,15 @@ function App() {
                   </Route>
                   <Route exact path="/carbon/consumeRecord">
                     {authState.user ? <CarbonConsumeRecord /> : <Login />}
+                  </Route>
+                </Switch>
+              </Route>
+              <Route path="/enterprise">
+                <Header />
+                <Switch>
+                  <Route exact path="/enterprise/product">
+                    {authState.user ? <EnterpriseProduct /> : <Login />}
+                    {<EnterpriseProduct />}
                   </Route>
                 </Switch>
               </Route>
