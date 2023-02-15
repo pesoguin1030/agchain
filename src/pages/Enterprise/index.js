@@ -1,23 +1,70 @@
 import React, { useEffect, useState, useContext } from "react";
-import { fetchProducts } from "../../api/product";
-import { ProductCard } from "../../components/Card";
-import { CartContext } from "../../appContext";
+import storage from "../../utils/storage";
+import axios from "axios";
+import request from "../../utils/request";
 
 function EnterpriseProduct() {
-  const { prise, setprise } = useState(CartContext);
-  const [products, setProducts] = useState([]);
+  const [productName, setProductName] = useState("");
+  const [priceNumber, setPriceNumber] = useState(null);
+  const [amountNumber, setAmountNumber] = useState(1);
+  const [picture, setPicture] = useState("請等待連結出現");
+  const [percent, setPercent] = useState(0);
+  const [weight, setWeight] = useState(250);
+  const typeOptions = ["vegetables", "rice", "shippingfee"];
 
-  useEffect(() => {
-    const handleFetchProducts = async () => {
-      const { items, offset } = await fetchProducts();
-      if (Array.isArray(items)) {
-        setProducts(items);
-      }
-    };
-    handleFetchProducts();
-  }, []);
+  async function createProduct() {
+    try {
+      const userToken = storage.getAccessToken();
+      await request.post(
+        `/products/`,
+        {
+          crop_id: 20,
+          name: productName,
+          price: priceNumber,
+          limit_amount: amountNumber,
+          photo_url: picture,
+          compensation_ratio: percent,
+          weight: weight,
+          type: "vegetables",
+          description: null,
+          store_id: 15, //because of wutau, farm_id called store_id
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      return true;
+    } catch (err) {
+      alert("伺服器發生問題，上架失敗");
+      console.log(err);
+      return false;
+    }
+  }
 
-  console.log("entry enterprise page");
+  function handleStartShelf() {
+    if (productName == "") {
+      alert("產品名稱不可為空");
+      return;
+    }
+    if (productName && productName.length > 64) {
+      alert("產品名稱需小於64");
+      return;
+    }
+    if (amountNumber === 0) {
+      alert("上架數量不可為零");
+      return;
+    }
+    if (priceNumber === 0) {
+      alert("上架價格不可為零");
+      return;
+    }
+    if (!createProduct()) {
+      return;
+    }
+  }
+
   return (
     <div className="container space-top-1 space-top-sm-2 mt-12">
       <div class="d-sm-flex align-items-center row mb-4">
@@ -145,22 +192,21 @@ function EnterpriseProduct() {
             <div class="card-body">
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                    證書id
+                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                    碳權點數
                   </div>
                   <div class="h5 mb-0 font-weight-bold text-gray-800">
-                    xxxxxxxxxxxxx
+                    1000000
                   </div>
-
+                </div>
+                <div class="col-auto">
                   <a
                     href="#"
                     class="col-md-auto d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
                   >
-                    <i class="fas fa-download fa-sm text-white-50"></i> 上傳證書
+                    {/* <i class="fas fa-download fa-sm text-white-50"> </i>  */}
+                    管理
                   </a>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fa-address-book fa-2x text-gray-300"></i>
                 </div>
               </div>
             </div>
@@ -172,15 +218,21 @@ function EnterpriseProduct() {
             <div class="card-body">
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                    碳權點數
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                    授權點數
                   </div>
                   <div class="h5 mb-0 font-weight-bold text-gray-800">
                     100000
                   </div>
                 </div>
                 <div class="col-auto">
-                  <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                  {/* <i class="fas fa-dollar-sign fa-2x text-gray-300"></i> */}
+                  <a
+                    href="#"
+                    class="col-md-auto d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                  >
+                    管理
+                  </a>
                 </div>
               </div>
             </div>
@@ -195,76 +247,6 @@ function EnterpriseProduct() {
               <div class="card text-black">
                 <img
                   src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/3.webp"
-                  class="card-img-top"
-                  alt="Apple Computer"
-                />
-                <div class="card-body">
-                  <div class="text-center">
-                    <h5 class="card-title">Name</h5>
-                    <p class="text-muted mb-4">Description</p>
-                  </div>
-                  <div>
-                    <div class="d-flex justify-content-between">
-                      <span>Price</span>
-                      <span>3999</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                      <span>Amount</span>
-                      <span>3</span>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between total font-weight-bold mt-4">
-                    <span>Carbon?</span>
-                    <span>10kg</span>
-                  </div>
-                  <div class="d-flex justify-content-between total font-weight-bold mt-4">
-                    <button type="button" class="btn btn-danger">
-                      下架
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-8 col-lg-6 col-xl-4">
-              <div class="card text-black">
-                <img
-                  src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/img%20(4).webp"
-                  class="card-img-top"
-                  alt="Apple Computer"
-                />
-                <div class="card-body">
-                  <div class="text-center">
-                    <h5 class="card-title">Name</h5>
-                    <p class="text-muted mb-4">Description</p>
-                  </div>
-                  <div>
-                    <div class="d-flex justify-content-between">
-                      <span>Price</span>
-                      <span>3999</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                      <span>Amount</span>
-                      <span>3</span>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between total font-weight-bold mt-4">
-                    <span>Carbon?</span>
-                    <span>10kg</span>
-                  </div>
-                  <div class="d-flex justify-content-between total font-weight-bold mt-4">
-                    <button type="button" class="btn btn-danger">
-                      下架
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-8 col-lg-6 col-xl-4">
-              <div class="card text-black">
-                <img
-                  src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/belt.webp"
                   class="card-img-top"
                   alt="Apple Computer"
                 />
