@@ -226,7 +226,6 @@ function App() {
                 <Switch>
                   <Route exact path="/enterprise/product">
                     {authState.user ? <EnterpriseProduct /> : <Login />}
-                    {<EnterpriseProduct />}
                   </Route>
                 </Switch>
               </Route>
