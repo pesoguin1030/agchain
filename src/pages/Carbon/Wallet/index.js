@@ -177,7 +177,7 @@ function CarbonWallet() {
                 className="col-sm-2 btn btn-primary"
                 // onClick={buttonRefresh}
             >
-              添加
+              設定
             </button>
             <button
                 className="col-sm-2 btn btn-danger"
