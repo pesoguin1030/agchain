@@ -86,24 +86,34 @@ function CarbonNftList() {
     }
 
     // 獲取signer
-    if(!window.ethereum){
-      alert("請安裝MetaMask錢包")
-      setButtonDisable(false);
-    return;
-    }
-    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    console.log("Debug: provider=",provider)
-    const signer = provider.getSigner();
-    console.log("Debug: signer=",signer)
+    let signer;
+    let fromAddress;
+    try {
+      if(!window.ethereum){
+        alert("請安裝MetaMask錢包")
+        setButtonDisable(false);
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      console.log("Debug: provider=",provider)
+      signer = provider.getSigner();
+      console.log("Debug: signer=",signer)
 
-    // 確認address
-    const fromAddress = await signer.getAddress()
-    console.log("Debug: fromAddress=",fromAddress.toLowerCase())
-    if(fromAddress.toLowerCase()!== walletAddress.toLowerCase() ){
-      console.log("Debug: walletAddress=",walletAddress.toLowerCase())
-      alert("請使用在本平臺綁定的錢包")
+      // 確認address
+      await provider.send("eth_requestAccounts", []);
+      fromAddress = await signer.getAddress();
+      console.log("Debug: fromAddress=",fromAddress.toLowerCase())
+      if(fromAddress.toLowerCase()!== walletAddress.toLowerCase() ){
+        console.log("Debug: walletAddress=",walletAddress.toLowerCase())
+        alert("請使用在本平臺綁定的錢包")
+        setButtonDisable(false);
+        return;
+      }
+    } catch(e){
+      alert("請允許網站連接到MetaMask錢包")
+      console.log("Debug: wallet_switchEthereumChain error=",e.message)
       setButtonDisable(false);
-    return;
+      return;
     }
 
     if(toAddress.toLowerCase() === fromAddress.toLowerCase()){
@@ -202,28 +212,38 @@ function CarbonNftList() {
         alert("獲取錢包地址出錯！",e.message)
         console.log("Debug: getWallet error=",e.message)
         setButtonDisable(false);
-    return;
+        return;
       }
 
       // 獲取signer
-      if(!window.ethereum){
-        alert("請安裝MetaMask錢包")
-        setButtonDisable(false);
-    return;
-      }
-      const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-      console.log("Debug: provider=",provider)
-      const signer = provider.getSigner();
-      console.log("Debug: signer=",signer)
+      let signer;
+      let fromAddress;
+      try {
+        if(!window.ethereum){
+          alert("請安裝MetaMask錢包")
+          setButtonDisable(false);
+          return;
+        }
+        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+        console.log("Debug: provider=",provider)
+        signer = provider.getSigner();
+        console.log("Debug: signer=",signer)
 
-      // 確認address
-      const fromAddress = await signer.getAddress();
-      console.log("Debug: fromAddress=",fromAddress.toLowerCase())
-      if(fromAddress.toLowerCase()!== walletAddress.toLowerCase() ){
-        console.log("Debug: walletAddress=",walletAddress.toLowerCase())
-        alert("請使用在本平臺綁定的錢包")
+        // 確認address
+        await provider.send("eth_requestAccounts", []);
+        fromAddress = await signer.getAddress();
+        console.log("Debug: fromAddress=",fromAddress.toLowerCase())
+        if(fromAddress.toLowerCase()!== walletAddress.toLowerCase() ){
+          console.log("Debug: walletAddress=",walletAddress.toLowerCase())
+          alert("請使用在本平臺綁定的錢包")
+          setButtonDisable(false);
+          return;
+        }
+      } catch(e){
+        alert("請允許網站連接到MetaMask錢包")
+        console.log("Debug: wallet_switchEthereumChain error=",e.message)
         setButtonDisable(false);
-    return;
+        return;
       }
 
       // 切換network
