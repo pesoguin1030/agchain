@@ -7,10 +7,17 @@ function EnterpriseProduct() {
   const [productName, setProductName] = useState("");
   const [priceNumber, setPriceNumber] = useState(null);
   const [amountNumber, setAmountNumber] = useState(1);
-  const [picture, setPicture] = useState("請等待連結出現");
+  const [picture, setPicture] = useState("null");
   const [percent, setPercent] = useState(0);
   const [weight, setWeight] = useState(250);
-  const typeOptions = ["vegetables", "rice", "shippingfee"];
+  const [description, setdescription] = useState(null);
+  const options = [
+    { value: "", text: "選擇種類" },
+    { value: "vegetables", text: "vegetables " },
+    { value: "rice", text: "rice " },
+    { value: "shippingfee", text: "shippingfee " },
+  ];
+  const [selected, setSelected] = useState(options[0].value);
 
   async function createProduct() {
     try {
@@ -18,15 +25,15 @@ function EnterpriseProduct() {
       await request.post(
         `/products/`,
         {
-          crop_id: 20,
+          crop_id: 250,
           name: productName,
           price: priceNumber,
           limit_amount: amountNumber,
           photo_url: picture,
           compensation_ratio: percent,
           weight: weight,
-          type: "vegetables",
-          description: null,
+          type: selected,
+          description: description,
           store_id: 15, //because of wutau, farm_id called store_id
         },
         {
@@ -35,6 +42,7 @@ function EnterpriseProduct() {
           },
         }
       );
+      alert("上架成功");
       return true;
     } catch (err) {
       alert("伺服器發生問題，上架失敗");
@@ -43,7 +51,10 @@ function EnterpriseProduct() {
     }
   }
 
-  function handleStartShelf() {
+  const handleChange = (event) => {
+    setSelected(event.target.value);
+  };
+  function buttonCreateProduct() {
     if (productName == "") {
       alert("產品名稱不可為空");
       return;
@@ -52,17 +63,22 @@ function EnterpriseProduct() {
       alert("產品名稱需小於64");
       return;
     }
-    if (amountNumber === 0) {
-      alert("上架數量不可為零");
+    if (amountNumber <= 0) {
+      alert("上架數量需要大于零");
       return;
     }
-    if (priceNumber === 0) {
-      alert("上架價格不可為零");
+    if (priceNumber <= 0) {
+      alert("商品價格要为正数");
       return;
     }
-    if (!createProduct()) {
+    if (weight <= 0) {
+      alert("商品重量要为正数");
+    }
+    if (selected === "") {
+      alert("請選擇商品種類");
       return;
     }
+    createProduct();
   }
 
   return (
@@ -109,7 +125,9 @@ function EnterpriseProduct() {
                     <input
                       type="text"
                       class="form-control"
-                      id="1"
+                      onChange={(e) => {
+                        setProductName(e.target.value);
+                      }}
                       placeholder="商品名稱"
                     />
                   </div>
@@ -120,6 +138,9 @@ function EnterpriseProduct() {
                       class="form-control"
                       id="inputnumber"
                       placeholder="數量"
+                      onChange={(e) => {
+                        setAmountNumber(e.target.value);
+                      }}
                     />
                   </div>
                 </div>
@@ -129,6 +150,9 @@ function EnterpriseProduct() {
                     type="file"
                     class="form-control-file"
                     id="exampleFormControlFile1"
+                    onChange={(e) => {
+                      setPicture(e.target.value);
+                    }}
                   />
                 </div>
                 <div class="form-group">
@@ -138,6 +162,9 @@ function EnterpriseProduct() {
                     class="form-control"
                     id="inputvalue"
                     placeholder="價格"
+                    onChange={(e) => {
+                      setPriceNumber(e.target.value);
+                    }}
                   />
                 </div>
                 <div class="form-group">
@@ -147,6 +174,9 @@ function EnterpriseProduct() {
                     class="form-control"
                     id="inputtext"
                     placeholder="商品描述"
+                    onChange={(e) => {
+                      setdescription(e.target.value);
+                    }}
                   />
                 </div>
                 <div class="form-row">
@@ -156,14 +186,24 @@ function EnterpriseProduct() {
                       type="number"
                       class="form-control"
                       id="inputweight"
+                      onChange={(e) => {
+                        setWeight(e.target.value);
+                      }}
                     />
                   </div>
                   <div class="form-group col-md-4">
                     <label for="inputState">商品種類</label>
-                    <select id="inputType" class="form-control">
-                      <option selected>vegetables</option>
-                      <option>rice</option>
-                      <option>shippingfee</option>
+                    <select
+                      id="inputType"
+                      class="form-control"
+                      value={selected}
+                      onChange={handleChange}
+                    >
+                      {options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.text}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -178,7 +218,11 @@ function EnterpriseProduct() {
               >
                 關閉
               </button>
-              <button type="button" class="btn btn-primary">
+              <button
+                type="button"
+                class="btn btn-primary"
+                onClick={buttonCreateProduct}
+              >
                 新增
               </button>
             </div>
