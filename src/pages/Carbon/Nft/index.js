@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import uuid4 from "uuid4";
-import CarbonNftApi from "../../../api/carbon/nft";
 import jsonFile from "../../../utils/jsonFile";
+import * as CarbonNftApi from"../../../api/carbon/nft";
 
 function CarbonNft() {
   const history = useHistory();
 
   const [carbonCreditCertId, setCarbonCreditCertId] = useState("");
-  const [carbonCreditCertSrouce, setCarbonCreditCertSrouce] = useState("");
+  const [carbonCreditCertSource, setCarbonCreditCertSource] = useState("");
   const [carbonCreditCertIssueBy, setCarbonCreditCertIssueBy] = useState("");
   const [carbonCreditCertWeight, setCarbonCreditCertWeight] = useState("");
 
-  const [carbonCreditCertFile, setCarbonCreditCertFile] = useState();
+  const [carbonCreditCertFile, setCarbonCreditCertFile] = useState(undefined);
   const [disableButtonCreateToken, setDisableButtonCreateToken] =
     useState(false);
   // const [disableButtonGetTokenList, setDisableButtonGetTokenList] = useState(false);
@@ -25,7 +25,7 @@ function CarbonNft() {
   const generateCertFile = async () => {
     if (
       !carbonCreditCertId ||
-      !carbonCreditCertSrouce ||
+      !carbonCreditCertSource ||
       !carbonCreditCertIssueBy ||
       !carbonCreditCertWeight
     ) {
@@ -36,7 +36,7 @@ function CarbonNft() {
     // create CarbonCreditCert in json
     const carbonCreditCert = {
       certId: carbonCreditCertId,
-      source: carbonCreditCertSrouce,
+      source: carbonCreditCertSource,
       issueBy: carbonCreditCertIssueBy,
       weight: carbonCreditCertWeight,
     };
@@ -46,11 +46,12 @@ function CarbonNft() {
 
   const buttonCreateToken = async () => {
     try {
-      if (!carbonCreditCertFile) {
+      if (!carbonCreditCertFile || carbonCreditCertFile.length===0) {
         alert("未選擇碳權證書檔案");
         return;
       }
 
+      console.log(carbonCreditCertFile);
       alert("NFT鑄造中，請不要重複提交");
 
       // 禁用按鈕
@@ -81,7 +82,7 @@ function CarbonNft() {
   };
 
   const buttonReset = async () => {
-    setCarbonCreditCertFile("");
+    setCarbonCreditCertFile(undefined);
   };
 
   return (
@@ -152,7 +153,7 @@ function CarbonNft() {
             <div className="col-sm-8">
               <input
                 onChange={(e) => {
-                  setCarbonCreditCertSrouce(e.target.value);
+                  setCarbonCreditCertSource(e.target.value);
                 }}
                 type="text"
                 className="form-control"
