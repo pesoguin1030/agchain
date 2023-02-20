@@ -2,8 +2,14 @@ import React, { useEffect, useState, useContext } from "react";
 import storage from "../../utils/storage";
 import axios from "axios";
 import request from "../../utils/request";
+import { fetchProducts } from "../../api/product";
+import { CartContext } from "../../appContext";
+import { ProductCard } from "../../components/Card";
+import { EnterpriseCard } from "../../components/Card/EnterpriceCard/index";
 
 function EnterpriseProduct() {
+  const { cartState, cartDispatch } = useContext(CartContext);
+  const [products, setProducts] = useState([]);
   const [productName, setProductName] = useState("");
   const [priceNumber, setPriceNumber] = useState(null);
   const [amountNumber, setAmountNumber] = useState(1);
@@ -18,6 +24,17 @@ function EnterpriseProduct() {
     { value: "shippingfee", text: "shippingfee " },
   ];
   const [selected, setSelected] = useState(options[0].value);
+
+  useEffect(() => {
+    const handleFetchProducts = async () => {
+      const { items, offset } = await fetchProducts();
+      if (Array.isArray(items)) {
+        setProducts(items);
+        console.log(products);
+      }
+    };
+    handleFetchProducts();
+  }, []);
 
   async function createProduct() {
     try {
@@ -282,6 +299,39 @@ function EnterpriseProduct() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="row mx-n2 mx-sm-n3 mb-3">
+        {products.map(
+          ({ id, name, description, price, photo_url, limit_amount }) => (
+            <div
+              key={id}
+              className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
+            >
+              <EnterpriseCard
+                key={id}
+                product_id={id}
+                title={name}
+                description={description}
+                price={price}
+                amount={limit_amount}
+                img={photo_url}
+                isInCart={
+                  cartState ? cartState.map((e) => e.id).includes(id) : false
+                }
+                onRemoveFromCart={() =>
+                  cartDispatch((prev) => prev.filter((e) => e.id !== id))
+                }
+                onAddToCart={() =>
+                  cartDispatch((prev) => [
+                    ...prev,
+                    { id, name, price, img: photo_url },
+                  ])
+                }
+              />
+            </div>
+          )
+        )}
       </div>
 
       <section>

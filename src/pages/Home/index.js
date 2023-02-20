@@ -12,6 +12,7 @@ function Home(props) {
       const { items, offset } = await fetchProducts();
       if (Array.isArray(items)) {
         setProducts(items);
+        console.log(products);
       }
     };
     handleFetchProducts();
