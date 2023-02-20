@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import CarbonWalletApi from "../../../api/carbon/wallet";
+import * as CarbonWalletApi from "../../../api/carbon/wallet"
 
 function CarbonWallet() {
   const [walletAddress, setWalletAddress] = useState("");

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import CarbonNftApi from "../../../api/carbon/nft";
-import CarbonWalletApi from "../../../api/carbon/wallet";
-import { chainId,polygonscan,carbonCreditWalletAddress } from "../../../abi/CarbonCreditNFT"
 import { ethers } from "ethers";
 import jsonFile from "../../../utils/jsonFile";
-
+import * as CarbonNftApi from "../../../api/carbon/nft";
+import * as CarbonCredit from "../../../abi/CarbonCreditNFT";
+import * as CarbonWalletApi from "../../../api/carbon/wallet";
+import PolygonNetwork from "../../../abi/PolygonNetwork.json";
+const chainId = PolygonNetwork.chainId;
+const polygonscan = PolygonNetwork.polygonscan;
+const carbonCreditWallet = PolygonNetwork.wallet.carbonCredit;
 function CarbonNftList() {
   const history = useHistory();
   let [rowData, setRowData] = useState([]);
@@ -14,24 +17,24 @@ function CarbonNftList() {
     getUserNftList();
   }, []);
   const getUserNftList = async () => {
+    // 獲取用戶錢包地址
+    let walletAddress = "";
     try {
-      // 獲取用戶錢包地址
-      let walletAddress = "";
-      try {
-        const getWalletResult = await CarbonWalletApi.getWallet();
-        console.log("Debug: getWallet=", getWalletResult);
-        if (getWalletResult.code === 200) {
-          walletAddress = getWalletResult.message;
-        } else {
-          throw new Error(getWalletResult.message)
-        }
-      }catch (e) {
-        alert("獲取錢包地址出錯！",e.message)
-        console.log("Debug: getWallet error=",e.message)
-        return
+      const getWalletResult = await CarbonWalletApi.getWallet();
+      console.log("Debug: getWallet=", getWalletResult);
+      if (getWalletResult.code === 200) {
+        walletAddress = getWalletResult.message;
+      } else {
+        throw new Error(getWalletResult.message)
       }
+    }catch (e) {
+      alert("獲取錢包地址出錯！",e.message)
+      console.log("Debug: getWallet error=",e.message)
+      return
+    }
 
-      const tokenList = await CarbonNftApi.getTokenList(walletAddress);
+    try {
+      const tokenList = await CarbonCredit.getTokenList(walletAddress);
       console.log("tokenList", tokenList);
 
       setRowData(tokenList);
@@ -46,7 +49,7 @@ function CarbonNftList() {
     alert("TODO: 碎片化NFT id=" + tokenId);
 
     //重新載入頁面
-    history.go(0)
+    getUserNftList();
 
     setButtonDisable(false);
   };
@@ -123,13 +126,13 @@ function CarbonNftList() {
     }
 
     // 切換network
-    const polyginChainId = "0x" + chainId.toString(16);
-    console.log("Debug: polyginChainId=",polyginChainId)
+    const polygonChainId = "0x" + chainId.toString(16);
+    console.log("Debug: polygonChainId=",polygonChainId)
 
     try{
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId:polyginChainId }], // chainId must be in hexadecimal numbers
+        params: [{ chainId:polygonChainId }], // chainId must be in hexadecimal numbers
       });
     }catch (e) {
       alert("請允許將MetaMask錢包切換到Polygon network")
@@ -149,7 +152,7 @@ function CarbonNftList() {
     let safeTransferFromResult = ""
     // 開始轉賬
     try {
-      safeTransferFromResult = await CarbonNftApi.safeTransferFrom(signer,fromAddress,toAddress,tokenId)
+      safeTransferFromResult = await CarbonCredit.safeTransferFrom(signer,fromAddress,toAddress,tokenId)
     }catch (e) {
       alert("轉賬失敗，請查看日志")
       console.log("Debug: safeTransferFrom error=",e.message)
@@ -166,7 +169,7 @@ function CarbonNftList() {
 
     setButtonDisable(false);
     // 重新載入頁面
-    history.go(0)
+    getUserNftList();
   };
 
   const buttonNftView = async (tokenId) =>{
@@ -247,13 +250,13 @@ function CarbonNftList() {
       }
 
       // 切換network
-      const polyginChainId = "0x" + chainId.toString(16);
-      console.log("Debug: polyginChainId=",polyginChainId)
+      const polygonChainId = "0x" + chainId.toString(16);
+      console.log("Debug: polygonChainId=",polygonChainId)
 
       try{
         await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId:polyginChainId }], // chainId must be in hexadecimal numbers
+          params: [{ chainId:polygonChainId }], // chainId must be in hexadecimal numbers
         });
       }catch (e) {
         alert("請允許將MetaMask錢包切換到Polygon network")
@@ -272,7 +275,7 @@ function CarbonNftList() {
 
       // 將token approve給碳權給平臺
       try {
-        await CarbonNftApi.approve(signer,carbonCreditWalletAddress,tokenId)
+        await CarbonCredit.approve(signer,carbonCreditWallet,tokenId)
       }catch (e) {
         console.log("Debug: approve error=",e.message)
         alert("操作失敗！\n",e.message)
@@ -305,7 +308,7 @@ function CarbonNftList() {
       setButtonDisable(false);
 
       // 重新載入頁面
-      history.go(0)
+      getUserNftList();
     }
 
   const buttonBackToNftPage = async () => {
