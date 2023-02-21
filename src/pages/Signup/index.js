@@ -23,6 +23,7 @@ function Signup(props) {
   const [isSignup, setIsSignup] = useState(false);
   const [selectedCounty, setSelectedCounty] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
+  const [selected, setSelected] = useState("consumer");
 
   const [countys, setCountys] = useState([
     { text: "基隆市" },
@@ -48,6 +49,11 @@ function Signup(props) {
     { text: "金門縣" },
     { text: "連江縣" },
   ]);
+
+  const handleChange = (event) => {
+    console.log(event.target.value);
+    setSelected(event.target.value);
+  };
 
   async function handleSignup() {
     setIsSignupInProgress(true);
@@ -162,6 +168,35 @@ function Signup(props) {
                   </a>
                   <span className="divider text-muted mb-4">OR</span>
                 </div>
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="inlineRadioOptions"
+                    id="consumer"
+                    value="consumer"
+                    checked={selected === "consumer"}
+                    onChange={handleChange}
+                  />
+                  <label class="form-check-label" for="cosumer">
+                    用戶
+                  </label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="inlineRadioOptions"
+                    id="enterprise"
+                    value="enterprise"
+                    checked={selected === "enterprise"}
+                    onChange={handleChange}
+                  />
+                  <label class="form-check-label" for="enderprise">
+                    企業
+                  </label>
+                </div>
+
                 <div className="js-form-message form-group">
                   <label className="input-label" htmlFor="">
                     名字
@@ -277,6 +312,74 @@ function Signup(props) {
                     <div></div>
                   )}
                 </div>
+                {selected === "consumer" ? null : (
+                  <div className="js-form-message form-group">
+                    <label className="input-label" htmlFor="storename">
+                      商店名稱
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control form-control-lg"
+                      name="store"
+                      id="storenmae"
+                      tabIndex="1"
+                      placeholder="三光米"
+                      aria-label="三光米"
+                      required
+                      data-msg="Please enter a store name."
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
+                    />
+
+                    <label className="input-label" htmlFor="storedescription">
+                      描述
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control form-control-lg"
+                      name="description"
+                      id="storedescription"
+                      tabIndex="1"
+                      placeholder="好米好實在"
+                      aria-label="好米好實在"
+                      required
+                      data-msg="Please enter a description."
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
+                    />
+
+                    <label className="input-label" htmlFor="storebrand">
+                      品牌
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control form-control-lg"
+                      name="brand"
+                      id="storebrand"
+                      tabIndex="1"
+                      placeholder="......."
+                      aria-label="........"
+                      required
+                      data-msg="Please enter a store brand."
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
+                    />
+
+                    {emailStatus === "danger" ? (
+                      <div>
+                        <small id="name" class="text-danger">
+                          {emailMessage}
+                        </small>
+                      </div>
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
+                )}
+
                 {/* <div className="js-form-message form-group">
                   <label className="input-label" htmlFor="address" tabIndex="0">
                     居住地
