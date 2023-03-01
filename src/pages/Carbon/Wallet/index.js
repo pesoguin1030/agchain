@@ -7,20 +7,23 @@ function CarbonWallet() {
   const [walletAddress, setWalletAddress] = useState("");
   const [walletBalance, setWalletBalance] = useState(0);
   const [walletAllowance, setWalletAllowance] = useState(0);
-  useEffect(function () {
-    console.log("load carbon wallet test");
+  useEffect(
+    function () {
+      console.log("load carbon wallet test");
 
-    if (typeof window.ethereum == "undefined") {
-      alert("請安裝MetaMask");
-      console.log("MetaMask is required!");
-    } else {
-      console.log("MetaMask is installed!");
+      if (typeof window.ethereum == "undefined") {
+        alert("請安裝MetaMask");
+        console.log("MetaMask is required!");
+      } else {
+        console.log("MetaMask is installed!");
 
-      getWallet();
-      getBalance();
-      getAllowance();
-    }
-  }, []);
+        getWallet();
+        getBalance();
+        getAllowance();
+      }
+    },
+    [walletAddress]
+  );
   const getWallet = async () => {
     try {
       const result = await CarbonWalletApi.getWallet();
@@ -31,24 +34,9 @@ function CarbonWallet() {
     }
   };
 
-  // const getBalance = async () => {
-  //   try {
-  //     const result = await CarbonWalletApi.getBalance();
-  //     console.log("Debug: getBalance=", result);
-  //     setWalletBalance(result.message);
-  //   } catch (error) {
-  //     console.log("Error: getBalance=", error);
-  //   }
-  // };
-
   const getBalance = async () => {
     try {
-      //获取当前MetaMask钱包地址
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      const address = accounts[0];
-      const result = await TokenCenter.getBalance(address);
+      const result = await TokenCenter.getBalance(walletAddress);
       setWalletBalance(result);
     } catch (error) {
       console.log("Error: getBalance=", error);
@@ -56,15 +44,9 @@ function CarbonWallet() {
   };
 
   const getAllowance = async () => {
-    console.log("getAllowance");
     try {
-      //获取当前MetaMask钱包地址
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      const address = accounts[0];
-      const result = await TokenCenter.getAllowance(address);
-      alert(result);
+      const result = await TokenCenter.getAllowance(walletAddress);
+      // alert(result);
       setWalletAllowance(result);
     } catch (error) {
       // console.log("Error: getAllowance=", error);
@@ -73,21 +55,12 @@ function CarbonWallet() {
 
   const approve = async (amount) => {
     try {
-      //获取当前MetaMask钱包地址
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      alert("w");
-      const address = accounts[0];
       const provider = new ethers.providers.Web3Provider(
         window.ethereum,
         "any"
       );
       let signer = provider.getSigner();
-
       const result = await TokenCenter.setERC20Approval(signer, amount);
-      alert(result);
-      setWalletAllowance(result);
     } catch (error) {
       console.log("Error: setERC20Approval=", error);
     }
@@ -145,8 +118,9 @@ function CarbonWallet() {
       console.log("Debug: buttonUnbind=", result);
 
       alert(result.message);
-      getWallet();
-      getBalance();
+      setWalletAddress("");
+      setWalletBalance(0);
+      setWalletAllowance(0);
     } catch (error) {
       console.log("Error: buttonUnbind=", error);
     }
@@ -175,7 +149,8 @@ function CarbonWallet() {
               <input
                 value={walletAddress}
                 type="text"
-                className="form-control"
+                readonly
+                class="form-control-plaintext"
                 id="inputAddress"
                 readOnly
               />
@@ -195,18 +170,12 @@ function CarbonWallet() {
               <input
                 value={walletBalance}
                 type="text"
-                className="form-control"
+                readonly
+                class="form-control-plaintext"
                 id="inputBalance"
-                readOnly
               />
             </div>
-            {/* {walletBalance?
-            <label htmlFor="inputBalance" className="col-sm-2 col-form-label">
-              {walletBalance}
-            </label>:<label htmlFor="inputBalance" className="col-sm-2 col-form-label">
-              0
-            </label>
-            } */}
+
             <button
               className="col-sm-2 btn btn-primary"
               onClick={buttonRefresh}
@@ -229,7 +198,8 @@ function CarbonWallet() {
               <input
                 value={walletAllowance}
                 type="text"
-                className="form-control"
+                readonly
+                class="form-control-plaintext"
                 id="inputBalance"
                 readOnly
               />
@@ -237,7 +207,9 @@ function CarbonWallet() {
             <button
               className="col-sm-2 btn btn-primary"
               onClick={() => {
-                approve(1000);
+                var amount = prompt("請輸入您要批准的授權餘額");
+                approve(amount);
+                getAllowance();
               }}
             >
               設定
