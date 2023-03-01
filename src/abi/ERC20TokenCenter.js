@@ -19,10 +19,7 @@ export async function getAllowance(owner) {
       provider
     );
     const result = await contractInstance
-      .allowance(
-        "0x493D9C1106785b10B226D5b8932781716633dae1",
-        "0x7BB98772101aA5c681297098124aAcABA4dca676"
-      )
+      .allowance(owner, center_Address)
       .then((result) => {
         return result;
       });
