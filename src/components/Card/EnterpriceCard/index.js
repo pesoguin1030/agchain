@@ -55,6 +55,9 @@ const EnterpriseCard = ({
           <span className="text-dark font-weight-bold">数量 ： {amount}</span>
         </div>
         <div className="d-block">
+          <span className="text-dark font-weight-bold">{`碳權點數 : 10`}</span>
+        </div>
+        <div className="d-block">
           <span className="text-dark font-weight-bold">含碳量 ： 10kg</span>
         </div>
         <div className="d-block">

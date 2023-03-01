@@ -17,13 +17,17 @@ function EnterpriseProduct() {
   const [percent, setPercent] = useState(0);
   const [weight, setWeight] = useState(250);
   const [description, setdescription] = useState(null);
+  const [carbonAmount,setcarbonamount] = useState(null);
+
   const options = [
     { value: "", text: "選擇種類" },
-    { value: "vegetables", text: "vegetables " },
-    { value: "rice", text: "rice " },
-    { value: "shippingfee", text: "shippingfee " },
+    // { value: "vegetables", text: "vegetables " },
+    // { value: "rice", text: "rice " },
+    // { value: "shippingfee", text: "shippingfee " },
+    { value: "carbon",text:"附碳商品"}
   ];
   const [selected, setSelected] = useState(options[0].value);
+  
 
   useEffect(() => {
     const handleFetchProducts = async () => {
@@ -181,6 +185,18 @@ function EnterpriseProduct() {
                     placeholder="價格"
                     onChange={(e) => {
                       setPriceNumber(e.target.value);
+                    }}
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="inputvalue">碳權點數</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="inputvalue"
+                    placeholder="10"
+                    onChange={(e) => {
+                      setAmountNumber(e.target.value);
                     }}
                   />
                 </div>
