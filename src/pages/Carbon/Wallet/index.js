@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import * as CarbonWalletApi from "../../../api/carbon/wallet"
+import { ethers } from "ethers";
+import * as CarbonWalletApi from "../../../api/carbon/wallet";
+import * as TokenCenter from "../../../abi/ERC20TokenCenter";
 
 function CarbonWallet() {
   const [walletAddress, setWalletAddress] = useState("");
   const [walletBalance, setWalletBalance] = useState(0);
+  const [walletAllowance, setWalletAllowance] = useState(0);
   useEffect(function () {
     console.log("load carbon wallet test");
 
@@ -15,25 +18,78 @@ function CarbonWallet() {
 
       getWallet();
       getBalance();
+      getAllowance();
     }
   }, []);
   const getWallet = async () => {
     try {
       const result = await CarbonWalletApi.getWallet();
-      console.log("Debug: getWallet=", result);
+      // console.log("Debug: getWallet=", result);
       setWalletAddress(result.message);
     } catch (error) {
       console.log("Error: getWallet=", error);
     }
   };
 
+  // const getBalance = async () => {
+  //   try {
+  //     const result = await CarbonWalletApi.getBalance();
+  //     console.log("Debug: getBalance=", result);
+  //     setWalletBalance(result.message);
+  //   } catch (error) {
+  //     console.log("Error: getBalance=", error);
+  //   }
+  // };
+
   const getBalance = async () => {
     try {
-      const result = await CarbonWalletApi.getBalance();
-      console.log("Debug: getBalance=", result);
-      setWalletBalance(result.message);
+      //获取当前MetaMask钱包地址
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      const address = accounts[0];
+      const result = await TokenCenter.getBalance(address);
+      setWalletBalance(result);
     } catch (error) {
       console.log("Error: getBalance=", error);
+    }
+  };
+
+  const getAllowance = async () => {
+    console.log("getAllowance");
+    try {
+      //获取当前MetaMask钱包地址
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      const address = accounts[0];
+      const result = await TokenCenter.getAllowance(address);
+      alert(result);
+      setWalletAllowance(result);
+    } catch (error) {
+      // console.log("Error: getAllowance=", error);
+    }
+  };
+
+  const approve = async (amount) => {
+    try {
+      //获取当前MetaMask钱包地址
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      alert("w");
+      const address = accounts[0];
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
+      let signer = provider.getSigner();
+
+      const result = await TokenCenter.setERC20Approval(signer, amount);
+      alert(result);
+      setWalletAllowance(result);
+    } catch (error) {
+      console.log("Error: setERC20Approval=", error);
     }
   };
 
@@ -77,6 +133,7 @@ function CarbonWallet() {
       alert(result.message);
       getWallet();
       getBalance();
+      getAllowance();
     } catch (error) {
       console.log("Error: bindWallet=", error);
     }
@@ -143,16 +200,20 @@ function CarbonWallet() {
                 readOnly
               />
             </div>
+            {/* {walletBalance?
+            <label htmlFor="inputBalance" className="col-sm-2 col-form-label">
+              {walletBalance}
+            </label>:<label htmlFor="inputBalance" className="col-sm-2 col-form-label">
+              0
+            </label>
+            } */}
             <button
               className="col-sm-2 btn btn-primary"
               onClick={buttonRefresh}
             >
               更新
             </button>
-            <button
-              className="col-sm-2 btn btn-danger"
-              onClick={buttonExchange}
-            >
+            <button className="col-sm-2 btn btn-danger" onClick={getBalance}>
               兌換
             </button>
           </div>
@@ -166,25 +227,22 @@ function CarbonWallet() {
             </label>
             <div className="col-sm-6">
               <input
-                  value={0}
-                  type="text"
-                  className="form-control"
-                  id="inputBalance"
-                  readOnly
+                value={walletAllowance}
+                type="text"
+                className="form-control"
+                id="inputBalance"
+                readOnly
               />
             </div>
             <button
-                className="col-sm-2 btn btn-primary"
-                // onClick={buttonRefresh}
+              className="col-sm-2 btn btn-primary"
+              onClick={() => {
+                approve(1000);
+              }}
             >
               設定
             </button>
-            <button
-                className="col-sm-2 btn btn-danger"
-                // onClick={buttonExchange}
-            >
-              清除
-            </button>
+            <button className="col-sm-2 btn btn-danger">清除</button>
           </div>
         </div>
       </div>
