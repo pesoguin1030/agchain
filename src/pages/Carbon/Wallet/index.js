@@ -4,7 +4,7 @@ import * as CarbonWalletApi from "../../../api/carbon/wallet";
 import * as TokenCenter from "../../../abi/ERC20TokenCenter";
 
 function CarbonWallet() {
-  const [walletAddress, setWalletAddress] = useState("");
+  const [walletAddress, setWalletAddress] = useState("使用者未綁定錢包");
   const [walletBalance, setWalletBalance] = useState(0);
   const [walletAllowance, setWalletAllowance] = useState(0);
   useEffect(
@@ -61,6 +61,8 @@ function CarbonWallet() {
       );
       let signer = provider.getSigner();
       const result = await TokenCenter.setERC20Approval(signer, amount);
+      alert("授權點數成功！謝謝您");
+      setWalletAllowance(amount);
     } catch (error) {
       console.log("Error: setERC20Approval=", error);
     }
@@ -209,7 +211,6 @@ function CarbonWallet() {
               onClick={() => {
                 var amount = prompt("請輸入您要批准的授權餘額");
                 approve(amount);
-                getAllowance();
               }}
             >
               設定
