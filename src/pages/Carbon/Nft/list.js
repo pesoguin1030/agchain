@@ -5,6 +5,7 @@ import jsonFile from "../../../utils/jsonFile";
 import * as CarbonNftApi from "../../../api/carbon/nft";
 import * as CarbonCredit from "../../../abi/CarbonCreditNFT";
 import * as CarbonWalletApi from "../../../api/carbon/wallet";
+import * as TokenFactory from "../../../abi/ERC721VaultFactory";
 import PolygonNetwork from "../../../abi/PolygonNetwork.json";
 const chainId = PolygonNetwork.chainId;
 const polygonscan = PolygonNetwork.polygonscan;
@@ -25,12 +26,12 @@ function CarbonNftList() {
       if (getWalletResult.code === 200) {
         walletAddress = getWalletResult.message;
       } else {
-        throw new Error(getWalletResult.message)
+        throw new Error(getWalletResult.message);
       }
-    }catch (e) {
-      alert("獲取錢包地址出錯！",e.message)
-      console.log("Debug: getWallet error=",e.message)
-      return
+    } catch (e) {
+      alert("獲取錢包地址出錯！", e.message);
+      console.log("Debug: getWallet error=", e.message);
+      return;
     }
 
     try {
@@ -42,12 +43,19 @@ function CarbonNftList() {
       console.log("Error: getUserNftList=", error);
     }
   };
-  
+
   const buttonNftFragmentation = async (tokenId) => {
     setButtonDisable(true);
+    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    let signer = provider.getSigner();
+    alert("確定將您的NFT兌換成碳權點數？");
+    try {
+      await TokenFactory.fractionalizeNFT(signer, tokenId);
+    } catch (error) {
+      console.log("Error: ＮNFT Fragmentation=", error);
+    }
 
-    alert("TODO: 碎片化NFT id=" + tokenId);
-
+    alert("兌換成功！您可至碳權錢包確認您的碳權點數！");
     //重新載入頁面
     getUserNftList();
 
@@ -58,17 +66,17 @@ function CarbonNftList() {
     setButtonDisable(true);
 
     // 獲取tokenId
-    if(!tokenId){
-          setButtonDisable(false);
-        return;
+    if (!tokenId) {
+      setButtonDisable(false);
+      return;
     }
 
     // 獲取轉賬目標的錢包地址
     const toAddress = prompt("請輸入對方的錢包地址");
-    if(!toAddress || toAddress.length!==42){
-      alert("請輸入正確的錢包地址")
-          setButtonDisable(false);
-        return;
+    if (!toAddress || toAddress.length !== 42) {
+      alert("請輸入正確的錢包地址");
+      setButtonDisable(false);
+      return;
     }
 
     // 獲取用戶錢包地址
@@ -79,91 +87,99 @@ function CarbonNftList() {
       if (getWalletResult.code === 200) {
         walletAddress = getWalletResult.message;
       } else {
-        throw new Error(getWalletResult.message)
+        throw new Error(getWalletResult.message);
       }
-    }catch (e) {
-      alert("獲取錢包地址出錯！",e.message)
-      console.log("Debug: getWallet error=",e.message)
+    } catch (e) {
+      alert("獲取錢包地址出錯！", e.message);
+      console.log("Debug: getWallet error=", e.message);
       setButtonDisable(false);
-    return;
+      return;
     }
 
     // 獲取signer
     let signer;
     let fromAddress;
     try {
-      if(!window.ethereum){
-        alert("請安裝MetaMask錢包")
+      if (!window.ethereum) {
+        alert("請安裝MetaMask錢包");
         setButtonDisable(false);
         return;
       }
-      const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-      console.log("Debug: provider=",provider)
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
+      console.log("Debug: provider=", provider);
       signer = provider.getSigner();
-      console.log("Debug: signer=",signer)
+      console.log("Debug: signer=", signer);
 
       // 確認address
       await provider.send("eth_requestAccounts", []);
       fromAddress = await signer.getAddress();
-      console.log("Debug: fromAddress=",fromAddress.toLowerCase())
-      if(fromAddress.toLowerCase()!== walletAddress.toLowerCase() ){
-        console.log("Debug: walletAddress=",walletAddress.toLowerCase())
-        alert("請使用在本平臺綁定的錢包")
+      console.log("Debug: fromAddress=", fromAddress.toLowerCase());
+      if (fromAddress.toLowerCase() !== walletAddress.toLowerCase()) {
+        console.log("Debug: walletAddress=", walletAddress.toLowerCase());
+        alert("請使用在本平臺綁定的錢包");
         setButtonDisable(false);
         return;
       }
-    } catch(e){
-      alert("請允許網站連接到MetaMask錢包")
-      console.log("Debug: wallet_switchEthereumChain error=",e.message)
+    } catch (e) {
+      alert("請允許網站連接到MetaMask錢包");
+      console.log("Debug: wallet_switchEthereumChain error=", e.message);
       setButtonDisable(false);
       return;
     }
 
-    if(toAddress.toLowerCase() === fromAddress.toLowerCase()){
-      alert("不允許自己轉賬給自己")
+    if (toAddress.toLowerCase() === fromAddress.toLowerCase()) {
+      alert("不允許自己轉賬給自己");
       setButtonDisable(false);
-    return;
+      return;
     }
 
     // 切換network
     const polygonChainId = "0x" + chainId.toString(16);
-    console.log("Debug: polygonChainId=",polygonChainId)
+    console.log("Debug: polygonChainId=", polygonChainId);
 
-    try{
+    try {
       await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId:polygonChainId }], // chainId must be in hexadecimal numbers
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: polygonChainId }], // chainId must be in hexadecimal numbers
       });
-    }catch (e) {
-      alert("請允許將MetaMask錢包切換到Polygon network")
-      console.log("Debug: wallet_switchEthereumChain error=",e.message)
+    } catch (e) {
+      alert("請允許將MetaMask錢包切換到Polygon network");
+      console.log("Debug: wallet_switchEthereumChain error=", e.message);
       setButtonDisable(false);
-    return;
+      return;
     }
 
-    const nowChain = await signer.getChainId()
-    console.log("Debug: nowChain=",nowChain)
-    if(nowChain.toString() !== chainId.toString()){
-      alert("請允許將MetaMask錢包切換到Polygon network")
+    const nowChain = await signer.getChainId();
+    console.log("Debug: nowChain=", nowChain);
+    if (nowChain.toString() !== chainId.toString()) {
+      alert("請允許將MetaMask錢包切換到Polygon network");
       setButtonDisable(false);
-    return;
+      return;
     }
 
-    let safeTransferFromResult = ""
+    let safeTransferFromResult = "";
     // 開始轉賬
     try {
-      safeTransferFromResult = await CarbonCredit.safeTransferFrom(signer,fromAddress,toAddress,tokenId)
-    }catch (e) {
-      alert("轉賬失敗，請查看日志")
-      console.log("Debug: safeTransferFrom error=",e.message)
+      safeTransferFromResult = await CarbonCredit.safeTransferFrom(
+        signer,
+        fromAddress,
+        toAddress,
+        tokenId
+      );
+    } catch (e) {
+      alert("轉賬失敗，請查看日志");
+      console.log("Debug: safeTransferFrom error=", e.message);
       setButtonDisable(false);
-    return;
+      return;
     }
-    console.log("Debug: safeTransferFrom hash=",safeTransferFromResult)
+    console.log("Debug: safeTransferFrom hash=", safeTransferFromResult);
 
-    const view = window.confirm("轉賬成功！\n是否查看相關日志？")
-    if(view){
-      const url = polygonscan + "/tx/" + safeTransferFromResult
+    const view = window.confirm("轉賬成功！\n是否查看相關日志？");
+    if (view) {
+      const url = polygonscan + "/tx/" + safeTransferFromResult;
       window.open(url, "_blank");
     }
 
@@ -172,7 +188,7 @@ function CarbonNftList() {
     getUserNftList();
   };
 
-  const buttonNftView = async (tokenId) =>{
+  const buttonNftView = async (tokenId) => {
     setButtonDisable(true);
 
     // 獲取用戶錢包地址
@@ -183,11 +199,11 @@ function CarbonNftList() {
       if (getWalletResult.code === 200) {
         walletAddress = getWalletResult.message;
       } else {
-        throw new Error(getWalletResult.message)
+        throw new Error(getWalletResult.message);
       }
-    }catch (e) {
-      alert("獲取錢包地址出錯！",e.message)
-      console.log("Debug: getWallet error=",e.message)
+    } catch (e) {
+      alert("獲取錢包地址出錯！", e.message);
+      console.log("Debug: getWallet error=", e.message);
       setButtonDisable(false);
       return;
     }
@@ -196,120 +212,123 @@ function CarbonNftList() {
     window.open(url, "_blank");
 
     setButtonDisable(false);
-  }
+  };
 
-    const buttonNftRetrieve = async (tokenId) =>{
-      setButtonDisable(true);
+  const buttonNftRetrieve = async (tokenId) => {
+    setButtonDisable(true);
 
-      // 獲取用戶錢包地址
-      let walletAddress = "";
-      try {
-        const getWalletResult = await CarbonWalletApi.getWallet();
-        console.log("Debug: getWallet=", getWalletResult);
-        if (getWalletResult.code === 200) {
-          walletAddress = getWalletResult.message;
-        } else {
-          throw new Error(getWalletResult.message)
-        }
-      }catch (e) {
-        alert("獲取錢包地址出錯！",e.message)
-        console.log("Debug: getWallet error=",e.message)
-        setButtonDisable(false);
-        return;
+    // 獲取用戶錢包地址
+    let walletAddress = "";
+    try {
+      const getWalletResult = await CarbonWalletApi.getWallet();
+      console.log("Debug: getWallet=", getWalletResult);
+      if (getWalletResult.code === 200) {
+        walletAddress = getWalletResult.message;
+      } else {
+        throw new Error(getWalletResult.message);
       }
-
-      // 獲取signer
-      let signer;
-      let fromAddress;
-      try {
-        if(!window.ethereum){
-          alert("請安裝MetaMask錢包")
-          setButtonDisable(false);
-          return;
-        }
-        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-        console.log("Debug: provider=",provider)
-        signer = provider.getSigner();
-        console.log("Debug: signer=",signer)
-
-        // 確認address
-        await provider.send("eth_requestAccounts", []);
-        fromAddress = await signer.getAddress();
-        console.log("Debug: fromAddress=",fromAddress.toLowerCase())
-        if(fromAddress.toLowerCase()!== walletAddress.toLowerCase() ){
-          console.log("Debug: walletAddress=",walletAddress.toLowerCase())
-          alert("請使用在本平臺綁定的錢包")
-          setButtonDisable(false);
-          return;
-        }
-      } catch(e){
-        alert("請允許網站連接到MetaMask錢包")
-        console.log("Debug: wallet_switchEthereumChain error=",e.message)
-        setButtonDisable(false);
-        return;
-      }
-
-      // 切換network
-      const polygonChainId = "0x" + chainId.toString(16);
-      console.log("Debug: polygonChainId=",polygonChainId)
-
-      try{
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId:polygonChainId }], // chainId must be in hexadecimal numbers
-        });
-      }catch (e) {
-        alert("請允許將MetaMask錢包切換到Polygon network")
-        console.log("Debug: wallet_switchEthereumChain error=",e.message)
-        setButtonDisable(false);
-        return;
-      }
-
-      const nowChain = await signer.getChainId()
-      console.log("Debug: nowChain=",nowChain)
-      if(nowChain.toString() !== chainId.toString()){
-        alert("請允許將MetaMask錢包切換到Polygon network")
-        setButtonDisable(false);
-        return;
-      }
-
-      // 將token approve給碳權給平臺
-      try {
-        await CarbonCredit.approve(signer,carbonCreditWallet,tokenId)
-      }catch (e) {
-        console.log("Debug: approve error=",e.message)
-        alert("操作失敗！\n",e.message)
-        setButtonDisable(false);
-        return;
-      }
-
-      // 平臺burn碳權，取回token資料
-      let tokenInfo = {};
-      try{
-        const burnTokenResult = await CarbonNftApi.burnToken(tokenId)
-        if(burnTokenResult.code === 200){
-          // 獲取token資料
-          tokenInfo = JSON.parse(burnTokenResult.message);
-          console.log("Debug: tokenInfo=",tokenInfo);
-        }else{
-          throw new Error(burnTokenResult.message)
-        }
-      }catch (e) {
-        console.log("Debug: burnToken error=",e.message)
-        alert("銷毀NFT碳權出錯！\n" + e.message);
-        setButtonDisable(false);
-        return;
-      }
-
-      // 下載json檔案
-      jsonFile.GenerateJsonFileFromJsonObject(tokenInfo.certId,tokenInfo);
-
-      alert("碳權證書取回成功！")
+    } catch (e) {
+      alert("獲取錢包地址出錯！", e.message);
+      console.log("Debug: getWallet error=", e.message);
       setButtonDisable(false);
-
-      // 重新載入頁面
-      getUserNftList();
+      return;
     }
+
+    // 獲取signer
+    let signer;
+    let fromAddress;
+    try {
+      if (!window.ethereum) {
+        alert("請安裝MetaMask錢包");
+        setButtonDisable(false);
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
+      console.log("Debug: provider=", provider);
+      signer = provider.getSigner();
+      console.log("Debug: signer=", signer);
+
+      // 確認address
+      await provider.send("eth_requestAccounts", []);
+      fromAddress = await signer.getAddress();
+      console.log("Debug: fromAddress=", fromAddress.toLowerCase());
+      if (fromAddress.toLowerCase() !== walletAddress.toLowerCase()) {
+        console.log("Debug: walletAddress=", walletAddress.toLowerCase());
+        alert("請使用在本平臺綁定的錢包");
+        setButtonDisable(false);
+        return;
+      }
+    } catch (e) {
+      alert("請允許網站連接到MetaMask錢包");
+      console.log("Debug: wallet_switchEthereumChain error=", e.message);
+      setButtonDisable(false);
+      return;
+    }
+
+    // 切換network
+    const polygonChainId = "0x" + chainId.toString(16);
+    console.log("Debug: polygonChainId=", polygonChainId);
+
+    try {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: polygonChainId }], // chainId must be in hexadecimal numbers
+      });
+    } catch (e) {
+      alert("請允許將MetaMask錢包切換到Polygon network");
+      console.log("Debug: wallet_switchEthereumChain error=", e.message);
+      setButtonDisable(false);
+      return;
+    }
+
+    const nowChain = await signer.getChainId();
+    console.log("Debug: nowChain=", nowChain);
+    if (nowChain.toString() !== chainId.toString()) {
+      alert("請允許將MetaMask錢包切換到Polygon network");
+      setButtonDisable(false);
+      return;
+    }
+
+    // 將token approve給碳權給平臺
+    try {
+      await CarbonCredit.approve(signer, carbonCreditWallet, tokenId);
+    } catch (e) {
+      console.log("Debug: approve error=", e.message);
+      alert("操作失敗！\n", e.message);
+      setButtonDisable(false);
+      return;
+    }
+
+    // 平臺burn碳權，取回token資料
+    let tokenInfo = {};
+    try {
+      const burnTokenResult = await CarbonNftApi.burnToken(tokenId);
+      if (burnTokenResult.code === 200) {
+        // 獲取token資料
+        tokenInfo = JSON.parse(burnTokenResult.message);
+        console.log("Debug: tokenInfo=", tokenInfo);
+      } else {
+        throw new Error(burnTokenResult.message);
+      }
+    } catch (e) {
+      console.log("Debug: burnToken error=", e.message);
+      alert("銷毀NFT碳權出錯！\n" + e.message);
+      setButtonDisable(false);
+      return;
+    }
+
+    // 下載json檔案
+    jsonFile.GenerateJsonFileFromJsonObject(tokenInfo.certId, tokenInfo);
+
+    alert("碳權證書取回成功！");
+    setButtonDisable(false);
+
+    // 重新載入頁面
+    getUserNftList();
+  };
 
   const buttonBackToNftPage = async () => {
     history.push({
@@ -317,8 +336,7 @@ function CarbonNftList() {
     });
   };
 
-
-    return (
+  return (
     <div className="container space-top-1 space-top-sm-2 mt-11">
       <div className="row pb-5 border-bottom">
         <div className="col-12 offset-0">
@@ -362,11 +380,11 @@ function CarbonNftList() {
                         <td>{new Date(date * 1000).toLocaleString()}</td>
                         <td>
                           <button
-                              className="btn btn-success mr-2 mb-2"
-                              onClick={() => {
-                                buttonNftView(tokenId);
-                              }}
-                              disabled={buttonDisable}
+                            className="btn btn-success mr-2 mb-2"
+                            onClick={() => {
+                              buttonNftView(tokenId);
+                            }}
+                            disabled={buttonDisable}
                           >
                             查看
                           </button>
@@ -392,11 +410,11 @@ function CarbonNftList() {
                           </button>
 
                           <button
-                              className="btn btn-danger mr-2 mb-2"
-                              onClick={() => {
-                                buttonNftRetrieve(tokenId);
-                              }}
-                              disabled={buttonDisable}
+                            className="btn btn-danger mr-2 mb-2"
+                            onClick={() => {
+                              buttonNftRetrieve(tokenId);
+                            }}
+                            disabled={buttonDisable}
                           >
                             取回
                           </button>
