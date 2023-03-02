@@ -80,7 +80,7 @@ function Login(props) {
                     <h1 className="h3">會員登入</h1>
                     <p>
                       還沒有帳號？{" "}
-                      <a href="authentication-signup-basic.html">註冊</a>
+                      <a href="/signup">註冊</a>
                     </p>
                   </div>
 
