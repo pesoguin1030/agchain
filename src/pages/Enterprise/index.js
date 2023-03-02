@@ -18,6 +18,7 @@ function EnterpriseProduct() {
   const [weight, setWeight] = useState(250);
   const [description, setdescription] = useState(null);
   const [carbonAmount,setcarbonamount] = useState(null);
+  const [storeId,setstoreid] = useState(69);
 
   const options = [
     { value: "", text: "選擇種類" },
@@ -55,7 +56,7 @@ function EnterpriseProduct() {
           weight: weight,
           type: selected,
           description: description,
-          store_id: 15, //because of wutau, farm_id called store_id
+          store_id: storeId, //because of wutau, farm_id called store_id
         },
         {
           headers: {
@@ -196,7 +197,19 @@ function EnterpriseProduct() {
                     id="inputvalue"
                     placeholder="10"
                     onChange={(e) => {
-                      setAmountNumber(e.target.value);
+                      setcarbonamount(e.target.value);
+                    }}
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="inputvalue">商店id</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="inputvalue"
+                    placeholder="商店id"
+                    onChange={(e) => {
+                      setstoreid(e.target.value);
                     }}
                   />
                 </div>
