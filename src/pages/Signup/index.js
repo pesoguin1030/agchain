@@ -23,7 +23,18 @@ function Signup(props) {
   const [isSignup, setIsSignup] = useState(false);
   const [selectedCounty, setSelectedCounty] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [selected, setSelected] = useState("consumer");
+  const [selected, setSelected] = useState(1);
+  const [store, setstore] = useState("");
+  const [storeStatus, setstoreStatus] = useState("basic");
+  const [storeMesssage, setstoreMesssage] = useState(null);
+  const [storedescription, setstoredesription] = useState("");
+  const [storedescriptionStatus, setstoredescriptionStatus] = useState("basic");
+  const [storedescriptionMessage, setstoredescriptionMessage] =
+    useState("null");
+  const [brand, setbrand] = useState("");
+  const [brandStatus, setbrandStatus] = useState("basic");
+  const [brandMessage, setbrandMessage] = useState(null);
+  const [roleid, setroleid] = useState(1);
 
   const [countys, setCountys] = useState([
     { text: "基隆市" },
@@ -53,9 +64,79 @@ function Signup(props) {
   const handleChange = (event) => {
     console.log(event.target.value);
     setSelected(event.target.value);
+    // console.log("role",roleid);
   };
 
-  async function handleSignup() {
+  async function userSignup() {
+    setIsSignupInProgress(true);
+    if (name.length > 32 || name.length < 2) {
+      setNameStatus("danger");
+      setNameMessage("名字長度不符，請使用2到32個字元");
+      setIsSignupInProgress(false);
+      return;
+    } else {
+      setNameStatus("success");
+      setNameMessage(null);
+    }
+    if (!validator.isEmail(email) || email.length > 32) {
+      setEmailStatus("danger");
+      setEmailMessage("電子郵件格式不符");
+      setIsSignupInProgress(false);
+      return;
+    } else {
+      setEmailStatus("success");
+      setEmailMessage(null);
+    }
+    if (password.length < 8 || password.length > 32) {
+      setPasswordStatus("danger");
+      setPasswordMessage("密碼長度不符，請使用8到32個字元");
+      setIsSignupInProgress(false);
+      return;
+    } else {
+      setPasswordStatus("success");
+      setPasswordMessage(null);
+    }
+    const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
+    const address = selectedCounty + selectedAddress;
+    await createDestination(address, coordinates);
+    if (isSignupInProgress) {
+      try {
+        const response = await request.post(
+          `/users/signup`,
+          {
+            name: name,
+            email: email,
+            password: password,
+            role: selected,
+            store: store,
+            description: storedescription,
+            brand: brand,
+          },
+          {
+            headers: {
+              "Cache-Control": "no-cache, no-store",
+            },
+          }
+        );
+
+        console.log(response);
+        const { data } = response;
+        if (data === "success") {
+          setIsSignup(true);
+          //navigation.navigate('Login');
+        } else {
+          alert("發生錯誤");
+          setIsSignupInProgress(false);
+        }
+      } catch (error) {
+        alert(error.response.data);
+        setIsSignupInProgress(false);
+        return false;
+      }
+    }
+  }
+
+  async function EenterpriseSignup() {
     setIsSignupInProgress(true);
     if (name.length > 32 || name.length < 2) {
       setNameStatus("danger");
@@ -85,22 +166,36 @@ function Signup(props) {
       setPasswordMessage(null);
     }
 
-    // if (selectedCounty === "") {
-    //   setCountyStatus("danger");
-    //   setCountyMessage("請選擇縣市");
-    //   setIsSignupInProgress(false);
-    // } else {
-    //   setCountyStatus("success");
-    //   setCountyMessage(null);
-    // }
-    // if (selectedAddress === "") {
-    //   setAddressStatus("danger");
-    //   setAddressMessage("請填寫住址");
-    //   setIsSignupInProgress(false);
-    // } else {
-    //   setAddressStatus("success");
-    //   setAddressMessage(null);
-    // }
+    if (store.length > 32 || store.length < 2) {
+      setstoreStatus("danger");
+      setstoreMesssage("商店名稱長度不符，請使用2到32個字元");
+      setIsSignupInProgress(false);
+      return;
+    } else {
+      setstoreStatus("success");
+      setstoreMesssage(null);
+    }
+
+    if (storedescription.length > 32 || storedescription.length < 2) {
+      setstoredescriptionStatus("danger");
+      setstoredescriptionMessage("商店描述長度不符，請使用2到32個字元");
+      setIsSignupInProgress(false);
+      return;
+    } else {
+      setstoredescriptionStatus("success");
+      setstoredescriptionMessage(null);
+    }
+
+    if (brand.length > 32 || brand.length < 2) {
+      setbrandStatus("danger");
+      setbrandMessage("品牌描述長度不符，請使用2到32個字元");
+      setIsSignupInProgress(false);
+      return;
+    } else {
+      setbrandStatus("success");
+      setbrandMessage(null);
+    }
+
     const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
     const address = selectedCounty + selectedAddress;
     await createDestination(address, coordinates);
@@ -112,6 +207,10 @@ function Signup(props) {
             name: name,
             email: email,
             password: password,
+            role: selected,
+            store: store,
+            description: storedescription,
+            brand: brand,
           },
           {
             headers: {
@@ -174,12 +273,12 @@ function Signup(props) {
                     type="radio"
                     name="inlineRadioOptions"
                     id="consumer"
-                    value="consumer"
-                    checked={selected === "consumer"}
+                    value={1}
+                    checked={selected == 1}
                     onChange={handleChange}
                   />
-                  <label class="form-check-label" for="cosumer">
-                    用戶
+                  <label class="form-check-label" for="consumer">
+                    消費者
                   </label>
                 </div>
                 <div class="form-check form-check-inline">
@@ -188,11 +287,11 @@ function Signup(props) {
                     type="radio"
                     name="inlineRadioOptions"
                     id="enterprise"
-                    value="enterprise"
-                    checked={selected === "enterprise"}
+                    value={2}
+                    checked={selected == 2}
                     onChange={handleChange}
                   />
-                  <label class="form-check-label" for="enderprise">
+                  <label class="form-check-label" for="enterprise">
                     企業
                   </label>
                 </div>
@@ -312,7 +411,7 @@ function Signup(props) {
                     <div></div>
                   )}
                 </div>
-                {selected === "consumer" ? null : (
+                {selected == 1 ? null : (
                   <div className="js-form-message form-group">
                     <label className="input-label" htmlFor="storename">
                       商店名稱
@@ -326,11 +425,22 @@ function Signup(props) {
                       placeholder="三光米"
                       aria-label="三光米"
                       required
+                      status={storeStatus}
+                      caption={storeMesssage}
                       data-msg="Please enter a store name."
                       onChange={(e) => {
-                        setEmail(e.target.value);
+                        setstore(e.target.value);
                       }}
                     />
+                    {storeStatus === "danger" ? (
+                      <div>
+                        <small id="name" class="text-danger">
+                          {storeMesssage}
+                        </small>
+                      </div>
+                    ) : (
+                      <div></div>
+                    )}
 
                     <label className="input-label" htmlFor="storedescription">
                       描述
@@ -344,11 +454,22 @@ function Signup(props) {
                       placeholder="好米好實在"
                       aria-label="好米好實在"
                       required
+                      status={storedescriptionStatus}
+                      caption={storedescriptionMessage}
                       data-msg="Please enter a description."
                       onChange={(e) => {
-                        setEmail(e.target.value);
+                        setstoredesription(e.target.value);
                       }}
                     />
+                    {storedescriptionStatus === "danger" ? (
+                      <div>
+                        <small id="name" class="text-danger">
+                          {storedescriptionMessage}
+                        </small>
+                      </div>
+                    ) : (
+                      <div></div>
+                    )}
 
                     <label className="input-label" htmlFor="storebrand">
                       品牌
@@ -362,16 +483,18 @@ function Signup(props) {
                       placeholder="......."
                       aria-label="........"
                       required
+                      status={brandStatus}
+                      caption={brandMessage}
                       data-msg="Please enter a store brand."
                       onChange={(e) => {
-                        setEmail(e.target.value);
+                        setbrand(e.target.value);
                       }}
                     />
 
-                    {emailStatus === "danger" ? (
+                    {brandStatus === "danger" ? (
                       <div>
                         <small id="name" class="text-danger">
-                          {emailMessage}
+                          {brandMessage}
                         </small>
                       </div>
                     ) : (
@@ -442,12 +565,21 @@ function Signup(props) {
                     </label>
                   </div>
                 </div>
-                <button
-                  className="btn btn-lg btn-block btn-primary"
-                  onClick={handleSignup}
-                >
-                  註冊
-                </button>
+                {selected == 1 ? (
+                  <button
+                    className="btn btn-lg btn-block btn-primary"
+                    onClick={userSignup}
+                  >
+                    註冊
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-lg btn-block btn-primary"
+                    onClick={EenterpriseSignup}
+                  >
+                    註冊
+                  </button>
+                )}
               </div>
             </div>
           </div>
