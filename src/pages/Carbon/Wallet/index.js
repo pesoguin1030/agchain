@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
+import { useHistory } from "react-router-dom";
 import * as CarbonWalletApi from "../../../api/carbon/wallet";
 import * as TokenCenter from "../../../abi/ERC20TokenCenter";
 
 function CarbonWallet() {
-  const [walletAddress, setWalletAddress] = useState("使用者未綁定錢包");
+  const history = useHistory();
+  const [walletAddress, setWalletAddress] = useState("使用者未綁定存摺");
   const [walletBalance, setWalletBalance] = useState(0);
   const [walletAllowance, setWalletAllowance] = useState(0);
+  const [approveRecord, setapproveRecord] = useState("");
+
   useEffect(
     function () {
       console.log("load carbon wallet test");
@@ -61,8 +65,10 @@ function CarbonWallet() {
       );
       let signer = provider.getSigner();
       const result = await TokenCenter.setERC20Approval(signer, amount);
-      alert("授權點數成功！謝謝您");
-      setWalletAllowance(amount);
+      alert(
+        "授權點數成功！謝謝您!由於資料量龐大，新的額度需要稍待一段時間才會呈現於頁面上"
+      );
+      getAllowance();
     } catch (error) {
       console.log("Error: setERC20Approval=", error);
     }
@@ -132,27 +138,22 @@ function CarbonWallet() {
     await getBalance();
   };
 
-  const buttonExchange = async () => {
-    alert("TODO");
-  };
-
   return (
     <div className="container space-top-1 space-top-sm-2 mt-11">
       <div className="row pb-5 border-bottom">
         <div className="col-8 offset-2">
           <div className="mb-3 row">
-            <h1>碳權錢包管理</h1>
+            <h1>碳權存摺管理</h1>
           </div>
           <div className="mb-3 row">
             <label htmlFor="inputAddress" className="col-sm-2 col-form-label">
-              錢包地址
+              存摺地址
             </label>
             <div className="col-sm-6">
               <input
                 value={walletAddress}
                 type="text"
-                readonly
-                class="form-control-plaintext"
+                className="form-control-plaintext"
                 id="inputAddress"
                 readOnly
               />
@@ -172,8 +173,8 @@ function CarbonWallet() {
               <input
                 value={walletBalance}
                 type="text"
-                readonly
-                class="form-control-plaintext"
+                readOnly
+                className="form-control-plaintext"
                 id="inputBalance"
               />
             </div>
@@ -193,29 +194,45 @@ function CarbonWallet() {
             <h1>碳權點數授權</h1>
           </div>
           <div className="mb-3 row">
-            <label htmlFor="inputBalance" className="col-sm-2 col-form-label">
-              授權餘額
+            <label htmlFor="inputAllowance" className="col-sm-2 col-form-label">
+              授權額度
             </label>
             <div className="col-sm-6">
               <input
                 value={walletAllowance}
                 type="text"
-                readonly
-                class="form-control-plaintext"
-                id="inputBalance"
+                className="form-control-plaintext"
+                id="inputAllowance"
                 readOnly
               />
             </div>
             <button
               className="col-sm-2 btn btn-primary"
               onClick={() => {
-                var amount = prompt("請輸入您要批准的授權餘額");
-                approve(amount);
+                if (
+                  window.confirm(
+                    "提醒您，您輸入的數值將會直接更新覆蓋原本的授權額度！"
+                  )
+                ) {
+                  var amount = prompt("請輸入您要批准的授權餘額");
+                  approve(amount);
+                }
               }}
             >
               設定
             </button>
             <button className="col-sm-2 btn btn-danger">清除</button>
+          </div>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button
+              class="btn btn-primary"
+              type="button"
+              onClick={() => {
+                window.location.replace("/carbon/approvalRecord");
+              }}
+            >
+              查看歷史授權紀錄
+            </button>
           </div>
         </div>
       </div>
