@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import storage from "../../utils/storage";
 import axios from "axios";
 import request from "../../utils/request";
-import { fetchProducts } from "../../api/product";
+import { fetchProducts, fetch2Products } from "../../api/product";
 import { CartContext } from "../../appContext";
 import { ProductCard } from "../../components/Card";
 import { EnterpriseCard } from "../../components/Card/EnterpriceCard/index";
@@ -17,25 +17,24 @@ function EnterpriseProduct() {
   const [percent, setPercent] = useState(0);
   const [weight, setWeight] = useState(250);
   const [description, setdescription] = useState(null);
-  const [carbonAmount,setcarbonamount] = useState(null);
-  const [storeId,setstoreid] = useState(69);
+  const [carbonAmount, setcarbonamount] = useState(null);
+  const [storeId, setstoreid] = useState(69);
 
   const options = [
     { value: "", text: "選擇種類" },
     // { value: "vegetables", text: "vegetables " },
     // { value: "rice", text: "rice " },
     // { value: "shippingfee", text: "shippingfee " },
-    { value: "carbon",text:"附碳商品"}
+    { value: "carbon", text: "附碳商品" },
   ];
   const [selected, setSelected] = useState(options[0].value);
-  
 
   useEffect(() => {
     const handleFetchProducts = async () => {
-      const { items, offset } = await fetchProducts();
-      if (Array.isArray(items)) {
-        setProducts(items);
-        console.log(products);
+      const { message, code } = await fetch2Products();
+      if (Array.isArray(message)) {
+        setProducts(message);
+        console.log("products", products);
       }
     };
     handleFetchProducts();
@@ -194,7 +193,7 @@ function EnterpriseProduct() {
                   <input
                     type="number"
                     class="form-control"
-                    id="inputvalue"
+                    id="carbonvalue"
                     placeholder="10"
                     onChange={(e) => {
                       setcarbonamount(e.target.value);
@@ -206,7 +205,7 @@ function EnterpriseProduct() {
                   <input
                     type="number"
                     class="form-control"
-                    id="inputvalue"
+                    id="storevalue"
                     placeholder="商店id"
                     onChange={(e) => {
                       setstoreid(e.target.value);
@@ -362,47 +361,6 @@ function EnterpriseProduct() {
           )
         )}
       </div>
-
-      <section>
-        <div class="container py-5">
-          <div class="row">
-            <div class="col-md-8 col-lg-6 col-xl-4">
-              <div class="card text-black">
-                <img
-                  src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/3.webp"
-                  class="card-img-top"
-                  alt="Apple Computer"
-                />
-                <div class="card-body">
-                  <div class="text-center">
-                    <h5 class="card-title">Name</h5>
-                    <p class="text-muted mb-4">Description</p>
-                  </div>
-                  <div>
-                    <div class="d-flex justify-content-between">
-                      <span>Price</span>
-                      <span>3999</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                      <span>Amount</span>
-                      <span>3</span>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between total font-weight-bold mt-4">
-                    <span>Carbon?</span>
-                    <span>10kg</span>
-                  </div>
-                  <div class="d-flex justify-content-between total font-weight-bold mt-4">
-                    <button type="button" class="btn btn-danger">
-                      下架
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

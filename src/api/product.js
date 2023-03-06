@@ -11,6 +11,17 @@ const fetchProducts = async () => {
   }
 };
 
+const fetch2Products = async () => {
+  try {
+    const { data } = await request.get(
+      "/productsv2/list?storeId=79&page=0&limit=5&order=desc"
+    );
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
 const ProductDetail = async (id) => {
   const userToken = storage.getAccessToken();
   try {
@@ -63,4 +74,10 @@ const findFeeProduct = async (farmId) => {
   }
 };
 
-export { fetchProducts, ProductDetail, FarmInfo, findFeeProduct };
+export {
+  fetchProducts,
+  ProductDetail,
+  FarmInfo,
+  findFeeProduct,
+  fetch2Products,
+};
