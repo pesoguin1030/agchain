@@ -6,7 +6,8 @@ import * as TokenCenter from "../../../abi/ERC20TokenCenter";
 
 function CarbonWallet() {
   const history = useHistory();
-  const [walletAddress, setWalletAddress] = useState("使用者未綁定存摺");
+  // const INVALID_WALLET_ADDRESS = "使用者未綁定存摺"
+  const [walletAddress, setWalletAddress] = useState("");
   const [walletBalance, setWalletBalance] = useState(0);
   const [walletAllowance, setWalletAllowance] = useState(0);
   const [approveRecord, setapproveRecord] = useState("");
@@ -21,18 +22,25 @@ function CarbonWallet() {
       } else {
         console.log("MetaMask is installed!");
 
-        getWallet();
-        getBalance();
-        getAllowance();
+        getWallet().then(()=>{
+          if(walletAddress){
+            getBalance();
+            getAllowance();
+          }
+        })
       }
     },
-    [walletAddress]
+    []
   );
   const getWallet = async () => {
     try {
       const result = await CarbonWalletApi.getWallet();
       // console.log("Debug: getWallet=", result);
-      setWalletAddress(result.message);
+      if(result.code!==200){
+        setWalletAddress("");
+      }else{
+        setWalletAddress(result.message);
+      }
     } catch (error) {
       console.log("Error: getWallet=", error);
     }
@@ -40,6 +48,7 @@ function CarbonWallet() {
 
   const getBalance = async () => {
     try {
+      console.log("Debug: CarbonWallet.getBalance");
       const result = await TokenCenter.getBalance(walletAddress);
       setWalletBalance(result);
     } catch (error) {
@@ -112,9 +121,12 @@ function CarbonWallet() {
       console.log("bindWallet=", result);
 
       alert(result.message);
-      getWallet();
-      getBalance();
-      getAllowance();
+      getWallet().then(()=>{
+        if(walletAddress){
+          getBalance();
+          getAllowance();
+        }
+      })
     } catch (error) {
       console.log("Error: bindWallet=", error);
     }
@@ -155,6 +167,7 @@ function CarbonWallet() {
                 type="text"
                 className="form-control-plaintext"
                 id="inputAddress"
+                placeholder="使用者未綁定存摺"
                 readOnly
               />
             </div>

@@ -6,7 +6,7 @@ import * as TokenCenter from "../../../abi/ERC20TokenCenter";
 
 function CarbonWallet() {
   const history = useHistory();
-  const [walletAddress, setWalletAddress] = useState("使用者未綁定存摺");
+  const [walletAddress, setWalletAddress] = useState("");
   const [approveRecord, setapproveRecord] = useState("");
 
   useEffect(
@@ -19,8 +19,11 @@ function CarbonWallet() {
       } else {
         console.log("MetaMask is installed!");
 
-        getWallet();
-        listenToApprovalEvent();
+        getWallet().then(()=>{
+          if(walletAddress){
+            listenToApprovalEvent();
+          }
+        })
       }
     },
     [walletAddress]
