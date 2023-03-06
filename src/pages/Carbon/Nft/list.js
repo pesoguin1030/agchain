@@ -341,15 +341,15 @@ function CarbonNftList() {
       <div className="row pb-5 border-bottom">
         <div className="col-12 offset-0">
           <div className="mb-3 row">
+            <h1>管理碳權NFT</h1>
+          </div>
+          <div className="mb-3 row">
             <button
-              className="col-sm-1 btn btn-primary"
-              onClick={buttonBackToNftPage}
+                className="btn btn-primary"
+                onClick={buttonBackToNftPage}
             >
               返回
             </button>
-          </div>
-          <div className="mb-3 row">
-            <h1>管理碳權NFT</h1>
           </div>
           <div className="mb-3 row">
             <table className="table table-hover">
@@ -365,7 +365,8 @@ function CarbonNftList() {
                 </tr>
               </thead>
               <tbody>
-                {rowData.map(
+                {rowData
+                  ? rowData.map(
                   (
                     { tokenId, certId, source, issueBy, weight, date },
                     index
@@ -422,7 +423,18 @@ function CarbonNftList() {
                       </tr>
                     );
                   }
-                )}
+                )
+                : (
+                        <tr key={0}>
+                          <th>#</th>
+                          <td>{"網頁更新中，請稍等一下"}</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                    )}
               </tbody>
             </table>
           </div>

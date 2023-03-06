@@ -19,7 +19,7 @@ export async function getAllowance(owner) {
       provider
     );
     const result = await contractInstance
-      .allowance(owner, center_Address)
+      .allowance(owner, PolygonNetwork.wallet.carbonCredit)
       .then((result) => {
         return result;
       });
@@ -143,7 +143,7 @@ export async function setERC20Approval(singer, amount) {
       singer
     );
     const result = await contractInstance
-      .approve(center_Address, amount)
+      .approve(PolygonNetwork.wallet.carbonCredit, amount)
       .then((result) => {
         return result;
       });

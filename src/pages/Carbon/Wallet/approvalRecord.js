@@ -54,9 +54,9 @@ function CarbonWallet() {
         <div className="mb-3 row">
           <h1>授權歷史紀錄</h1>
         </div>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <div className="mb-3 row">
           <button
-            class="btn btn-primary"
+            className="btn btn-primary"
             type="button"
             onClick={() => {
               window.location.replace("/carbon/wallet");
@@ -85,7 +85,13 @@ function CarbonWallet() {
                       </tr>
                     );
                   })
-                : "網頁更新中，請稍等一下"}
+                : (
+                      <tr key={0}>
+                        <th>#</th>
+                        <td>{"網頁更新中，請稍等一下"}</td>
+                        <td></td>
+                      </tr>
+                    )}
             </tbody>
           </table>
         </div>

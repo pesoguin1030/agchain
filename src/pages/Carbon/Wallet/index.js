@@ -223,15 +223,16 @@ function CarbonWallet() {
             </button>
             <button className="col-sm-2 btn btn-danger">清除</button>
           </div>
-          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <div className="mb-3 row">
+            <div className="col-sm-8"></div>
             <button
-              class="btn btn-primary"
+                className="btn btn-primary col-sm-4"
               type="button"
               onClick={() => {
                 window.location.replace("/carbon/approvalRecord");
               }}
             >
-              查看歷史授權紀錄
+              查看授權歷史紀錄
             </button>
           </div>
         </div>
