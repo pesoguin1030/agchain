@@ -23,18 +23,17 @@ function Signup(props) {
   const [isSignup, setIsSignup] = useState(false);
   const [selectedCounty, setSelectedCounty] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [selected, setSelected] = useState(1);
-  const [store, setstore] = useState("");
+  const [roleid, setroleid] = useState(1);
+  const [store, setstore] = useState("HSNL測試商店");
   const [storeStatus, setstoreStatus] = useState("basic");
   const [storeMesssage, setstoreMesssage] = useState(null);
-  const [storedescription, setstoredesription] = useState("");
+  const [storedescription, setstoredesription] = useState("HSNL測試商店描述");
   const [storedescriptionStatus, setstoredescriptionStatus] = useState("basic");
   const [storedescriptionMessage, setstoredescriptionMessage] =
     useState("null");
-  const [brand, setbrand] = useState("");
+  const [brand, setbrand] = useState("HSNL測試商店品牌");
   const [brandStatus, setbrandStatus] = useState("basic");
   const [brandMessage, setbrandMessage] = useState(null);
-  const [roleid, setroleid] = useState(1);
 
   const [countys, setCountys] = useState([
     { text: "基隆市" },
@@ -63,7 +62,7 @@ function Signup(props) {
 
   const handleChange = (event) => {
     console.log(event.target.value);
-    setSelected(event.target.value);
+    setroleid(event.target.value);
     // console.log("role",roleid);
   };
 
@@ -96,9 +95,9 @@ function Signup(props) {
       setPasswordStatus("success");
       setPasswordMessage(null);
     }
-    const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
-    const address = selectedCounty + selectedAddress;
-    await createDestination(address, coordinates);
+    // const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
+    // const address = selectedCounty + selectedAddress;
+    // await createDestination(address, coordinates);
     if (isSignupInProgress) {
       try {
         const response = await request.post(
@@ -107,7 +106,7 @@ function Signup(props) {
             name: name,
             email: email,
             password: password,
-            role: selected,
+            role: roleid,
             store: store,
             description: storedescription,
             brand: brand,
@@ -123,6 +122,7 @@ function Signup(props) {
         const { data } = response;
         if (data === "success") {
           setIsSignup(true);
+          alert("注冊成功");
           //navigation.navigate('Login');
         } else {
           alert("發生錯誤");
@@ -166,39 +166,39 @@ function Signup(props) {
       setPasswordMessage(null);
     }
 
-    if (store.length > 32 || store.length < 2) {
-      setstoreStatus("danger");
-      setstoreMesssage("商店名稱長度不符，請使用2到32個字元");
-      setIsSignupInProgress(false);
-      return;
-    } else {
-      setstoreStatus("success");
-      setstoreMesssage(null);
-    }
+    // if (store.length > 32 || store.length < 2) {
+    //   setstoreStatus("danger");
+    //   setstoreMesssage("商店名稱長度不符，請使用2到32個字元");
+    //   setIsSignupInProgress(false);
+    //   return;
+    // } else {
+    //   setstoreStatus("success");
+    //   setstoreMesssage(null);
+    // }
 
-    if (storedescription.length > 32 || storedescription.length < 2) {
-      setstoredescriptionStatus("danger");
-      setstoredescriptionMessage("商店描述長度不符，請使用2到32個字元");
-      setIsSignupInProgress(false);
-      return;
-    } else {
-      setstoredescriptionStatus("success");
-      setstoredescriptionMessage(null);
-    }
+    // if (storedescription.length > 32 || storedescription.length < 2) {
+    //   setstoredescriptionStatus("danger");
+    //   setstoredescriptionMessage("商店描述長度不符，請使用2到32個字元");
+    //   setIsSignupInProgress(false);
+    //   return;
+    // } else {
+    //   setstoredescriptionStatus("success");
+    //   setstoredescriptionMessage(null);
+    // }
 
-    if (brand.length > 32 || brand.length < 2) {
-      setbrandStatus("danger");
-      setbrandMessage("品牌描述長度不符，請使用2到32個字元");
-      setIsSignupInProgress(false);
-      return;
-    } else {
-      setbrandStatus("success");
-      setbrandMessage(null);
-    }
+    // if (brand.length > 32 || brand.length < 2) {
+    //   setbrandStatus("danger");
+    //   setbrandMessage("品牌描述長度不符，請使用2到32個字元");
+    //   setIsSignupInProgress(false);
+    //   return;
+    // } else {
+    //   setbrandStatus("success");
+    //   setbrandMessage(null);
+    // }
 
-    const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
-    const address = selectedCounty + selectedAddress;
-    await createDestination(address, coordinates);
+    // const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
+    // const address = selectedCounty + selectedAddress;
+    // await createDestination(address, coordinates);
     if (isSignupInProgress) {
       try {
         const response = await request.post(
@@ -207,7 +207,7 @@ function Signup(props) {
             name: name,
             email: email,
             password: password,
-            role: selected,
+            role: roleid,
             store: store,
             description: storedescription,
             brand: brand,
@@ -223,6 +223,7 @@ function Signup(props) {
         const { data } = response;
         if (data === "success") {
           setIsSignup(true);
+          alert("注冊成功");
           //navigation.navigate('Login');
         } else {
           alert("發生錯誤");
@@ -274,7 +275,7 @@ function Signup(props) {
                     name="inlineRadioOptions"
                     id="consumer"
                     value={1}
-                    checked={selected == 1}
+                    checked={roleid == 1}
                     onChange={handleChange}
                   />
                   <label class="form-check-label" for="consumer">
@@ -288,7 +289,7 @@ function Signup(props) {
                     name="inlineRadioOptions"
                     id="enterprise"
                     value={2}
-                    checked={selected == 2}
+                    checked={roleid == 2}
                     onChange={handleChange}
                   />
                   <label class="form-check-label" for="enterprise">
@@ -411,7 +412,7 @@ function Signup(props) {
                     <div></div>
                   )}
                 </div>
-                {selected == 1 ? null : (
+                {roleid == 1 ? null : (
                   <div className="js-form-message form-group">
                     <label className="input-label" htmlFor="storename">
                       商店名稱
@@ -565,7 +566,7 @@ function Signup(props) {
                     </label>
                   </div>
                 </div>
-                {selected == 1 ? (
+                {roleid == 1 ? (
                   <button
                     className="btn btn-lg btn-block btn-primary"
                     onClick={userSignup}
