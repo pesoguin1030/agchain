@@ -132,6 +132,53 @@ export async function getApprovalEvent(singer, caller) {
   }
 }
 
+// Get full allowance record event
+export async function getAllowanceRecordEvent(singer, caller) {
+  try {
+    const event_ABI = [
+      "event AllowanceRecord(address indexed owner, address indexed spender, uint256 lastAmount, uint256 amount)",
+    ];
+    const contractInstance = new ethers.Contract(
+      center_Address,
+      event_ABI,
+      singer
+    );
+
+    const filter = contractInstance.filters.AllowanceRecord(
+      caller,
+      PolygonNetwork.wallet.carbonCredit
+    );
+    const result = await contractInstance.queryFilter(filter);
+    var resultArray = [];
+    for (const index in result) {
+      const blockData = await provider.getBlock(result[index].blockNumber);
+      var date = new Date(blockData.timestamp * 1000);
+      const dateFormat =
+        date.getFullYear() +
+        "/" +
+        (date.getMonth() + 1) +
+        "/" +
+        date.getDate() +
+        " " +
+        date.getHours() +
+        ":" +
+        date.getMinutes() +
+        ":" +
+        date.getSeconds();
+      var data = {
+        time: dateFormat,
+        lastAmount: result[index].args[2].toString(),
+        amount: result[index].args[3].toString(),
+      };
+      resultArray.push(data);
+    }
+    console.log("final answer:", resultArray);
+    return resultArray;
+  } catch (error) {
+    //   console.log("Error:", error.message);
+    throw new Error(error.message);
+  }
+}
 // Write------------------------------------------------------------------------
 
 // Set ERC20 approve

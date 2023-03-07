@@ -19,11 +19,11 @@ function CarbonWallet() {
       } else {
         console.log("MetaMask is installed!");
 
-        getWallet().then(()=>{
-          if(walletAddress){
+        getWallet().then(() => {
+          if (walletAddress) {
             listenToApprovalEvent();
           }
-        })
+        });
       }
     },
     [walletAddress]
@@ -44,7 +44,10 @@ function CarbonWallet() {
         "any"
       );
       let signer = provider.getSigner();
-      const result = await TokenCenter.getApprovalEvent(signer, walletAddress);
+      const result = await TokenCenter.getAllowanceRecordEvent(
+        signer,
+        walletAddress
+      );
       setapproveRecord(result.reverse());
     } catch (error) {
       console.log("Error: listenToApprovalEvent=", error);
@@ -74,27 +77,31 @@ function CarbonWallet() {
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">時間</th>
-                <th scope="col">授權數量</th>
+                <th scope="col">操作</th>
+                <th scope="col">前次剩餘額度</th>
+                <th scope="col">當前額度</th>
               </tr>
             </thead>
             <tbody>
-              {approveRecord
-                ? approveRecord.map(({ time, amount }, index) => {
-                    return (
-                      <tr key={index}>
-                        <th scope="row">{index + 1}</th>
-                        <td>{time}</td>
-                        <td>{amount}</td>
-                      </tr>
-                    );
-                  })
-                : (
-                      <tr key={0}>
-                        <th>#</th>
-                        <td>{"網頁更新中，請稍等一下"}</td>
-                        <td></td>
-                      </tr>
-                    )}
+              {approveRecord ? (
+                approveRecord.map(({ time, amount, lastAmount }, index) => {
+                  return (
+                    <tr key={index}>
+                      <th scope="row">{index + 1}</th>
+                      <td>{time}</td>
+                      <td>{amount - lastAmount}</td>
+                      <td>{lastAmount}</td>
+                      <td>{amount}</td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr key={0}>
+                  <th>#</th>
+                  <td>{"網頁更新中，請稍等一下"}</td>
+                  <td></td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
