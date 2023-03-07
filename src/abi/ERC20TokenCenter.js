@@ -155,6 +155,48 @@ export async function setERC20Approval(singer, amount) {
   }
 }
 
+//  Increase allowance
+export async function increaseAllowance(singer, addValue) {
+  try {
+    const contractInstance = new ethers.Contract(
+      center_Address,
+      center_ABI,
+      singer
+    );
+    const result = await contractInstance
+      .increaseAllowance(PolygonNetwork.wallet.carbonCredit, addValue)
+      .then((result) => {
+        return result;
+      });
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.log("Error:", error.message);
+    throw new Error(error.message);
+  }
+}
+
+//  decrease allowance
+export async function decreaseAllowance(singer, subtractedValue) {
+  try {
+    const contractInstance = new ethers.Contract(
+      center_Address,
+      center_ABI,
+      singer
+    );
+    const result = await contractInstance
+      .decreaseAllowance(PolygonNetwork.wallet.carbonCredit, subtractedValue)
+      .then((result) => {
+        return result;
+      });
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.log("Error:", error.message);
+    throw new Error(error.message);
+  }
+}
+
 // Burn ERC20 token
 export async function burnERC20token(curator, amount) {
   try {

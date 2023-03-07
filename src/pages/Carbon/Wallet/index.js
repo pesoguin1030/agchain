@@ -12,33 +12,30 @@ function CarbonWallet() {
   const [walletAllowance, setWalletAllowance] = useState(0);
   const [approveRecord, setapproveRecord] = useState("");
 
-  useEffect(
-    function () {
-      console.log("load carbon wallet test");
+  useEffect(function () {
+    console.log("load carbon wallet test");
 
-      if (typeof window.ethereum == "undefined") {
-        alert("請安裝MetaMask");
-        console.log("MetaMask is required!");
-      } else {
-        console.log("MetaMask is installed!");
+    if (typeof window.ethereum == "undefined") {
+      alert("請安裝MetaMask");
+      console.log("MetaMask is required!");
+    } else {
+      console.log("MetaMask is installed!");
 
-        getWallet().then(()=>{
-          if(walletAddress){
-            getBalance();
-            getAllowance();
-          }
-        })
-      }
-    },
-    []
-  );
+      getWallet().then(() => {
+        if (walletAddress) {
+          getBalance();
+          getAllowance();
+        }
+      });
+    }
+  }, []);
   const getWallet = async () => {
     try {
       const result = await CarbonWalletApi.getWallet();
       // console.log("Debug: getWallet=", result);
-      if(result.code!==200){
+      if (result.code !== 200) {
         setWalletAddress("");
-      }else{
+      } else {
         setWalletAddress(result.message);
       }
     } catch (error) {
@@ -82,6 +79,38 @@ function CarbonWallet() {
       console.log("Error: setERC20Approval=", error);
     }
   };
+  const increaseAllowance = async (amount) => {
+    try {
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
+      let signer = provider.getSigner();
+      const result = await TokenCenter.increaseAllowance(signer, amount);
+      alert(
+        "增加授權點數成功！謝謝您!由於資料量龐大，新的額度需要稍待一段時間才會呈現於頁面上"
+      );
+      getAllowance();
+    } catch (error) {
+      console.log("Error: increaseAllowance=", error);
+    }
+  };
+  const decreaseAllowance = async (amount) => {
+    try {
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
+      let signer = provider.getSigner();
+      const result = await TokenCenter.decreaseAllowance(signer, amount);
+      alert(
+        "減少授權點數成功！謝謝您!由於資料量龐大，新的額度需要稍待一段時間才會呈現於頁面上"
+      );
+      getAllowance();
+    } catch (error) {
+      console.log("Error: decreaseAllowance=", error);
+    }
+  };
 
   const buttonBind = async () => {
     /*
@@ -121,12 +150,12 @@ function CarbonWallet() {
       console.log("bindWallet=", result);
 
       alert(result.message);
-      getWallet().then(()=>{
-        if(walletAddress){
+      getWallet().then(() => {
+        if (walletAddress) {
           getBalance();
           getAllowance();
         }
-      })
+      });
     } catch (error) {
       console.log("Error: bindWallet=", error);
     }
@@ -222,24 +251,26 @@ function CarbonWallet() {
             <button
               className="col-sm-2 btn btn-primary"
               onClick={() => {
-                if (
-                  window.confirm(
-                    "提醒您，您輸入的數值將會直接更新覆蓋原本的授權額度！"
-                  )
-                ) {
-                  var amount = prompt("請輸入您要批准的授權餘額");
-                  approve(amount);
-                }
+                var amount = prompt("請輸入您要增加的授權數量");
+                increaseAllowance(amount);
               }}
             >
-              設定
+              增加
             </button>
-            <button className="col-sm-2 btn btn-danger">清除</button>
+            <button
+              className="col-sm-2 btn btn-danger"
+              onClick={() => {
+                var amount = prompt("請輸入您要減少的授權數量");
+                decreaseAllowance(amount);
+              }}
+            >
+              減少
+            </button>
           </div>
           <div className="mb-3 row">
             <div className="col-sm-8"></div>
             <button
-                className="btn btn-primary col-sm-4"
+              className="btn btn-primary col-sm-4"
               type="button"
               onClick={() => {
                 window.location.replace("/carbon/approvalRecord");
