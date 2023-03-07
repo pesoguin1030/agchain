@@ -21,41 +21,42 @@ function CarbonWallet() {
     } else {
       console.log("MetaMask is installed!");
 
-      getWallet().then(() => {
-        if (walletAddress) {
-          getBalance();
-          getAllowance();
-        }
-      });
+      getWallet()
     }
   }, []);
   const getWallet = async () => {
     try {
+      console.log("Debug: CarbonWalletApi.getWallet");
       const result = await CarbonWalletApi.getWallet();
-      // console.log("Debug: getWallet=", result);
+      console.log("Debug: getWallet=", result);
       if (result.code !== 200) {
         setWalletAddress("");
       } else {
         setWalletAddress(result.message);
+        getBalance(result.message)
+        getAllowance(result.message)
       }
     } catch (error) {
       console.log("Error: getWallet=", error);
     }
   };
 
-  const getBalance = async () => {
+  const getBalance = async (address) => {
     try {
       console.log("Debug: CarbonWallet.getBalance");
-      const result = await TokenCenter.getBalance(walletAddress);
+      const result = await TokenCenter.getBalance(address?address:walletAddress);
+      console.log("Debug: CarbonWallet.getBalance=",result);
       setWalletBalance(result);
     } catch (error) {
       console.log("Error: getBalance=", error);
     }
   };
 
-  const getAllowance = async () => {
+  const getAllowance = async (address) => {
     try {
-      const result = await TokenCenter.getAllowance(walletAddress);
+      console.log("Debug: CarbonWallet.getAllowance");
+      const result = await TokenCenter.getAllowance(address?address:walletAddress);
+      console.log("Debug: CarbonWallet.getAllowance=",result);
       // alert(result);
       setWalletAllowance(result);
     } catch (error) {
@@ -80,35 +81,58 @@ function CarbonWallet() {
     }
   };
   const increaseAllowance = async (amount) => {
-    try {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum,
-        "any"
-      );
-      let signer = provider.getSigner();
-      const result = await TokenCenter.increaseAllowance(signer, amount);
+    if( amount && amount > 0) {
+      try {
+        const provider = new ethers.providers.Web3Provider(
+            window.ethereum,
+            "any"
+        );
+        let signer = provider.getSigner();
+        const result = await TokenCenter.increaseAllowance(signer, amount);
+        alert(
+            "增加授權點數成功！謝謝您!由於資料量龐大，新的額度需要稍待一段時間才會呈現於頁面上"
+        );
+        getAllowance();
+      } catch (error) {
+        console.log("Error: increaseAllowance=", error);
+      }
+    }else{
       alert(
-        "增加授權點數成功！謝謝您!由於資料量龐大，新的額度需要稍待一段時間才會呈現於頁面上"
+          "增加點數必須是正數"
       );
-      getAllowance();
-    } catch (error) {
-      console.log("Error: increaseAllowance=", error);
     }
   };
   const decreaseAllowance = async (amount) => {
-    try {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum,
-        "any"
-      );
-      let signer = provider.getSigner();
-      const result = await TokenCenter.decreaseAllowance(signer, amount);
+    if(amount && amount > 0) {
+      try {
+        getAllowance().then(()=>{
+          console.log("Debug: decreaseAllowance:","\nwalletAllowance=",walletAllowance,"\namount",amount)
+          if(walletAllowance.gte(amount)){//Bignumber>=other
+            const provider = new ethers.providers.Web3Provider(
+                window.ethereum,
+                "any"
+            );
+            let signer = provider.getSigner();
+            TokenCenter.decreaseAllowance(signer, amount).then(()=>{
+              alert(
+                  "減少授權點數成功！謝謝您!由於資料量龐大，新的額度需要稍待一段時間才會呈現於頁面上"
+              );
+              getAllowance();
+            })
+
+          }else{
+            alert(
+                "減少點數不能超過已授權之額度"
+            );
+          };
+        })
+      } catch (error) {
+        console.log("Error: decreaseAllowance=", error);
+      }
+    }else{
       alert(
-        "減少授權點數成功！謝謝您!由於資料量龐大，新的額度需要稍待一段時間才會呈現於頁面上"
+          "減少點數必須是正數"
       );
-      getAllowance();
-    } catch (error) {
-      console.log("Error: decreaseAllowance=", error);
     }
   };
 
@@ -150,12 +174,7 @@ function CarbonWallet() {
       console.log("bindWallet=", result);
 
       alert(result.message);
-      getWallet().then(() => {
-        if (walletAddress) {
-          getBalance();
-          getAllowance();
-        }
-      });
+      getWallet()
     } catch (error) {
       console.log("Error: bindWallet=", error);
     }
