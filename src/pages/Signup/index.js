@@ -24,14 +24,14 @@ function Signup(props) {
   const [selectedCounty, setSelectedCounty] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
   const [roleid, setroleid] = useState(1);
-  const [store, setstore] = useState("HSNL測試商店");
+  const [store, setstore] = useState("");
   const [storeStatus, setstoreStatus] = useState("basic");
   const [storeMesssage, setstoreMesssage] = useState(null);
-  const [storedescription, setstoredesription] = useState("HSNL測試商店描述");
+  const [storedescription, setstoredesription] = useState("");
   const [storedescriptionStatus, setstoredescriptionStatus] = useState("basic");
   const [storedescriptionMessage, setstoredescriptionMessage] =
     useState("null");
-  const [brand, setbrand] = useState("HSNL測試商店品牌");
+  const [brand, setbrand] = useState("");
   const [brandStatus, setbrandStatus] = useState("basic");
   const [brandMessage, setbrandMessage] = useState(null);
 
@@ -166,35 +166,35 @@ function Signup(props) {
       setPasswordMessage(null);
     }
 
-    // if (store.length > 32 || store.length < 2) {
-    //   setstoreStatus("danger");
-    //   setstoreMesssage("商店名稱長度不符，請使用2到32個字元");
-    //   setIsSignupInProgress(false);
-    //   return;
-    // } else {
-    //   setstoreStatus("success");
-    //   setstoreMesssage(null);
-    // }
+    if (store.length > 32) {
+      setstoreStatus("danger");
+      setstoreMesssage("商店名稱長度不符，請使用小於32個字元");
+      setIsSignupInProgress(false);
+      return;
+    } else {
+      setstoreStatus("success");
+      setstoreMesssage(null);
+    }
 
-    // if (storedescription.length > 32 || storedescription.length < 2) {
-    //   setstoredescriptionStatus("danger");
-    //   setstoredescriptionMessage("商店描述長度不符，請使用2到32個字元");
-    //   setIsSignupInProgress(false);
-    //   return;
-    // } else {
-    //   setstoredescriptionStatus("success");
-    //   setstoredescriptionMessage(null);
-    // }
+    if (storedescription.length > 32) {
+      setstoredescriptionStatus("danger");
+      setstoredescriptionMessage("商店描述長度不符，請使用小於到32個字元");
+      setIsSignupInProgress(false);
+      return;
+    } else {
+      setstoredescriptionStatus("success");
+      setstoredescriptionMessage(null);
+    }
 
-    // if (brand.length > 32 || brand.length < 2) {
-    //   setbrandStatus("danger");
-    //   setbrandMessage("品牌描述長度不符，請使用2到32個字元");
-    //   setIsSignupInProgress(false);
-    //   return;
-    // } else {
-    //   setbrandStatus("success");
-    //   setbrandMessage(null);
-    // }
+    if (brand.length > 32) {
+      setbrandStatus("danger");
+      setbrandMessage("品牌描述長度不符，請使用小於32個字元");
+      setIsSignupInProgress(false);
+      return;
+    } else {
+      setbrandStatus("success");
+      setbrandMessage(null);
+    }
 
     // const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
     // const address = selectedCounty + selectedAddress;

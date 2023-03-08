@@ -331,7 +331,15 @@ function EnterpriseProduct() {
 
       <div className="row mx-n2 mx-sm-n3 mb-3">
         {products.map(
-          ({ id, name, description, price, photo_url, limit_amount }) => (
+          ({
+            id,
+            name,
+            description,
+            price,
+            photo_url,
+            limit_amount,
+            carbon_amount,
+          }) => (
             <div
               key={id}
               className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
@@ -344,6 +352,7 @@ function EnterpriseProduct() {
                 price={price}
                 amount={limit_amount}
                 img={photo_url}
+                carbon={carbon_amount}
                 isInCart={
                   cartState ? cartState.map((e) => e.id).includes(id) : false
                 }

@@ -14,13 +14,15 @@ const fetchProducts = async () => {
 const fetch2Products = async () => {
   try {
     const { data } = await request.get(
-      "/productsv2/list?storeId=79&page=0&limit=5&order=desc"
+      "/productsv2/list?storeId=79&page=0&limit=40&order=desc"
     );
     return data;
   } catch (err) {
     return Promise.reject(err);
   }
 };
+
+const deletproduct = async () => {};
 
 const ProductDetail = async (id) => {
   const userToken = storage.getAccessToken();
