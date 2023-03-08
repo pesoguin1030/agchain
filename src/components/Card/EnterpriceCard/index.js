@@ -2,107 +2,107 @@ import React from "react";
 import request from "../../../utils/request";
 import storage from "../../../utils/storage";
 
-async function deletproduct() {
-  try {
-    const userToken = storage.getAccessToken();
-    await request.post(
-      "productsv2/delete",
-      {
-        productId: product_id,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
-    alert("刪除成功");
-    return true;
-  } catch (err) {
-    alert("伺服器發生問題，刪除失敗");
-    console.log(err);
-    return false;
-  }
-}
+// async function deletproduct() {
+//   try {
+//     const userToken = storage.getAccessToken();
+//     await request.post(
+//       "productsv2/delete",
+//       {
+//         productId: product_id,
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${userToken}`,
+//         },
+//       }
+//     );
+//     alert("刪除成功");
+//     return true;
+//   } catch (err) {
+//     alert("伺服器發生問題，刪除失敗");
+//     console.log(err);
+//     return false;
+//   }
+// }
 
-async function downShelfProduct() {
-  try {
-    const userToken = storage.getAccessToken();
-    await request.post(
-      "productsv2/upSelf",
-      {
-        productId: product_id,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
-    alert("下架成功");
-    return true;
-  } catch (err) {
-    alert("伺服器發生問題，下架失敗");
-    console.log(err);
-    return false;
-  }
-}
+// async function downShelfProduct() {
+//   try {
+//     const userToken = storage.getAccessToken();
+//     await request.post(
+//       "productsv2/upSelf",
+//       {
+//         productId: product_id,
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${userToken}`,
+//         },
+//       }
+//     );
+//     alert("下架成功");
+//     return true;
+//   } catch (err) {
+//     alert("伺服器發生問題，下架失敗");
+//     console.log(err);
+//     return false;
+//   }
+// }
 
-async function upShelfProduct() {
-  try {
-    const userToken = storage.getAccessToken();
-    await request.post(
-      "productsv2/downSelf",
-      {
-        productId: product_id,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
-    alert("上架成功");
-    return true;
-  } catch (err) {
-    alert("伺服器發生問題，上架失敗");
-    console.log(err);
-    return false;
-  }
-}
+// async function upShelfProduct() {
+//   try {
+//     const userToken = storage.getAccessToken();
+//     await request.post(
+//       "productsv2/downSelf",
+//       {
+//         productId: product_id,
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${userToken}`,
+//         },
+//       }
+//     );
+//     alert("上架成功");
+//     return true;
+//   } catch (err) {
+//     alert("伺服器發生問題，上架失敗");
+//     console.log(err);
+//     return false;
+//   }
+// }
 
-async function updateproduct() {
-  try {
-    const userToken = storage.getAccessToken();
-    await request.post(
-      "productsv2/update",
-      {
-        productId: product_id,
-        name: productName,
-        price: priceNumber,
-        limit_amount: amountNumber,
-        photo_url: picture,
-        compensation_ratio: percent,
-        weight: weight,
-        type: selected,
-        description: description,
-        store_id: storeId,
-        carbon_amount: cardbon,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
-    alert("編輯成功");
-    return true;
-  } catch (err) {
-    alert("伺服器發生問題，編輯失敗");
-    console.log(err);
-    return false;
-  }
-}
+// async function updateproduct() {
+//   try {
+//     const userToken = storage.getAccessToken();
+//     await request.post(
+//       "productsv2/update",
+//       {
+//         productId: product_id,
+//         name: productName,
+//         price: priceNumber,
+//         limit_amount: amountNumber,
+//         photo_url: picture,
+//         compensation_ratio: percent,
+//         weight: weight,
+//         type: selected,
+//         description: description,
+//         store_id: storeId,
+//         carbon_amount: cardbon,
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${userToken}`,
+//         },
+//       }
+//     );
+//     alert("編輯成功");
+//     return true;
+//   } catch (err) {
+//     alert("伺服器發生問題，編輯失敗");
+//     console.log(err);
+//     return false;
+//   }
+// }
 
 const EnterpriseCard = ({
   product_id,
