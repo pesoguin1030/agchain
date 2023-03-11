@@ -23,7 +23,7 @@ const getFarmList = async (cart) => {
   farmlist = farmlist.filter(function (element) {
     return element !== undefined;
   });
-  console.log(farmlist);
+  // console.log(farmlist);
   return farmlist;
 };
 

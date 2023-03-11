@@ -98,7 +98,9 @@ function Shop() {
           <div className="row mx-n2 mb-5">
             {initDisplay
               ? products.map(({ id, name, description, price, photo_url }) => (
-                  <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
+                  <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
+                       key={id}
+                  >
                     <ProductCard
                       key={id}
                       product_id={id}
@@ -158,41 +160,43 @@ function Shop() {
                 )}
           </div>
         </div>
-        <div class="col-lg-2">
+        <div className="col-lg-2">
           <form>
-            <div class="border-bottom pb-4 mb-4">
+            <div className="border-bottom pb-4 mb-4">
               <h3>農場</h3>
-              <div class="form-group d-flex align-items-center justify-content-between font-size-1 text-lh-lg text-body mb-1">
-                <div class="custom-control custom-checkbox ">
+              <div className="form-group d-flex align-items-center justify-content-between font-size-1 text-lh-lg text-body mb-1">
+                <div className="custom-control custom-checkbox ">
                   <input
                     type="checkbox"
-                    class="custom-control-input"
+                    className="custom-control-input"
                     onClick={(e) => {
                       displayAll(e);
                       // handleCheck(e, { item });
                     }}
                     id="all"
-                    checked={initDisplay}
+                    defaultChecked={initDisplay}
                   />
-                  <label class="custom-control-label text-lh-lg" for="all">
+                  <label className="custom-control-label text-lh-lg" htmlFor="all">
                     全部
                   </label>
                 </div>
                 {/* <small>73</small> */}
               </div>
-              {sidebar_farms.map((item) => {
+              {sidebar_farms.map((item,index) => {
                 return (
-                  <div class="form-group d-flex align-items-center justify-content-between font-size-1 text-lh-lg text-body mb-1">
-                    <div class="custom-control custom-checkbox">
+                  <div className="form-group d-flex align-items-center justify-content-between font-size-1 text-lh-lg text-body mb-1"
+                    key={index}
+                  >
+                    <div className="custom-control custom-checkbox">
                       <input
                         type="checkbox"
-                        class="custom-control-input"
+                        className="custom-control-input"
                         onClick={(e) => {
                           handleCheck(e, item);
                         }}
                         id={item}
                       />
-                      <label class="custom-control-label text-lh-lg" for={item}>
+                      <label className="custom-control-label text-lh-lg" htmlFor={item}>
                         {item}
                       </label>
                     </div>
