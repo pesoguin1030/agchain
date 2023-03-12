@@ -74,7 +74,7 @@ function ShoppingCart(props) {
   }, [cartState]);
 
   useEffect(() => {
-    if (cartState.length === 0) {
+    if (!cartState || cartState.length === 0) {
       setFarmsFee({});
       setItem_and_amount({});
       setTotalFee(0);
@@ -82,7 +82,7 @@ function ShoppingCart(props) {
   }, [cartState]);
 
   useEffect(() => {
-    if (cartState.length !== 0) {
+    if (cartState && cartState.length !== 0) {
       getShippingInfo();
     }
     return () => {};
@@ -151,7 +151,7 @@ function ShoppingCart(props) {
   };
 
   const getShippingInfo = async () => {
-    console.log("selectedAddress", selectedAddress);
+    // console.log("selectedAddress", selectedAddress);
     // var selectedCounty = selectedAddress.slice(0, 3);
     let farm_price = {};
     let farm_name = {};
@@ -169,8 +169,12 @@ function ShoppingCart(props) {
       farm_name[farm_id] = farm["farm_name"];
       product_farmID[product_id] = farm.farm_id;
     }
+    console.log("Debug: farm_price=",farm_price)
+    console.log("Debug: Object.keys(farm_price)=",Object.keys(farm_price))
+
     const result = await getAllShippingInfo(Object.keys(farm_price));
     const fee_as_product = await findFeeProduct(Object.keys(farm_price));
+    console.log("Debug: fee_as_product=",fee_as_product)
     let each_farm_fee = {};
     for (let index = 0; index < result.length; index++) {
       const ship_info = result[index];
@@ -371,7 +375,7 @@ function ShoppingCart(props) {
                                 style={{ textAlign: "center" }}
                                 className="form-control"
                                 type="text"
-                                value={num}
+                                defaultValue={num}
                               />
                               <span className="input-group-btn">
                                 <button
@@ -387,11 +391,11 @@ function ShoppingCart(props) {
                                 {price * num}
                               </span>
                             </div>
-                            <div class="text-body font-size-1 mb-1">
-                              {Object.keys(shippingInfo).map((key) => {
+                            <div className="text-body font-size-1 mb-1">
+                              {shippingInfo?Object.keys(shippingInfo).map((key,index) => {
                                 if (key == id) {
                                   return (
-                                    <div>
+                                    <div key={index}>
                                       <span>
                                         運費：
                                         {JSON.stringify(
@@ -418,7 +422,7 @@ function ShoppingCart(props) {
                                     </div>
                                   );
                                 }
-                              })}
+                              }):null}
                             </div>
                           </div>
                         </div>
@@ -495,8 +499,10 @@ function ShoppingCart(props) {
                         className="custom-select"
                         onChange={handleDestination}
                       >
-                        {destinations.map(({ address, id }) => (
-                          <option value={id}>{address}</option>
+                        {destinations.map(({ address, id },index) => (
+                          <option key={index}
+                              value={id}
+                          >{address}</option>
                         ))}
                       </select>
                       <a
@@ -512,9 +518,9 @@ function ShoppingCart(props) {
               </div>
               <span className="d-block font-size-2 mr-3">運費</span>
 
-              {Object.keys(farms_fee).map((key) => {
+              {Object.keys(farms_fee).map((key,index) => {
                 return (
-                  <div className="border-bottom media align-items-center mb-3">
+                  <div className="border-bottom media align-items-center mb-3" key={index}>
                     <span className="d-block mr-3">
                       {JSON.parse(JSON.stringify(farms_fee[key]["farm"]))}
                     </span>
@@ -553,4 +559,4 @@ function ShoppingCart(props) {
   );
 }
 
-export default ShoppingCart;
+export default React.memo(ShoppingCart);

@@ -188,18 +188,10 @@ function App() {
                     <Partner />
                   </Route>
                   <Route path="/shop/cart">
-                    {authState.user ? (
-                      <ShoppingCart />
-                    ) : (
-                      <Redirect to="/login" />
-                    )}
+                    {authState.user ? <ShoppingCart /> : <Login />}
                   </Route>
                   <Route path="/shop/diffCart">
-                    {authState.user ? (
-                      <DiffShoppingCart />
-                    ) : (
-                      <Redirect to="/login" />
-                    )}
+                    {authState.user ? <DiffShoppingCart /> : <Login />}
                   </Route>
                   <Route exact path="/shop/analysis/:orderNumber">
                     <Analysis />
