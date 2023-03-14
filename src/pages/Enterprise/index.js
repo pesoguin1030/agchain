@@ -6,6 +6,7 @@ import { fetchProducts, fetch2Products } from "../../api/product";
 import { CartContext } from "../../appContext";
 import { ProductCard } from "../../components/Card";
 import { EnterpriseCard } from "../../components/Card/EnterpriceCard/index";
+import { faYenSign } from "@fortawesome/free-solid-svg-icons";
 
 function EnterpriseProduct() {
   const { cartState, cartDispatch } = useContext(CartContext);
@@ -18,7 +19,8 @@ function EnterpriseProduct() {
   const [weight, setWeight] = useState(250);
   const [description, setdescription] = useState(null);
   const [carbonAmount, setcarbonamount] = useState(null);
-  const [storeId, setstoreid] = useState(69);
+  const [storeId, setstoreid] = useState(0);
+  const [Location, setlocation] = useState("新竹市");
 
   const options = [
     { value: "", text: "選擇種類" },
@@ -30,32 +32,82 @@ function EnterpriseProduct() {
   const [selected, setSelected] = useState(options[0].value);
 
   useEffect(() => {
+    const searchstoreid = async () => {
+      try {
+        const userToken = storage.getAccessToken();
+        const response = await request.get(`farmsv2/belong`, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        if (response.data.code === 200) {
+          const data = response.data.message[0];
+          console.log("res", data);
+          setstoreid(data);
+          console.log("storeid", storeId);
+          return true;
+        } else if (response.data.code === 403) {
+          alert("失败");
+          return false;
+        }
+        return true;
+      } catch (err) {
+        console.log("faile", err);
+        alert("查找失败");
+        return false;
+      }
+    };
+
+    const handleproducts = async () => {
+      try {
+        const usertoken = storage.getAccessToken();
+        const response = await request.get(
+          `productsv2/list?storeId=${storeId}&page=0&limit=40&order=desc`
+        );
+        console.log("data");
+        return true;
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
+    };
+
     const handleFetchProducts = async () => {
-      const { message, code } = await fetch2Products();
+      const { message, code } = await fetch2Products(storeId);
       if (Array.isArray(message)) {
         setProducts(message);
         console.log("products", products);
       }
     };
+
+    searchstoreid();
+    // handleproducts();
     handleFetchProducts();
-  }, []);
+  }, [storeId]);
+
+  // useEffect(()=>{
+
+  //   handleproducts();
+  // },[])
 
   async function createProduct() {
     try {
       const userToken = storage.getAccessToken();
-      await request.post(
-        `/products/`,
+      const response = await request.post(
+        `/productsv2/create`,
         {
-          crop_id: 250,
           name: productName,
           price: priceNumber,
+          description: description,
           limit_amount: amountNumber,
           photo_url: picture,
           compensation_ratio: percent,
           weight: weight,
           type: selected,
-          description: description,
-          store_id: storeId, //because of wutau, farm_id called store_id
+          store_id: storeId, // farm_id called store_id
+          carbon_amount: carbonAmount,
+          location: Location,
+          shelf: "yes",
         },
         {
           headers: {
@@ -63,8 +115,13 @@ function EnterpriseProduct() {
           },
         }
       );
-      alert("上架成功");
-      return true;
+      if (response.data.code === 200) {
+        alert("上架成功");
+        return true;
+      } else if (response.data.code === 403) {
+        alert("并非該商店成員");
+        return false;
+      }
     } catch (err) {
       alert("伺服器發生問題，上架失敗");
       console.log(err);
@@ -94,6 +151,9 @@ function EnterpriseProduct() {
     }
     if (weight <= 0) {
       alert("商品重量要为正数");
+    }
+    if (carbonAmount <= 0) {
+      alert("點數要为正数");
     }
     if (selected === "") {
       alert("請選擇商品種類");
@@ -200,7 +260,7 @@ function EnterpriseProduct() {
                     }}
                   />
                 </div>
-                <div class="form-group">
+                {/* <div class="form-group">
                   <label for="inputvalue">商店id</label>
                   <input
                     type="number"
@@ -211,7 +271,7 @@ function EnterpriseProduct() {
                       setstoreid(e.target.value);
                     }}
                   />
-                </div>
+                </div> */}
                 <div class="form-group">
                   <label for="inputtext">描述</label>
                   <input
@@ -267,6 +327,7 @@ function EnterpriseProduct() {
                 type="button"
                 class="btn btn-primary"
                 onClick={buttonCreateProduct}
+                data-dismiss="modal"
               >
                 新增
               </button>
@@ -331,21 +392,24 @@ function EnterpriseProduct() {
 
       <div className="row mx-n2 mx-sm-n3 mb-3">
         {products.map(
-          ({
-            id,
-            name,
-            description,
-            price,
-            photo_url,
-            limit_amount,
-            carbon_amount,
-          }) => (
+          (
+            {
+              id,
+              name,
+              description,
+              price,
+              photo_url,
+              limit_amount,
+              carbon_amount,
+            },
+            index
+          ) => (
             <div
-              key={id}
+              key={index}
               className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
             >
               <EnterpriseCard
-                key={id}
+                // key={id}
                 product_id={id}
                 title={name}
                 description={description}
@@ -353,18 +417,6 @@ function EnterpriseProduct() {
                 amount={limit_amount}
                 img={photo_url}
                 carbon={carbon_amount}
-                isInCart={
-                  cartState ? cartState.map((e) => e.id).includes(id) : false
-                }
-                onRemoveFromCart={() =>
-                  cartDispatch((prev) => prev.filter((e) => e.id !== id))
-                }
-                onAddToCart={() =>
-                  cartDispatch((prev) => [
-                    ...prev,
-                    { id, name, price, img: photo_url },
-                  ])
-                }
               />
             </div>
           )

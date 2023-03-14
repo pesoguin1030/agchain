@@ -1,3 +1,4 @@
+import { id } from "ethers/lib/utils";
 import React, { useEffect, useState } from "react";
 import request from "../../../utils/request";
 import storage from "../../../utils/storage";
@@ -21,13 +22,32 @@ const EnterpriseCard = ({
   const [carbonAmount, setcarbonamount] = useState(null);
   const [storeId, setstoreid] = useState(69);
 
-  async function deletproduct() {
+  // console.log("productid",product_id,)
+  async function productinfo() {
     try {
       const userToken = storage.getAccessToken();
-      await request.post(
+      const data = await request.get(
+        `productsv2/info?productId=${product_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      return data;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+
+  async function deletproduct(id) {
+    try {
+      const userToken = storage.getAccessToken();
+      const response = await request.post(
         "productsv2/delete",
         {
-          productId: product_id,
+          productId: id,
         },
         {
           headers: {
@@ -35,8 +55,17 @@ const EnterpriseCard = ({
           },
         }
       );
-      alert("刪除成功");
-      return true;
+      console.log(response.data);
+      if (response.data.code === 200) {
+        alert("刪除成功");
+        return true;
+      } else if (response.data.code === 404) {
+        alert("商品不存在");
+        return false;
+      } else if (response.data.code === 403) {
+        alert("并非该商店成员");
+        return false;
+      }
     } catch (err) {
       alert("伺服器發生問題，刪除失敗");
       console.log(err);
@@ -88,6 +117,11 @@ const EnterpriseCard = ({
       console.log(err);
       return false;
     }
+  }
+
+  function buttondelet() {
+    console.log("id", product_id);
+    //  deletproduct(product_id)
   }
 
   // async function updateproduct() {
@@ -153,6 +187,11 @@ const EnterpriseCard = ({
             </span>
           </div>
           <div className="d-block">
+            <span className="text-dark font-weight-bold">
+              productid ： {product_id}
+            </span>
+          </div>
+          <div className="d-block">
             <span className="text-dark font-weight-bold">{`NTD ${price}`}</span>
           </div>
           <a className="d-inline-block text-body small font-weight-bold mb-1">
@@ -161,21 +200,22 @@ const EnterpriseCard = ({
         </div>
         <div class="row justify-content-between">
           <div class="row-4">
-            <button type="button" class="btn btn-danger">
-              下架
-            </button>
-          </div>
-          <div class="row-4">
             <button type="button" class="btn btn-info">
               編輯
             </button>
           </div>
           <div class="row-4">
+            <button type="button" class="btn btn-danger">
+              下架
+            </button>
+          </div>
+
+          <div class="row-4">
             <button
               type="button"
               class="btn btn-danger"
               data-toggle="modal"
-              data-target="#deletModal"
+              data-target={`#deletModal${product_id}`}
             >
               刪除
             </button>
@@ -184,7 +224,7 @@ const EnterpriseCard = ({
       </div>
       <div
         class="modal fade"
-        id="deletModal"
+        id={`deletModal${product_id}`}
         tabindex="-1"
         role="dialog"
         aria-labelledby="exampleModalCenterTitle"
@@ -214,7 +254,12 @@ const EnterpriseCard = ({
               >
                 關閉
               </button>
-              <button type="button" class="btn btn-success">
+              {product_id}
+              <button
+                type="button"
+                class="btn btn-success"
+                data-dismiss="modal"
+              >
                 確認刪除
               </button>
             </div>
