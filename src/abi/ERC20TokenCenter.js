@@ -179,6 +179,126 @@ export async function getAllowanceRecordEvent(singer, caller) {
     throw new Error(error.message);
   }
 }
+
+// Get Current transfer event
+export async function getCurrentTransferEvent(singer, caller) {
+  try {
+    //Get the latest approve event
+    const event_ABI_allowance = [
+      "event AllowanceRecord(address indexed owner, address indexed spender, uint256 lastAmount, uint256 amount)",
+    ];
+    const contractInstance_allowance = new ethers.Contract(
+      center_Address,
+      event_ABI_allowance,
+      singer
+    );
+
+    const filter_allowance = contractInstance_allowance.filters.AllowanceRecord(
+      caller,
+      PolygonNetwork.wallet.carbonCredit
+    );
+    const result_allowance = await contractInstance_allowance.queryFilter(
+      filter_allowance
+    );
+
+    //Get the current transfer event from the latest approve
+    const event_ABI_transfer = [
+      "event TransferByPlatform(address indexed from, address indexed spender ,address to,uint256 amount)",
+    ];
+    const contractInstance_transfer = new ethers.Contract(
+      center_Address,
+      event_ABI_transfer,
+      singer
+    );
+
+    const filter_transfer =
+      contractInstance_transfer.filters.TransferByPlatform(
+        caller,
+        PolygonNetwork.wallet.carbonCredit
+      );
+    // console.log("result_allowance[result_allowance.length-1].blockNumber",result_allowance[result_allowance.length-1].blockNumber);
+    // console.log("result_allowance",result_allowance);
+    const result_transfer = await contractInstance_transfer.queryFilter(
+      filter_transfer,
+      result_allowance[result_allowance.length - 1].blockNumber
+    );
+
+    // console.log("result_transfer",result_transfer);
+    var currentTransfer = 0;
+    for (const index in result_transfer) {
+      console.log(result_transfer[index].args[3].toString());
+      currentTransfer += result_transfer[index].args[3].toNumber();
+    }
+
+    // console.log("總消耗！！！！！",currentTransfer);
+
+    return currentTransfer;
+  } catch (error) {
+    //   console.log("Error:", error.message);
+    throw new Error(error.message);
+  }
+}
+
+// Get All transfer event
+export async function getAllTransferEvent(singer, caller) {
+  try {
+    //Get the all transfer event
+    const event_ABI_transfer = [
+      "event TransferByPlatform(address indexed from, address indexed spender ,address to,uint256 amount)",
+    ];
+    const contractInstance_transfer = new ethers.Contract(
+      center_Address,
+      event_ABI_transfer,
+      singer
+    );
+
+    const filter_transfer =
+      contractInstance_transfer.filters.TransferByPlatform(
+        caller,
+        PolygonNetwork.wallet.carbonCredit
+      );
+    const result_transfer = await contractInstance_transfer.queryFilter(
+      filter_transfer
+    );
+
+    // console.log("result_transfer",result_transfer);
+
+    var resultArray = [];
+    for (const index in result_transfer) {
+      const blockData = await provider.getBlock(
+        result_transfer[index].blockNumber
+      );
+      var date = new Date(blockData.timestamp * 1000);
+      const dateFormat =
+        date.getFullYear() +
+        "/" +
+        (date.getMonth() + 1) +
+        "/" +
+        date.getDate() +
+        " " +
+        date.getHours() +
+        ":" +
+        date.getMinutes() +
+        ":" +
+        date.getSeconds();
+      var data = {
+        time: dateFormat,
+        from: result_transfer[index].args[0].toString(),
+        to: result_transfer[index].args[2].toString(),
+        amount: result_transfer[index].args[3].toString(),
+      };
+      resultArray.push(data);
+    }
+
+    console.log("全部！！！！！", resultArray);
+
+    return resultArray;
+  } catch (error) {
+    //   console.log("Error:", error.message);
+    throw new Error(error.message);
+  }
+}
+
 // Write------------------------------------------------------------------------
 
 // Set ERC20 approve
