@@ -9,7 +9,6 @@ import { EnterpriseCard } from "../../components/Card/EnterpriceCard/index";
 import { faYenSign } from "@fortawesome/free-solid-svg-icons";
 
 function EnterpriseProduct() {
-  const { cartState, cartDispatch } = useContext(CartContext);
   const [products, setProducts] = useState([]);
   const [productName, setProductName] = useState("");
   const [priceNumber, setPriceNumber] = useState(null);
@@ -92,6 +91,7 @@ function EnterpriseProduct() {
 
   async function createProduct() {
     try {
+      console.log("name", productName);
       const userToken = storage.getAccessToken();
       const response = await request.post(
         `/productsv2/create`,
@@ -401,6 +401,9 @@ function EnterpriseProduct() {
               photo_url,
               limit_amount,
               carbon_amount,
+              weight,
+              shelf,
+              type,
             },
             index
           ) => (
@@ -410,6 +413,7 @@ function EnterpriseProduct() {
             >
               <EnterpriseCard
                 // key={id}
+                store={storeId}
                 product_id={id}
                 title={name}
                 description={description}
@@ -417,6 +421,9 @@ function EnterpriseProduct() {
                 amount={limit_amount}
                 img={photo_url}
                 carbon={carbon_amount}
+                weight={weight}
+                Shelf={shelf}
+                Ptype={type}
               />
             </div>
           )

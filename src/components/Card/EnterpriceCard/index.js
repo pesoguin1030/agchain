@@ -2,6 +2,10 @@ import { id } from "ethers/lib/utils";
 import React, { useEffect, useState } from "react";
 import request from "../../../utils/request";
 import storage from "../../../utils/storage";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
+import { event } from "jquery";
 
 const EnterpriseCard = ({
   product_id,
@@ -11,35 +15,44 @@ const EnterpriseCard = ({
   price,
   amount,
   carbon,
+  store,
+  weight,
+  Shelf,
+  Ptype,
 }) => {
-  const [productName, setProductName] = useState("");
-  const [priceNumber, setPriceNumber] = useState(null);
-  const [amountNumber, setAmountNumber] = useState(1);
-  const [picture, setPicture] = useState("null");
-  const [percent, setPercent] = useState(0);
-  const [weight, setWeight] = useState(250);
-  const [productdescription, setproductdescription] = useState(null);
-  const [carbonAmount, setcarbonamount] = useState(null);
-  const [storeId, setstoreid] = useState(69);
+  const [updateshow, setupdateShow] = useState(false);
 
-  // console.log("productid",product_id,)
-  async function productinfo() {
-    try {
-      const userToken = storage.getAccessToken();
-      const data = await request.get(
-        `productsv2/info?productId=${product_id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
-      return data;
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
-  }
+  const handleClose = () => setupdateShow(false);
+  const handleShow = () => setupdateShow(true);
+
+  const [productName, setProductName] = useState(title);
+
+  const [priceNumber, setPriceNumber] = useState(price);
+  const [amountNumber, setAmountNumber] = useState(amount);
+  const [picture, setPicture] = useState(img);
+  const [productweight, setWeight] = useState(weight);
+  const [productdescription, setproductdescription] = useState(description);
+  const [carbonAmount, setcarbonamount] = useState(carbon);
+  const Location = "新竹市";
+  const options = [
+    { value: "", text: "選擇種類" },
+    { value: "carbon", text: "附碳商品" },
+  ];
+
+  const shelfOption = [
+    { value: "yes", text: "上架" },
+    { value: "no", text: "下架" },
+  ];
+
+  const [selected, setSelected] = useState(options[0].value);
+  const handleChange = (event) => {
+    setSelected(event.target.value);
+  };
+
+  const [shelfselected, setshelfselected] = useState(shelfOption[0].value);
+  const shelfhandleChange = (event) => {
+    setshelfselected(event.target.value);
+  };
 
   async function deletproduct(id) {
     try {
@@ -55,9 +68,10 @@ const EnterpriseCard = ({
           },
         }
       );
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.code === 200) {
         alert("刪除成功");
+
         return true;
       } else if (response.data.code === 404) {
         alert("商品不存在");
@@ -73,13 +87,50 @@ const EnterpriseCard = ({
     }
   }
 
-  async function downShelfProduct() {
+  async function updateproduct(id) {
     try {
+      console.log(
+        "id",
+        id,
+        "store",
+        store,
+        "productname",
+        productName,
+        "pricenumber",
+        priceNumber,
+        "amountnumber",
+        amountNumber,
+        "picture",
+        picture,
+        "productweight",
+        productweight,
+        "description",
+        productdescription,
+        "carbon",
+        carbonAmount,
+        "shelf",
+        shelfselected,
+        "location",
+        Location,
+        "type",
+        Ptype
+      );
       const userToken = storage.getAccessToken();
-      await request.post(
-        "productsv2/upSelf",
+      const response = await request.post(
+        "productsv2/update",
         {
-          productId: product_id,
+          product_id: id,
+          store_id: store,
+          name: productName.trim(),
+          price: priceNumber,
+          limit_amount: amountNumber,
+          photo_url: picture,
+          weight: productweight,
+          type: Ptype.trim(),
+          description: productdescription.trim(),
+          carbon_amount: carbonAmount,
+          location: Location.trim(),
+          shelf: shelfselected.trim(),
         },
         {
           headers: {
@@ -87,75 +138,34 @@ const EnterpriseCard = ({
           },
         }
       );
-      alert("下架成功");
-      return true;
+      if (response.data.code === 200) {
+        alert("编辑成功");
+        return true;
+      } else if (response.data.code === 405) {
+        alert("参数不合法");
+        return false;
+      } else if (response.data.code === 403) {
+        alert("并非该商店成员");
+        return false;
+      } else if (response.data.code === 404) {
+        alert("找不到商品");
+        return false;
+      }
     } catch (err) {
-      alert("伺服器發生問題，下架失敗");
-      console.log(err);
-      return false;
-    }
-  }
-
-  async function upShelfProduct() {
-    try {
-      const userToken = storage.getAccessToken();
-      await request.post(
-        "productsv2/downSelf",
-        {
-          productId: product_id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
-      alert("上架成功");
-      return true;
-    } catch (err) {
-      alert("伺服器發生問題，上架失敗");
+      alert("發生問題，編輯失敗");
       console.log(err);
       return false;
     }
   }
 
   function buttondelet() {
-    console.log("id", product_id);
-    //  deletproduct(product_id)
+    deletproduct(product_id);
+    window.location.reload();
   }
 
-  // async function updateproduct() {
-  //   try {
-  //     const userToken = storage.getAccessToken();
-  //     await request.post(
-  //       "productsv2/update",
-  //       {
-  //         productId: product_id,
-  //         name: productName,
-  //         price: priceNumber,
-  //         limit_amount: amountNumber,
-  //         photo_url: picture,
-  //         compensation_ratio: percent,
-  //         weight: weight,
-  //         type: selected,
-  //         description: description,
-  //         store_id: storeId,
-  //         carbon_amount: cardbon,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${userToken}`,
-  //         },
-  //       }
-  //     );
-  //     alert("編輯成功");
-  //     return true;
-  //   } catch (err) {
-  //     alert("伺服器發生問題，編輯失敗");
-  //     console.log(err);
-  //     return false;
-  //   }
-  // }
+  function buttonupdate() {
+    updateproduct(product_id);
+  }
 
   return (
     <div className="card border shadow-none text-center h-100">
@@ -195,19 +205,14 @@ const EnterpriseCard = ({
             <span className="text-dark font-weight-bold">{`NTD ${price}`}</span>
           </div>
           <a className="d-inline-block text-body small font-weight-bold mb-1">
-            已上架
+            {{ Shelf } == "yes" ? "已下架" : "已上架"}
           </a>
         </div>
         <div class="row justify-content-between">
           <div class="row-4">
-            <button type="button" class="btn btn-info">
-              編輯
-            </button>
-          </div>
-          <div class="row-4">
-            <button type="button" class="btn btn-danger">
-              下架
-            </button>
+            <Button variant="primary" onClick={handleShow}>
+              编辑
+            </Button>
           </div>
 
           <div class="row-4">
@@ -222,6 +227,169 @@ const EnterpriseCard = ({
           </div>
         </div>
       </div>
+
+      <Modal show={updateshow} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>编辑商品</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="input1">商品名稱</label>
+                <input
+                  type="text"
+                  defaultValue={title}
+                  class="form-control"
+                  onChange={(e) => {
+                    setProductName(e.target.value);
+                  }}
+                  placeholder="商品名稱"
+                />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="inputnumber">數量</label>
+                <input
+                  defaultValue={amount}
+                  type="number"
+                  class="form-control"
+                  id="inputnumber"
+                  placeholder="數量"
+                  onChange={(e) => {
+                    setAmountNumber(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlFile1">上傳照片</label>
+              <input
+                type="file"
+                // defaultValue={img}
+                class="form-control-file"
+                id="exampleFormControlFile1"
+                onChange={(e) => {
+                  setPicture(e.target.value);
+                }}
+              />
+            </div>
+            <div class="form-group">
+              <label for="inputvalue">價格</label>
+              <input
+                defaultValue={price}
+                type="value"
+                class="form-control"
+                id="inputvalue"
+                placeholder="價格"
+                onChange={(e) => {
+                  setPriceNumber(e.target.value);
+                }}
+              />
+            </div>
+            <div class="form-group">
+              <label for="inputvalue">碳權點數</label>
+              <input
+                defaultValue={carbon}
+                type="number"
+                class="form-control"
+                id="carbonvalue"
+                placeholder="10"
+                onChange={(e) => {
+                  setcarbonamount(e.target.value);
+                }}
+              />
+            </div>
+            {/* <div class="form-group">
+                  <label for="inputvalue">商店id</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="storevalue"
+                    placeholder="商店id"
+                    onChange={(e) => {
+                      setstoreid(e.target.value);
+                    }}
+                  />
+                </div> */}
+            <div class="form-group">
+              <label for="inputtext">描述</label>
+              <input
+                defaultValue={description}
+                type="text"
+                class="form-control"
+                id="inputtext"
+                placeholder="商品描述"
+                onChange={(e) => {
+                  setproductdescription(e.target.value);
+                }}
+              />
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="inputweight">重量</label>
+                <input
+                  defaultValue={weight}
+                  type="number"
+                  class="form-control"
+                  id="inputweight"
+                  onChange={(e) => {
+                    setWeight(e.target.value);
+                  }}
+                />
+              </div>
+              {/* <div class="form-group col-md-4">
+                <label for="inputState">商品種類</label>
+                <select
+                // {{ Shelf } == "yes" ? ("已下架") : ("已上架")}
+                //   defaultValue={{Producttype} == "carbon" ? }
+                  id="inputType"
+                  class="form-control"
+                  value={selected}
+                  onChange={handleChange}
+                >
+                  {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.text}
+                    </option>
+                  ))}
+                </select>
+              </div> */}
+            </div>
+
+            <div class="form-group">
+              <label for="inputState">上下架</label>
+              <select
+                defaultValue={Shelf}
+                id="inputshelf"
+                class="form-control"
+                value={shelfselected}
+                onChange={shelfhandleChange}
+              >
+                {shelfOption.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.text}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            取消
+          </Button>
+          <Button
+            variant="primary"
+            onClick={(event) => {
+              handleClose();
+              buttonupdate();
+            }}
+          >
+            更新商品
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <div
         class="modal fade"
         id={`deletModal${product_id}`}
@@ -254,11 +422,12 @@ const EnterpriseCard = ({
               >
                 關閉
               </button>
-              {product_id}
+
               <button
                 type="button"
                 class="btn btn-success"
                 data-dismiss="modal"
+                onClick={buttondelet}
               >
                 確認刪除
               </button>
