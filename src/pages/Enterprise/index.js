@@ -56,7 +56,6 @@ function EnterpriseProduct() {
         return false;
       }
     };
-
     const handleproducts = async () => {
       try {
         const usertoken = storage.getAccessToken();
@@ -70,7 +69,6 @@ function EnterpriseProduct() {
         return false;
       }
     };
-
     const handleFetchProducts = async () => {
       const { message, code } = await fetch2Products(storeId);
       if (Array.isArray(message)) {
@@ -78,20 +76,13 @@ function EnterpriseProduct() {
         console.log("products", products);
       }
     };
-
     searchstoreid();
-    // handleproducts();
     handleFetchProducts();
-  }, [storeId]);
-
-  // useEffect(()=>{
-
-  //   handleproducts();
-  // },[])
+  }, []);
 
   async function createProduct() {
     try {
-      console.log("name", productName);
+      console.log("name", productName, "limt", amountNumber, "weight", weight);
       const userToken = storage.getAccessToken();
       const response = await request.post(
         `/productsv2/create`,
@@ -160,6 +151,7 @@ function EnterpriseProduct() {
       return;
     }
     createProduct();
+    // window.location.reload();
   }
 
   return (
@@ -392,23 +384,20 @@ function EnterpriseProduct() {
 
       <div className="row mx-n2 mx-sm-n3 mb-3">
         {products.map(
-          (
-            {
-              id,
-              name,
-              description,
-              price,
-              photo_url,
-              limit_amount,
-              carbon_amount,
-              weight,
-              shelf,
-              type,
-            },
-            index
-          ) => (
+          ({
+            id,
+            name,
+            description,
+            price,
+            photo_url,
+            limit_amount,
+            carbon_amount,
+            weight,
+            shelf,
+            type,
+          }) => (
             <div
-              key={index}
+              key={id}
               className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
             >
               <EnterpriseCard

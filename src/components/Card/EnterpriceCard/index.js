@@ -25,14 +25,14 @@ const EnterpriseCard = ({
   const handleClose = () => setupdateShow(false);
   const handleShow = () => setupdateShow(true);
 
-  const [productName, setProductName] = useState(title);
+  const [productName, setProductName] = useState("");
 
-  const [priceNumber, setPriceNumber] = useState(price);
-  const [amountNumber, setAmountNumber] = useState(amount);
-  const [picture, setPicture] = useState(img);
-  const [productweight, setWeight] = useState(weight);
-  const [productdescription, setproductdescription] = useState(description);
-  const [carbonAmount, setcarbonamount] = useState(carbon);
+  const [priceNumber, setPriceNumber] = useState(1);
+  const [amountNumber, setAmountNumber] = useState(1);
+  const [picture, setPicture] = useState(null);
+  const [productweight, setWeight] = useState(1);
+  const [productdescription, setproductdescription] = useState("");
+  const [carbonAmount, setcarbonamount] = useState(1);
   const Location = "新竹市";
   const options = [
     { value: "", text: "選擇種類" },
@@ -56,6 +56,7 @@ const EnterpriseCard = ({
 
   async function deletproduct(id) {
     try {
+      console.log("idddddd", id);
       const userToken = storage.getAccessToken();
       const response = await request.post(
         "productsv2/delete",
@@ -121,16 +122,16 @@ const EnterpriseCard = ({
         {
           product_id: id,
           store_id: store,
-          name: productName.trim(),
+          name: productName,
           price: priceNumber,
           limit_amount: amountNumber,
           photo_url: picture,
           weight: productweight,
-          type: Ptype.trim(),
-          description: productdescription.trim(),
+          type: "carbon",
+          description: productdescription,
           carbon_amount: carbonAmount,
-          location: Location.trim(),
-          shelf: shelfselected.trim(),
+          location: Location,
+          shelf: "no",
         },
         {
           headers: {
@@ -138,6 +139,7 @@ const EnterpriseCard = ({
           },
         }
       );
+      console.log(response.data.code);
       if (response.data.code === 200) {
         alert("编辑成功");
         return true;
@@ -150,6 +152,9 @@ const EnterpriseCard = ({
       } else if (response.data.code === 404) {
         alert("找不到商品");
         return false;
+      } else if (response.data.code === 500) {
+        alert("服务器错误");
+        return false;
       }
     } catch (err) {
       alert("發生問題，編輯失敗");
@@ -160,7 +165,7 @@ const EnterpriseCard = ({
 
   function buttondelet() {
     deletproduct(product_id);
-    window.location.reload();
+    // window.location.reload();
   }
 
   function buttonupdate() {
@@ -168,7 +173,7 @@ const EnterpriseCard = ({
   }
 
   return (
-    <div className="card border shadow-none text-center h-100">
+    <div className="card border  text-center h-100">
       <div className="position-relative">
         <a className="d-inline-block text-body small font-weight-bold mb-1">
           <img
@@ -196,21 +201,21 @@ const EnterpriseCard = ({
               碳權點數 ： {carbon}
             </span>
           </div>
-          <div className="d-block">
+          {/* <div className="d-block">
             <span className="text-dark font-weight-bold">
               productid ： {product_id}
             </span>
-          </div>
+          </div> */}
           <div className="d-block">
             <span className="text-dark font-weight-bold">{`NTD ${price}`}</span>
           </div>
           <a className="d-inline-block text-body small font-weight-bold mb-1">
-            {{ Shelf } == "yes" ? "已下架" : "已上架"}
+            {Shelf == "yes" ? "已上架" : "已下架"}
           </a>
         </div>
-        <div class="row justify-content-between">
+        <div class="row justify-content-between align-items-end">
           <div class="row-4">
-            <Button variant="primary" onClick={handleShow}>
+            <Button variant=" btn  btn-outline-primary" onClick={handleShow}>
               编辑
             </Button>
           </div>
@@ -218,7 +223,7 @@ const EnterpriseCard = ({
           <div class="row-4">
             <button
               type="button"
-              class="btn btn-danger"
+              class="btn  btn-outline-danger "
               data-toggle="modal"
               data-target={`#deletModal${product_id}`}
             >
@@ -236,7 +241,7 @@ const EnterpriseCard = ({
           <Form>
             <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="input1">商品名稱</label>
+                <label for="input2">商品名稱</label>
                 <input
                   type="text"
                   defaultValue={title}
@@ -248,12 +253,12 @@ const EnterpriseCard = ({
                 />
               </div>
               <div class="form-group col-md-6">
-                <label for="inputnumber">數量</label>
+                <label for="inputnumber2">數量</label>
                 <input
                   defaultValue={amount}
                   type="number"
                   class="form-control"
-                  id="inputnumber"
+                  id="inputnumber2"
                   placeholder="數量"
                   onChange={(e) => {
                     setAmountNumber(e.target.value);
@@ -262,24 +267,25 @@ const EnterpriseCard = ({
               </div>
             </div>
             <div class="form-group">
-              <label for="exampleFormControlFile1">上傳照片</label>
+              <label for="FormControlFile2">上傳照片</label>
               <input
                 type="file"
                 // defaultValue={img}
                 class="form-control-file"
-                id="exampleFormControlFile1"
+                id="FormControlFile2"
                 onChange={(e) => {
                   setPicture(e.target.value);
                 }}
               />
             </div>
+            <img src={img} style={{ maxWidth: 100, height: 100 }} />
             <div class="form-group">
-              <label for="inputvalue">價格</label>
+              <label for="inputvalue2">價格</label>
               <input
                 defaultValue={price}
                 type="value"
                 class="form-control"
-                id="inputvalue"
+                id="inputvalue2"
                 placeholder="價格"
                 onChange={(e) => {
                   setPriceNumber(e.target.value);
@@ -287,37 +293,25 @@ const EnterpriseCard = ({
               />
             </div>
             <div class="form-group">
-              <label for="inputvalue">碳權點數</label>
+              <label for="inputcarbon">碳權點數</label>
               <input
                 defaultValue={carbon}
                 type="number"
                 class="form-control"
-                id="carbonvalue"
+                id="inputcarbon"
                 placeholder="10"
                 onChange={(e) => {
                   setcarbonamount(e.target.value);
                 }}
               />
             </div>
-            {/* <div class="form-group">
-                  <label for="inputvalue">商店id</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="storevalue"
-                    placeholder="商店id"
-                    onChange={(e) => {
-                      setstoreid(e.target.value);
-                    }}
-                  />
-                </div> */}
             <div class="form-group">
-              <label for="inputtext">描述</label>
+              <label for="inputdes">描述</label>
               <input
                 defaultValue={description}
                 type="text"
                 class="form-control"
-                id="inputtext"
+                id="inputdes"
                 placeholder="商品描述"
                 onChange={(e) => {
                   setproductdescription(e.target.value);
@@ -326,12 +320,12 @@ const EnterpriseCard = ({
             </div>
             <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="inputweight">重量</label>
+                <label for="inputweight2">重量</label>
                 <input
                   defaultValue={weight}
                   type="number"
                   class="form-control"
-                  id="inputweight"
+                  id="inputweight2"
                   onChange={(e) => {
                     setWeight(e.target.value);
                   }}
@@ -340,7 +334,6 @@ const EnterpriseCard = ({
               {/* <div class="form-group col-md-4">
                 <label for="inputState">商品種類</label>
                 <select
-                // {{ Shelf } == "yes" ? ("已下架") : ("已上架")}
                 //   defaultValue={{Producttype} == "carbon" ? }
                   id="inputType"
                   class="form-control"
@@ -357,12 +350,11 @@ const EnterpriseCard = ({
             </div>
 
             <div class="form-group">
-              <label for="inputState">上下架</label>
+              <label for="inputState2">上下架</label>
               <select
                 defaultValue={Shelf}
-                id="inputshelf"
+                id="inputState2"
                 class="form-control"
-                value={shelfselected}
                 onChange={shelfhandleChange}
               >
                 {shelfOption.map((option) => (
