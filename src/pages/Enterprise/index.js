@@ -20,6 +20,7 @@ function EnterpriseProduct() {
   const [carbonAmount, setcarbonamount] = useState(null);
   const [storeId, setstoreid] = useState(0);
   const [Location, setlocation] = useState("新竹市");
+  const [render, setrender] = useState(true);
 
   const options = [
     { value: "", text: "選擇種類" },
@@ -56,29 +57,21 @@ function EnterpriseProduct() {
         return false;
       }
     };
-    const handleproducts = async () => {
-      try {
-        const usertoken = storage.getAccessToken();
-        const response = await request.get(
-          `productsv2/list?storeId=${storeId}&page=0&limit=40&order=desc`
-        );
-        console.log("data");
-        return true;
-      } catch (err) {
-        console.log(err);
-        return false;
-      }
-    };
+
     const handleFetchProducts = async () => {
-      const { message, code } = await fetch2Products(storeId);
-      if (Array.isArray(message)) {
+      if (render) {
+        const { message, code } = await fetch2Products(storeId);
         setProducts(message);
         console.log("products", products);
+        if (storeId != 0) {
+          setrender(false);
+        }
       }
     };
+
     searchstoreid();
     handleFetchProducts();
-  }, []);
+  }, [products]);
 
   async function createProduct() {
     try {
