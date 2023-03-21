@@ -14,7 +14,7 @@ const fetchProducts = async () => {
 const fetch2Products = async (id) => {
   try {
     const { data } = await request.get(
-      `/productsv2/list?storeId=101&page=0&limit=40&order=desc`
+      `/productsv2/list?storeId=${id}&page=0&limit=40&order=desc`
     );
 
     return data;
