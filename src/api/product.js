@@ -28,7 +28,37 @@ const fetch2Products = async (id) => {
   }
 };
 
-const deletproduct = async () => {};
+const fetchStore = async (id) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.get(`farmsv2/info?farm_id=${id}`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const fetchownercarbon = async (id) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.get(
+      `farmsv2/carbonCreditAllowanceByStoreOwner?storeId=${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
 
 const ProductDetail = async (id) => {
   const userToken = storage.getAccessToken()
@@ -83,4 +113,6 @@ export {
   FarmInfo,
   findFeeProduct,
   fetch2Products,
+  fetchownercarbon,
+  fetchStore,
 };

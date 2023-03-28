@@ -36,6 +36,7 @@ import CarbonNftList from "./pages/Carbon/Nft/list";
 import CarbonApprovalRecord from "./pages/Carbon/Wallet/approvalRecord";
 import CarbonConsumeRecord from "./pages/Carbon/Wallet/consumeRecord";
 import EnterpriseProduct from "./pages/Enterprise/index";
+import Store from "./pages/Store/index";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -229,6 +230,9 @@ function App() {
                 <Switch>
                   <Route exact path="/enterprise/product">
                     {authState.user ? <EnterpriseProduct /> : <Login />}
+                  </Route>
+                  <Route exact path="/enterprise/store">
+                    {authState.user ? <Store /> : <Login />}
                   </Route>
                 </Switch>
               </Route>

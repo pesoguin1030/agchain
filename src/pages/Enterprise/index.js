@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import storage from "../../utils/storage";
-import axios from "axios";
 import request from "../../utils/request";
-import { fetchProducts, fetch2Products } from "../../api/product";
+import { fetch2Products } from "../../api/product";
 import { CartContext } from "../../appContext";
-import { ProductCard } from "../../components/Card";
+
 import { EnterpriseCard } from "../../components/Card/EnterpriceCard/index";
-import { faYenSign } from "@fortawesome/free-solid-svg-icons";
 
 function EnterpriseProduct() {
   const [products, setProducts] = useState([]);
@@ -59,23 +57,22 @@ function EnterpriseProduct() {
     };
 
     const handleFetchProducts = async () => {
-      if (render) {
-        const { message, code } = await fetch2Products(storeId);
-        setProducts(message);
-        console.log("products", products);
-        if (storeId != 0) {
-          setrender(false);
-        }
-      }
+      // if (render) {
+      const { message, code } = await fetch2Products(storeId);
+      setProducts(message);
+      console.log("products", products);
+      //   if (storeId != 0) {
+      //     setrender(false);
+      //   }
+      // }
     };
 
     searchstoreid();
     handleFetchProducts();
-  }, [products]);
+  }, [storeId]);
 
   async function createProduct() {
     try {
-      console.log("name", productName, "limt", amountNumber, "weight", weight);
       const userToken = storage.getAccessToken();
       const response = await request.post(
         `/productsv2/create`,
@@ -151,11 +148,18 @@ function EnterpriseProduct() {
     <div className="container space-top-1 space-top-sm-2 mt-12">
       <div class="d-sm-flex align-items-center row mb-4">
         <h1 class="col h3 mb-0 text-gray-800">商品管理</h1>
+        <ul class="nav nav-sub nav-lg  ">
+          <li class="nav-item">
+            <a class="nav-link" href="/enterprise/store">
+              <i class="fas fa-shopping-basket nav-icon"></i>
+              我的商店
+            </a>
+          </li>
+        </ul>
         <a
-          class="col-md-auto d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"
+          class="col-md-auto d-none d-sm-inline-block btn btn-sm btn-danger "
           data-toggle="modal"
           data-target="#exampleModal"
-          data-whatever="@mdo"
         >
           <i class="fas fa-check"></i> 新增商品
         </a>
@@ -316,60 +320,6 @@ function EnterpriseProduct() {
               >
                 新增
               </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xl-6 col-md-6 mb-4">
-          <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                    碳權點數
-                  </div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">
-                    1000000
-                  </div>
-                </div>
-                <div class="col-auto">
-                  <a
-                    href="#"
-                    class="col-md-auto d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                  >
-                    {/* <i class="fas fa-download fa-sm text-white-50"> </i>  */}
-                    管理
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-6 col-md-6 mb-4">
-          <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                    授權點數
-                  </div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">
-                    100000
-                  </div>
-                </div>
-                <div class="col-auto">
-                  {/* <i class="fas fa-dollar-sign fa-2x text-gray-300"></i> */}
-                  <a
-                    href="#"
-                    class="col-md-auto d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                  >
-                    管理
-                  </a>
-                </div>
-              </div>
             </div>
           </div>
         </div>
