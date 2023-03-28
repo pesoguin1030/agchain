@@ -161,7 +161,7 @@ function Shop() {
         <div class="col-lg-2">
           <form>
             <div class="border-bottom pb-4 mb-4">
-              <h3>農場</h3>
+              <h3>商店</h3>
               <div class="form-group d-flex align-items-center justify-content-between font-size-1 text-lh-lg text-body mb-1">
                 <div class="custom-control custom-checkbox ">
                   <input
