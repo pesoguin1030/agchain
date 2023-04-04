@@ -190,6 +190,9 @@ function App() {
                   <Route path="/shop/cart">
                     {authState.user ? <ShoppingCart /> : <Login />}
                   </Route>
+                  <Route path="/shop/payment">
+                    {authState.user ? <Payment /> : <Login />}
+                  </Route>
                   <Route path="/shop/diffCart">
                     {authState.user ? <DiffShoppingCart /> : <Login />}
                   </Route>

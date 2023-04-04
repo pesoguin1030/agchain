@@ -294,6 +294,8 @@ function ShoppingCart(props) {
       const userToken = storage.getAccessToken();
       const shipping_order = getFreeThreshold ? [] : ship_as_orders();
       const orders = [...product_orders, ...shipping_order];
+      console.log('Debug: oeder=',orders)
+      console.log("Cart: giftToggled=",giftToggled);// 目前使用的購物車總是false
       if (giftToggled) {
         const response = await createGiftOrder(orders);
         const { data } = response;
@@ -304,7 +306,7 @@ function ShoppingCart(props) {
         setOrderNumber(orderNumber);
         setJumpTo(true);
       } else {
-        const response = await createOrder(orders);
+        const response = await createOrder(orders);// 獲取payment傳回的支付html
         const { data } = response;
         const encode_html = data["html"];
         const orderNumber = data["orderNumber"];
@@ -345,7 +347,7 @@ function ShoppingCart(props) {
                               </a>
                               <a
                                 className="d-block text-body font-size-1 mb-1"
-                                href="javascript:void(0);"
+                                href="#"
                                 onClick={() => removeItem(key)}
                               >
                                 <i className="far fa-trash-alt text-hover-primary mr-1"></i>
@@ -472,9 +474,9 @@ function ShoppingCart(props) {
                         }}
                       >
                         <option>請選擇縣市</option>
-                        {countys.map((county) => {
+                        {countys.map((county,index) => {
                           return (
-                            <option value={county.text}>{county.text}</option>
+                            <option value={county.text} key={index}>{county.text}</option>
                           );
                         })}
                       </select>
@@ -486,7 +488,7 @@ function ShoppingCart(props) {
                         }}
                       />
                       <a
-                        href="javascript:void(0);"
+                        href="#"
                         className="form-link small"
                         onClick={() => setDestinationInputVisible(false)}
                       >
@@ -506,7 +508,7 @@ function ShoppingCart(props) {
                         ))}
                       </select>
                       <a
-                        href="javascript:void(0);"
+                        href="#"
                         className="form-link small"
                         onClick={() => setDestinationInputVisible(true)}
                       >
