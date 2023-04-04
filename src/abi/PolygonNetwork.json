@@ -1,13 +1,13 @@
 {
-    "chainId":80001,
-    "polygonProvider": "https://rpc.ankr.com/polygon_mumbai",
-    "polygonscan": "https://mumbai.polygonscan.com",
-    "contracts": {
-        "carbonCredit": "0xf09C9b6D8442E0876ACD7B48bc4897d5D4747121",
-        "erc20TokenCenter": "0xEb2a27D86355D809B53425569C75D06d6B4cdF5B",
-        "erc721VaultFactory": "0x580c5aE56Cf93950624eBba45EaC37d6aebba626"
-    },
-    "wallet": {
-        "carbonCredit": "0x493D9C1106785b10B226D5b8932781716633dae1"
-    }
+  "chainId": 80001,
+  "polygonProvider": "https://rpc.ankr.com/polygon_mumbai",
+  "polygonscan": "https://mumbai.polygonscan.com",
+  "contracts": {
+    "carbonCredit": "0xf09C9b6D8442E0876ACD7B48bc4897d5D4747121",
+    "erc20TokenCenter": "0x8c2B8fD57099C5f47B75d03eBD7979a9aE969176",
+    "erc721VaultFactory": "0x60E026E95223f9fad09601e4CA018bDE218469E7"
+  },
+  "wallet": {
+    "carbonCredit": "0x493D9C1106785b10B226D5b8932781716633dae1"
+  }
 }

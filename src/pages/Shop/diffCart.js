@@ -47,6 +47,7 @@ function DiffShoppingCart(props) {
     return () => {
       // cleanup
     };
+    console.log("Debug: item_and_amount=",item_and_amount)
   }, [cartState]);
 
   const countItem = (arr) => {
@@ -152,6 +153,8 @@ function DiffShoppingCart(props) {
       }));
       return result;
     })();
+
+    console.log("handleItem Debug: orderlist=",orderlist)
 
     //由此拿到orderNumber 以及支付api拿到的html
     orderlist.then(async (product_orders) => {
@@ -259,7 +262,9 @@ function DiffShoppingCart(props) {
                       </div>
                     </div>
                   );
-                })}
+                }
+                )
+            }
           </div>
           {Object(destState).map((anObjectMapped, index) => {
             return (
@@ -405,4 +410,4 @@ function DiffShoppingCart(props) {
   );
 }
 
-export default DiffShoppingCart;
+export default React.memo(DiffShoppingCart);

@@ -33,6 +33,8 @@ import SingleProduct from "./pages/Shop/single-product";
 import CarbonWallet from "./pages/Carbon/Wallet/index";
 import CarbonNft from "./pages/Carbon/Nft/index";
 import CarbonNftList from "./pages/Carbon/Nft/list";
+import CarbonApprovalRecord from "./pages/Carbon/Wallet/approvalRecord";
+import CarbonConsumeRecord from "./pages/Carbon/Wallet/consumeRecord";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -188,18 +190,13 @@ function App() {
                     <Partner />
                   </Route>
                   <Route path="/shop/cart">
-                    {authState.user ? (
-                      <ShoppingCart />
-                    ) : (
-                      <Redirect to="/login" />
-                    )}
+                    {authState.user ? <ShoppingCart /> : <Login />}
+                  </Route>
+                  <Route path="/shop/payment">
+                    {authState.user ? <Payment /> : <Login />}
                   </Route>
                   <Route path="/shop/diffCart">
-                    {authState.user ? (
-                      <DiffShoppingCart />
-                    ) : (
-                      <Redirect to="/login" />
-                    )}
+                    {authState.user ? <DiffShoppingCart /> : <Login />}
                   </Route>
                   <Route exact path="/shop/analysis/:orderNumber">
                     <Analysis />
@@ -217,6 +214,12 @@ function App() {
                   </Route>
                   <Route exact path="/carbon/nftlist">
                     {authState.user ? <CarbonNftList /> : <Login />}
+                  </Route>
+                  <Route exact path="/carbon/approvalRecord">
+                    {authState.user ? <CarbonApprovalRecord /> : <Login />}
+                  </Route>
+                  <Route exact path="/carbon/consumeRecord">
+                    {authState.user ? <CarbonConsumeRecord /> : <Login />}
                   </Route>
                 </Switch>
               </Route>

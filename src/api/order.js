@@ -2,7 +2,8 @@ import request from "../utils/request";
 import Constants from "./constants";
 import storage from "../utils/storage";
 
-const createOrder = async (orders) => {
+const createOrder = async (orders) => {// 處理payment
+  console.log("orders=",orders)
   const userToken = storage.getAccessToken();
   try {
     const response = await request.post(`/orders/newebpay`, orders, {
@@ -108,7 +109,7 @@ const getOrder = async (userToken) => {
   }
 };
 
-const getOrderItem = async (orderNumber, userToken) => {
+const getOrderItem = async (orderNumber, userToken) => {// TODO 添加碳權點數
   try {
     const response = await request.get(`/orders/orderItem/${orderNumber}`, {
       headers: {

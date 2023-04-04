@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -31,6 +31,7 @@ const Header = () => {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [editingShow, setEditingShow] = useState(false);
+  const history = useHistory();
 
   const googleSignIn = () => {
     let provider = new firebase.auth.GoogleAuthProvider();
@@ -271,16 +272,22 @@ const Header = () => {
                           <Container>
                             <Row>
                               <Col>
-                                <small>當地直送免費</small>
+                                {/*<small>當地直送免費</small>*/}
                               </Col>
                               {cartState && cartState.length > 0 ? (
                                 <Col>
-                                  <Link
+                                  <button
+                                    to="/shop/cart"
                                     className="btn btn-xs btn-primary btn-block btn-pill transition-3d-hover"
-                                    onClick={() => setEditingShow(true)}
+                                    onClick={() => {
+                                      // setEditingShow(true)
+                                      history.push({
+                                        pathname: "/shop/cart",
+                                      });
+                                    }}
                                   >
                                     前往結帳
-                                  </Link>
+                                  </button>
                                 </Col>
                               ) : null}
                             </Row>

@@ -1,39 +1,220 @@
 import React, { useState, useEffect } from "react";
-import * as CarbonWalletApi from "../../../api/carbon/wallet"
+import { ethers } from "ethers";
+import { useHistory } from "react-router-dom";
+import * as CarbonWalletApi from "../../../api/carbon/wallet";
+import * as TokenCenter from "../../../abi/ERC20TokenCenter";
+import PolygonNetwork from "../../../abi/PolygonNetwork.json";
+const polygonscan = PolygonNetwork.polygonscan;
 
 function CarbonWallet() {
+  const history = useHistory();
+  // const INVALID_WALLET_ADDRESS = "使用者未綁定存摺"
   const [walletAddress, setWalletAddress] = useState("");
   const [walletBalance, setWalletBalance] = useState(0);
-  useEffect(function () {
-    console.log("load carbon wallet test");
+  const [walletAllowance, setWalletAllowance] = useState(0);
+  const [currentConsume, setCurrentConsume] = useState(0);
+  const [buttonDisable, setButtonDisable] = useState(false);
 
-    if (typeof window.ethereum == "undefined") {
-      alert("請安裝MetaMask");
-      console.log("MetaMask is required!");
-    } else {
-      console.log("MetaMask is installed!");
+  useEffect(
+    function () {
+      console.log("load carbon wallet test");
 
-      getWallet();
-      getBalance();
-    }
-  }, []);
+      if (typeof window.ethereum == "undefined") {
+        alert("請安裝MetaMask");
+        console.log("MetaMask is required!");
+      } else {
+        console.log("MetaMask is installed!");
+
+        getWallet();
+        getCurrentTransferEvent();
+      }
+    },
+    [walletAddress]
+  );
+
+  useEffect(function () {}, [walletAllowance]);
+
   const getWallet = async () => {
     try {
+      console.log("Debug: CarbonWalletApi.getWallet");
       const result = await CarbonWalletApi.getWallet();
       console.log("Debug: getWallet=", result);
-      setWalletAddress(result.message);
+      if (result.code !== 200) {
+        setWalletAddress("");
+      } else {
+        setWalletAddress(result.message);
+        getBalance(result.message);
+        getAllowance(result.message);
+      }
     } catch (error) {
       console.log("Error: getWallet=", error);
     }
   };
 
-  const getBalance = async () => {
+  const getBalance = async (address) => {
     try {
-      const result = await CarbonWalletApi.getBalance();
-      console.log("Debug: getBalance=", result);
-      setWalletBalance(result.message);
+      console.log("Debug: CarbonWallet.getBalance");
+      const result = await TokenCenter.getBalance(
+        address ? address : walletAddress
+      );
+      console.log("Debug: CarbonWallet.getBalance=", result);
+      setWalletBalance(result);
     } catch (error) {
       console.log("Error: getBalance=", error);
+    }
+  };
+
+  const getAllowance = async (address) => {
+    try {
+      console.log("Debug: CarbonWallet.getAllowance");
+      const result = await TokenCenter.getAllowance(
+        address ? address : walletAddress
+      );
+      console.log("Debug: CarbonWallet.getAllowance=", result);
+      // alert(result);
+      setWalletAllowance(result);
+    } catch (error) {
+      // console.log("Error: getAllowance=", error);
+    }
+  };
+
+  const approve = async (amount) => {
+    try {
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
+      let signer = provider.getSigner();
+      const result = await TokenCenter.setERC20Approval(signer, amount);
+      alert(
+        "授權點數成功！謝謝您!由於資料量龐大，新的額度需要稍待一段時間才會呈現於頁面上"
+      );
+      getAllowance();
+    } catch (error) {
+      console.log("Error: setERC20Approval=", error);
+    }
+  };
+
+  const increaseAllowance = async (amount) => {
+    setButtonDisable(true);
+    if (amount && amount > 0) {
+      try {
+        let fromAddress;
+        const provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+          "any"
+        );
+        let signer = provider.getSigner();
+
+        if (!window.ethereum) {
+          alert("請安裝MetaMask錢包");
+          setButtonDisable(false);
+          return;
+        }
+        console.log("Debug: provider=", provider);
+        signer = provider.getSigner();
+        console.log("Debug: signer=", signer);
+
+        // 確認address
+        await provider.send("eth_requestAccounts", []);
+        fromAddress = await signer.getAddress();
+        console.log("Debug: fromAddress=", fromAddress.toLowerCase());
+        if (fromAddress.toLowerCase() !== walletAddress.toLowerCase()) {
+          console.log("Debug: walletAddress=", walletAddress.toLowerCase());
+          alert("請使用在本平臺綁定的錢包");
+          setButtonDisable(false);
+          return;
+        }
+        TokenCenter.increaseAllowance(signer, amount).then((result) => {
+          if (result) {
+            alert(
+              "增加授權點數成功！謝謝您!由於資料量龐大，新的額度需要稍待一段時間才會呈現於頁面上"
+            );
+            setWalletAllowance(
+              parseInt(walletAllowance.toString()) + parseInt(amount)
+            );
+            setButtonDisable(false);
+            setCurrentConsume(0);
+          }
+        });
+      } catch (error) {
+        console.log("Error: increaseAllowance=", error);
+        setButtonDisable(false);
+      }
+    } else {
+      alert("增加點數必須是正數");
+      setButtonDisable(false);
+    }
+  };
+  const decreaseAllowance = async (amount) => {
+    setButtonDisable(true);
+    if (amount && amount > 0) {
+      try {
+        let fromAddress;
+        const provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+          "any"
+        );
+        let signer = provider.getSigner();
+
+        if (!window.ethereum) {
+          alert("請安裝MetaMask錢包");
+          setButtonDisable(false);
+          return;
+        }
+        console.log("Debug: provider=", provider);
+        signer = provider.getSigner();
+        console.log("Debug: signer=", signer);
+
+        // 確認address
+        await provider.send("eth_requestAccounts", []);
+        fromAddress = await signer.getAddress();
+        console.log("Debug: fromAddress=", fromAddress.toLowerCase());
+        if (fromAddress.toLowerCase() !== walletAddress.toLowerCase()) {
+          console.log("Debug: walletAddress=", walletAddress.toLowerCase());
+          alert("請使用在本平臺綁定的錢包");
+          setButtonDisable(false);
+          return;
+        }
+        getAllowance().then(() => {
+          console.log(
+            "Debug: decreaseAllowance:",
+            "\nwalletAllowance=",
+            walletAllowance,
+            "\namount",
+            amount
+          );
+          if (walletAllowance.gte(amount)) {
+            //Bignumber>=other
+            const provider = new ethers.providers.Web3Provider(
+              window.ethereum,
+              "any"
+            );
+            let signer = provider.getSigner();
+            TokenCenter.decreaseAllowance(signer, amount).then((result) => {
+              if (result) {
+                alert(
+                  "減少授權點數成功！謝謝您!由於資料量龐大，新的額度需要稍待一段時間才會呈現於頁面上"
+                );
+                setWalletAllowance(
+                  parseInt(walletAllowance.toString()) - parseInt(amount)
+                );
+                setButtonDisable(false);
+                setCurrentConsume(0);
+              }
+            });
+          } else {
+            alert("減少點數不能超過已授權之額度");
+            setButtonDisable(false);
+          }
+        });
+      } catch (error) {
+        console.log("Error: decreaseAllowance=", error);
+        setButtonDisable(false);
+      }
+    } else {
+      alert("減少點數必須是正數");
+      setButtonDisable(false);
     }
   };
 
@@ -76,7 +257,6 @@ function CarbonWallet() {
 
       alert(result.message);
       getWallet();
-      getBalance();
     } catch (error) {
       console.log("Error: bindWallet=", error);
     }
@@ -88,8 +268,9 @@ function CarbonWallet() {
       console.log("Debug: buttonUnbind=", result);
 
       alert(result.message);
-      getWallet();
-      getBalance();
+      setWalletAddress("");
+      setWalletBalance(0);
+      setWalletAllowance(0);
     } catch (error) {
       console.log("Error: buttonUnbind=", error);
     }
@@ -99,29 +280,66 @@ function CarbonWallet() {
     await getBalance();
   };
 
-  const buttonExchange = async () => {
-    alert("TODO");
+  const getCurrentTransferEvent = async () => {
+    try {
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
+      let signer = provider.getSigner();
+      const result = await TokenCenter.getCurrentTransferEvent(
+        signer,
+        walletAddress
+      );
+      setCurrentConsume(result);
+    } catch (error) {
+      console.log("Error: getCurrentTransferEvent=", error);
+    }
   };
 
   return (
     <div className="container space-top-1 space-top-sm-2 mt-11">
       <div className="row pb-5 border-bottom">
-        <div className="col-8 offset-2">
+        <div className="col-10 offset-1">
           <div className="mb-3 row">
-            <h1>碳權錢包管理</h1>
+            <h1>碳權存摺管理</h1>
           </div>
           <div className="mb-3 row">
             <label htmlFor="inputAddress" className="col-sm-2 col-form-label">
-              錢包地址
+              存摺地址
             </label>
             <div className="col-sm-6">
-              <input
+              {/* <input
                 value={walletAddress}
                 type="text"
-                className="form-control"
+                className="form-control-plaintext"
                 id="inputAddress"
+                placeholder="使用者未綁定存摺"
                 readOnly
-              />
+              /> */}
+              {/* {walletAddress?<a href={polygonscan + "/address/" + walletAddress} target="_blank">{walletAddress}</a> */}
+              {walletAddress ? (
+                <input
+                  value={walletAddress}
+                  type="button"
+                  className="form-control-plaintext"
+                  id="inputAddress"
+                  placeholder="使用者未綁定存摺"
+                  onClick={() => {
+                    window.open(polygonscan + "/address/" + walletAddress);
+                  }}
+                  target="_blank"
+                />
+              ) : (
+                <input
+                  value={walletAddress}
+                  type="text"
+                  className="form-control-plaintext"
+                  id="inputAddress"
+                  placeholder="使用者未綁定存摺"
+                  readOnly
+                />
+              )}
             </div>
             <button className="col-sm-2 btn btn-primary" onClick={buttonBind}>
               綁定
@@ -138,21 +356,19 @@ function CarbonWallet() {
               <input
                 value={walletBalance}
                 type="text"
-                className="form-control"
-                id="inputBalance"
                 readOnly
+                className="form-control-plaintext"
+                id="inputBalance"
               />
             </div>
+
             <button
               className="col-sm-2 btn btn-primary"
               onClick={buttonRefresh}
             >
               更新
             </button>
-            <button
-              className="col-sm-2 btn btn-danger"
-              onClick={buttonExchange}
-            >
+            <button className="col-sm-2 btn btn-danger" onClick={getBalance}>
               兌換
             </button>
           </div>
@@ -161,29 +377,93 @@ function CarbonWallet() {
             <h1>碳權點數授權</h1>
           </div>
           <div className="mb-3 row">
-            <label htmlFor="inputBalance" className="col-sm-2 col-form-label">
-              授權餘額
+            <label htmlFor="inputAllowance" className="col-sm-2 col-form-label">
+              授權額度
             </label>
             <div className="col-sm-6">
-              <input
+              {walletAllowance ? (
+                <input
+                  value={walletAllowance + "  點"}
+                  type="text"
+                  className="form-control-plaintext"
+                  id="inputAllowance"
+                  readOnly
+                />
+              ) : (
+                <input
                   value={0}
                   type="text"
-                  className="form-control"
-                  id="inputBalance"
+                  className="form-control-plaintext"
+                  id="inputAllowance"
                   readOnly
-              />
+                />
+              )}
             </div>
             <button
-                className="col-sm-2 btn btn-primary"
-                // onClick={buttonRefresh}
+              className="col-sm-2 btn btn-primary"
+              disabled={buttonDisable}
+              onClick={() => {
+                var amount = prompt("請輸入您要增加的授權數量");
+                increaseAllowance(amount);
+              }}
             >
-              設定
+              增加
             </button>
             <button
-                className="col-sm-2 btn btn-danger"
-                // onClick={buttonExchange}
+              className="col-sm-2 btn btn-danger"
+              disabled={buttonDisable}
+              onClick={() => {
+                var amount = prompt("請輸入您要減少的授權數量");
+                decreaseAllowance(amount);
+              }}
             >
-              清除
+              減少
+            </button>
+          </div>
+          <div className="mb-3 row">
+            <div className="col-sm-8"></div>
+            <button
+              className="btn btn-primary col-sm-4"
+              type="button"
+              onClick={() => {
+                window.location.replace("/carbon/approvalRecord");
+              }}
+            >
+              查看授權歷史紀錄
+            </button>
+          </div>
+
+          <div className="mb-3 row">
+            <label htmlFor="inputAllowance" className="col-sm-4 col-form-label">
+              上次授權後到目前消耗
+            </label>
+            <div className="col-sm-4">
+              {currentConsume ? (
+                <input
+                  value={currentConsume + "  點"}
+                  type="text"
+                  className="form-control-plaintext"
+                  id="inputCurrentConsume"
+                  readOnly
+                />
+              ) : (
+                <input
+                  value={0}
+                  type="text"
+                  className="form-control-plaintext"
+                  id="inputCurrentConsume"
+                  readOnly
+                />
+              )}
+            </div>
+            <button
+              className="btn btn-primary col-sm-4"
+              type="button"
+              onClick={() => {
+                window.location.replace("/carbon/consumeRecord");
+              }}
+            >
+              查看轉移歷史紀錄
             </button>
           </div>
         </div>

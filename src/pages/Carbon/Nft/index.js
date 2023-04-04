@@ -157,7 +157,7 @@ function CarbonNft() {
                 }}
                 type="text"
                 className="form-control"
-                placeholder="證書原所有者，例如：NSHL科技股份有限公司"
+                placeholder="證書原所有者，例如：HSNL科技股份有限公司"
               />
             </div>
           </div>
