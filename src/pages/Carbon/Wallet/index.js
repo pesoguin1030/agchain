@@ -139,9 +139,11 @@ function CarbonWallet() {
         });
       } catch (error) {
         console.log("Error: increaseAllowance=", error);
+        setButtonDisable(false);
       }
     } else {
       alert("增加點數必須是正數");
+      setButtonDisable(false);
     }
   };
   const decreaseAllowance = async (amount) => {
@@ -203,13 +205,16 @@ function CarbonWallet() {
             });
           } else {
             alert("減少點數不能超過已授權之額度");
+            setButtonDisable(false);
           }
         });
       } catch (error) {
         console.log("Error: decreaseAllowance=", error);
+        setButtonDisable(false);
       }
     } else {
       alert("減少點數必須是正數");
+      setButtonDisable(false);
     }
   };
 
