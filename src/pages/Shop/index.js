@@ -127,9 +127,8 @@ function Shop() {
                 ))
               : selectedFarm.map(
                   ({ id, name, description, price, photo_url }) => (
-                    <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
+                    <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5" key={id}>
                       <ProductCard
-                        key={id}
                         product_id={id}
                         title={name}
                         description={description}
@@ -141,14 +140,17 @@ function Shop() {
                             : false
                         }
                         onRemoveFromCart={(e) => {
-                          e.stopPropagation();
+                          if(e) {
+                            e.stopPropagation();
+                          }
                           cartDispatch((prev) =>
                             prev.filter((e) => e.id !== id)
                           );
                         }}
                         onAddToCart={(e) => {
-                          console.log(e);
-                          e.stopPropagation();
+                          if(e) {
+                            e.stopPropagation();
+                          }
                           cartDispatch((prev) => [
                             ...prev,
                             { id, name, price, img: photo_url },

@@ -1,35 +1,60 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import storage from "../../utils/storage";
-import { getOrderItem } from "../../api/order";
+import { getOrderItem,dummyPurchase } from "../../api/order";
+
 
 function Payment(props) {
+  const history = useHistory();
   const [orderInfo, setOrderInfo] = useState([]);
   const [total_price, setTotalPrice] = useState(0);
-  const html = props.html;
-  const orderNumber = props.orderNumber;
-  const total_fee = props.totalFee;
+  const [totalCarbon,setTotalCarbon] = useState(0);
+
+  const html = localStorage.getItem('payHtml');
+  const orderNumber = localStorage.getItem('orderNumber')
+  const total_fee = localStorage.getItem('totalFee')
+  let sumCarbon = 0
   var decode_html = html.replaceAll("-", "/");
   // decode_html = html.replaceAll('value="submit"', 'value="結帳"');
   useEffect(() => {
     (async (orderNumber) => {
       const userToken = storage.getAccessToken();
-      const orderItem = await getOrderItem(orderNumber, userToken);// TODO 添加碳權點數
+      const orderItem = await getOrderItem(orderNumber, userToken);
+      console.log('Debug: orderItem=',orderItem)
       var sum = 0;
       for (let index = 0; index < orderItem.length; index++) {
+        console.log('Debug: item=',orderItem[index])
         const item = orderItem[index];
         sum += item["amount"] * item["price"];
+        console.log('Debug: sum=',sum)
+        sumCarbon += item["carbon_amount_total"]
       }
-      sum += total_fee;
+      console.log('Debug: sum=',sum)
+      sum += Number(total_fee);
       setTotalPrice(sum);
+      console.log('Debug: total_fee=',total_fee)
+      console.log('Debug: sum=',sum)
+      setTotalCarbon(sumCarbon);
       setOrderInfo(orderItem);
       // console.log(orderItem);
     })(orderNumber);
     return () => {};
   }, []);
 
-  const fakePurchase = () =>{
-    alert('test')
+  const doDummyPurchase = async() =>{
+
+    const orderNumber = localStorage.getItem('orderNumber')
+    const purchaseStatus = await dummyPurchase(orderNumber)
+    console.log('Debug: purchaseStatus=',purchaseStatus)
+    if(purchaseStatus.status==200){
+      alert('購買成功！')
+      history.push({
+        pathname: "/order",
+      });
+    }else{
+      alert('購買失敗！\n原因：'+purchaseStatus.statusText)
+    }
   }
 
   return (
@@ -56,10 +81,10 @@ function Payment(props) {
                     <tr key={index}>
                       <td>{item["name"]}</td>
                       <td>{item["price"]}</td>
-                      <td>{0}</td>
+                      <td>{item["carbon_amount"]}</td>
                       <td>{item["amount"]}</td>
                       <td>{item["amount"] * item["price"]}</td>
-                      <td>{0}</td>
+                      <td>{item["carbon_amount_total"]}</td>
                     </tr>
                   );
                 })}
@@ -68,13 +93,13 @@ function Payment(props) {
             <span>運費：{total_fee}</span>
           </div>
           <h3>價格總價：{total_price}</h3>
-          <h3>點數總計：{0}</h3>
+          <h3>獲得點數：{totalCarbon}</h3>
           {/*<div dangerouslySetInnerHTML={{ __html: decode_html }} />*/}
-          <button className='btn btn-primary' onClick={fakePurchase}>立即購買</button>
+          <button className='btn btn-primary' onClick={()=>doDummyPurchase()}>立即購買</button>
         </div>
       </div>
     </div>
   );
 }
 
-export default Payment;
+export default React.memo(Payment);

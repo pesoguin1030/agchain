@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Redirect, Link } from "react-router-dom";
+import {Redirect, Link, useHistory} from "react-router-dom";
 import { CartContext } from "../../appContext";
 import {
   createOrder,
@@ -9,9 +9,10 @@ import {
 import storage from "../../utils/storage";
 import { FarmInfo, findFeeProduct } from "../../api/product";
 import { fetchDestination } from "../../api/destination";
-import Payment from "../Payment";
+// import Payment from "../Payment";
 
 function ShoppingCart(props) {
+  const history = useHistory();
   const { cartState, cartDispatch } = useContext(CartContext);
   const [cartEmpty, setCartEmpty] = useState(true);
   const [item_and_amount, setItem_and_amount] = useState({});
@@ -30,6 +31,7 @@ function ShoppingCart(props) {
   const [selectedAddress, setSelectedAddress] = useState(
     "新竹市東區復興路二段"
   );
+
 
   const countys = [
     { text: "基隆市" },
@@ -297,14 +299,14 @@ function ShoppingCart(props) {
       console.log('Debug: oeder=',orders)
       console.log("Cart: giftToggled=",giftToggled);// 目前使用的購物車總是false
       if (giftToggled) {
-        const response = await createGiftOrder(orders);
-        const { data } = response;
-        console.log(data);
-        const encode_html = data["html"];
-        const orderNumber = data["orderNumber"];
-        setPayHtml(encode_html);
-        setOrderNumber(orderNumber);
-        setJumpTo(true);
+        // const response = await createGiftOrder(orders);
+        // const { data } = response;
+        // console.log(data);
+        // const encode_html = data["html"];
+        // const orderNumber = data["orderNumber"];
+        // setPayHtml(encode_html);
+        // setOrderNumber(orderNumber);
+        // setJumpTo(true);
       } else {
         const response = await createOrder(orders);// 獲取payment傳回的支付html
         const { data } = response;
@@ -312,14 +314,22 @@ function ShoppingCart(props) {
         const orderNumber = data["orderNumber"];
         setPayHtml(encode_html);
         setOrderNumber(orderNumber);
-        setJumpTo(true);
+        // setJumpTo(true);
+        localStorage.setItem('payHtml',payHtml)
+        localStorage.setItem('orderNumber',orderNumber)
+        localStorage.setItem('totalFee',totalFee)
+        history.push({
+          pathname: '/shop/payment',
+        })
       }
     });
   };
 
-  return jumpTo ? (
-    <Payment html={payHtml} orderNumber={orderNumber} totalFee={totalFee} />
-  ) : (
+  // return jumpTo ?
+  //     (
+  //   <Payment html={payHtml} orderNumber={orderNumber} totalFee={totalFee} />
+  // ) :
+  return (
     <div className="container space-1 space-md-2 mt-11">
       <div className="row">
         <div className="col-lg-7 mb-7 mb-lg-0">
