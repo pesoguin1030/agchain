@@ -53,6 +53,11 @@ function Payment(props) {
       console.log('Debug: purchaseStatus=',purchaseStatus)
       if(purchaseStatus.status==200){
         alert('購買成功！')
+        // 刪除訂單相關資料
+        localStorage.setItem('shopping_cart',[])
+        localStorage.setItem('totalFee',null)
+        localStorage.setItem('orderNumber',null)
+        localStorage.setItem('payHtml',null)
         history.push({
           pathname: "/order",
         });
@@ -84,17 +89,17 @@ function Payment(props) {
                   <th>點數</th>
                   <th>數量</th>
                   <th>單品項總額</th>
-                  <th>獲得點數總額</th>
+                  {/*<th>獲得點數總額</th>*/}
                 </tr>
                 {orderInfo.map((item,index) => {
                   return (
                     <tr key={index}>
                       <td>{item["name"]}</td>
-                      <td>{item["price"]}</td>
-                      <td>{item["carbon_amount"]}</td>
+                      <td>{'$ ' + item["price"]}</td>
+                      <td>{item["carbon_amount"]?item["carbon_amount"]:0 + ' 點'}</td>
                       <td>{item["amount"]}</td>
                       <td>{item["amount"] * item["price"]}</td>
-                      <td>{item["carbon_amount_total"]}</td>
+                      {/*<td>{item["carbon_amount_total"]}</td>*/}
                     </tr>
                   );
                 })}

@@ -97,7 +97,7 @@ function Shop() {
         <div className="col-lg-10">
           <div className="row mx-n2 mb-5">
             {initDisplay
-              ? products.map(({ id, name, description, price, photo_url }) => (
+              ? products.map(({ id, name, description, price,carbon_amount, photo_url }) => (
                   <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
                        key={id}
                   >
@@ -107,6 +107,7 @@ function Shop() {
                       title={name}
                       description={description}
                       price={price}
+                      carbon={carbon_amount}
                       img={photo_url}
                       isInCart={
                         cartState
@@ -119,20 +120,21 @@ function Shop() {
                       onAddToCart={() =>
                         cartDispatch((prev) => [
                           ...prev,
-                          { id, name, price, img: photo_url },
+                          { id, name, price,carbon_amount, img: photo_url },
                         ])
                       }
                     />
                   </div>
                 ))
               : selectedFarm.map(
-                  ({ id, name, description, price, photo_url }) => (
+                  ({ id, name, description, price,carbon_amount, photo_url }) => (
                     <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5" key={id}>
                       <ProductCard
                         product_id={id}
                         title={name}
                         description={description}
                         price={price}
+                        carbon={carbon_amount}
                         img={photo_url}
                         isInCart={
                           cartState
@@ -153,7 +155,7 @@ function Shop() {
                           }
                           cartDispatch((prev) => [
                             ...prev,
-                            { id, name, price, img: photo_url },
+                            { id, name, price,carbon_amount, img: photo_url },
                           ]);
                         }}
                       />

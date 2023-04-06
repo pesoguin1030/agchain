@@ -210,7 +210,7 @@ const Header = () => {
                           ) : (
                             <ListGroup variant="flush">
                               {cartState.map(
-                                ({ id, name, price, img }, index) => (
+                                ({ id, name, price, carbon_amount, img }, index) => (
                                   <ListGroup.Item key={index}>
                                     <Container>
                                       <Row>
@@ -237,6 +237,10 @@ const Header = () => {
                                             {`${name} `}
                                             <small>
                                               <strong className="text-dark">{`$${price}`}</strong>
+                                            </small>
+                                            <br />
+                                            <small>
+                                              <strong className="text-dark">{`${carbon_amount?carbon_amount:0} 點`}</strong>
                                             </small>
                                           </span>
                                         </Col>

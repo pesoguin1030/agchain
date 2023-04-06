@@ -85,7 +85,7 @@ function ShoppingCart(props) {
 
   useEffect(() => {
     if (cartState && cartState.length !== 0) {
-      getShippingInfo();
+      // getShippingInfo();
     }
     return () => {};
   }, [item_and_amount, destinationId, selectedCounty]);
@@ -291,38 +291,48 @@ function ShoppingCart(props) {
       return result;
     })();
 
-    //由此拿到orderNumber 以及支付api拿到的html
-    orderlist.then(async (product_orders) => {
-      const userToken = storage.getAccessToken();
-      const shipping_order = getFreeThreshold ? [] : ship_as_orders();
-      const orders = [...product_orders, ...shipping_order];
-      console.log('Debug: oeder=',orders)
-      console.log("Cart: giftToggled=",giftToggled);// 目前使用的購物車總是false
-      if (giftToggled) {
-        // const response = await createGiftOrder(orders);
-        // const { data } = response;
-        // console.log(data);
-        // const encode_html = data["html"];
-        // const orderNumber = data["orderNumber"];
-        // setPayHtml(encode_html);
-        // setOrderNumber(orderNumber);
-        // setJumpTo(true);
-      } else {
-        const response = await createOrder(orders);// 獲取payment傳回的支付html
-        const { data } = response;
-        const encode_html = data["html"];
-        const orderNumber = data["orderNumber"];
-        setPayHtml(encode_html);
-        setOrderNumber(orderNumber);
-        // setJumpTo(true);
-        localStorage.setItem('payHtml',payHtml)
-        localStorage.setItem('orderNumber',orderNumber)
-        localStorage.setItem('totalFee',totalFee)
-        history.push({
-          pathname: '/shop/payment',
-        })
-      }
-    });
+    try{
+      //由此拿到orderNumber 以及支付api拿到的html
+      orderlist.then(async (product_orders) => {
+        const userToken = storage.getAccessToken();
+        const shipping_order = getFreeThreshold ? [] : ship_as_orders();
+        const orders = [...product_orders, ...shipping_order];
+        console.log('Debug: orders=',orders)
+        console.log("Cart: giftToggled=",giftToggled);// 目前使用的購物車總是false
+        if (giftToggled) {
+          // const response = await createGiftOrder(orders);
+          // const { data } = response;
+          // console.log(data);
+          // const encode_html = data["html"];
+          // const orderNumber = data["orderNumber"];
+          // setPayHtml(encode_html);
+          // setOrderNumber(orderNumber);
+          // setJumpTo(true);
+        } else {
+          const response = await createOrder(orders);// 獲取payment傳回的支付html
+          const { data } = response;
+          if(data.code!=200){
+            alert("創建訂單失敗！\n原因："+data.message)
+            return
+          }
+          console.log("Debug: handleItem response=",response)
+          const encode_html = data["html"];
+          const orderNumber = data["orderNumber"];
+          setPayHtml(encode_html);
+          setOrderNumber(orderNumber);
+          // setJumpTo(true);
+          localStorage.setItem('payHtml',payHtml)
+          localStorage.setItem('orderNumber',orderNumber)
+          localStorage.setItem('totalFee',totalFee)
+          history.push({
+            pathname: '/shop/payment',
+          })
+        }
+      });
+    }catch (error) {
+      console.log("Error in handleItem:",+error.message)
+      alert("創建訂單失敗！\n原因："+error.message)
+    }
   };
 
   // return jumpTo ?

@@ -6,6 +6,7 @@ const ProductCard = ({
   title,
   description,
   price,
+  carbon,
   isInCart,
   onRemoveFromCart,
   onAddToCart,
@@ -56,16 +57,19 @@ const ProductCard = ({
           {title}
         </a>
 
-        <span className="d-block font-size-1">
-          <a
-            className="text-inherit"
-            href={"./shop/single-product/" + product_id}
-          >
-            {description}
-          </a>
-        </span>
+        {/*<span className="d-block font-size-1">*/}
+        {/*  <a*/}
+        {/*    className="text-inherit"*/}
+        {/*    href={"./shop/single-product/" + product_id}*/}
+        {/*  >*/}
+        {/*    {description}*/}
+        {/*  </a>*/}
+        {/*</span>*/}
         <div className="d-block">
           <span className="text-dark font-weight-bold">{`NTD ${price}`}</span>
+        </div>
+        <div className="d-block">
+          <span className="text-dark font-weight-bold">{`${carbon?carbon:0} 點`}</span>
         </div>
       </div>
     </div>

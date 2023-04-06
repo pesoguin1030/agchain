@@ -3,24 +3,23 @@ import Constants from "./constants";
 import storage from "../utils/storage";
 
 const createOrder = async (orders) => {// 處理payment
-  console.log("orders=",orders)
-  const userToken = storage.getAccessToken();
-  try {
+  try{
+    const userToken = storage.getAccessToken();
     const response = await request.post(`/orders/newebpay`, orders, {
       headers: {
         Authorization: `Bearer ${userToken}`,
       },
     });
     return response;
-  } catch (err) {
-    return Promise.reject(err);
+  }catch (error) {
+    const errorMessage = `Error: dummyPurchase reason=${error.message}`
+    console.log(errorMessage)
   }
 };
 
 const createGiftOrder = async (orders) => {
   const userToken = storage.getAccessToken();
-  try {
-    const response = await request.post(
+  const response = await request.post(
       Constants.SERVER_URL + `/orders/giftorder`,
       orders,
       {
@@ -28,11 +27,7 @@ const createGiftOrder = async (orders) => {
           Authorization: `Bearer ${userToken}`,
         },
       }
-    );
-    return response;
-  } catch (err) {
-    return Promise.reject(err);
-  }
+  );
 };
 
 const getOrder = async (userToken) => {
@@ -175,6 +170,7 @@ async function getDestinations() {
 
 async function getAllShippingInfo(farm_ids) {
   try {
+    console.log("Debug: getAllShippingInfo farm_ids=",farm_ids)
     const response = await request.get(`/destination/allshippinginfo`, {
       params: {
         user: farm_ids,
@@ -219,7 +215,6 @@ async function dummyPurchase(orderNumber){
   }catch (error) {
     const errorMessage = `Error: dummyPurchase reason=${error.message}`
     console.log(errorMessage)
-    return Promise.reject(error);
   }
 }
 

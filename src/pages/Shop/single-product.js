@@ -3,7 +3,6 @@ import { Redirect, useParams, Link } from "react-router-dom";
 import { AuthContext, CartContext } from "../../appContext";
 import { useEffect, useState, useContext } from "react";
 import { getAllShippingInfo } from "../../api/order";
-import { ProductCard } from "../../components/Card";
 import { CertificateCard } from "../../components/Card";
 
 import Radarchart from "../../../src/components/RadarChart";
@@ -24,6 +23,7 @@ function SingleProduct() {
   const { cartState, cartDispatch } = useContext(CartContext);
   const [name, setName] = useState();
   const [price, setPrice] = useState();
+  const [carbon,setCarbon] = useState();
   const [imgUrl, setImgUrl] = useState();
   const [description, setDescription] = useState();
   const [farmName, setFarmName] = useState();
@@ -66,6 +66,7 @@ function SingleProduct() {
     setFarmFee(farm_fee);
     setName(data["name"]);
     setPrice(data["price"]);
+    setCarbon(data["carbon_amount"]);
     setImgUrl(data["photo_url"]);
     setDescription(data["description"]);
     setCropName(data["crop_name"]);
@@ -281,7 +282,7 @@ function SingleProduct() {
                 onClick={() => {
                   cartDispatch((prev) => [
                     ...prev,
-                    { id: IntID, name, price, img: imgUrl },
+                    { id: IntID, name, price,carbon, img: imgUrl },
                   ]);
                   setIsInCart(true);
                   console.log("setting true!!!!");

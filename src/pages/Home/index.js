@@ -128,7 +128,7 @@ function Home(props) {
           <h2>當季農產品</h2>
         </div>
         <div className="row mx-n2 mx-sm-n3 mb-3">
-          {products.map(({ id, name, description, price, photo_url }) => (
+          {products.map(({ id, name, description, price,carbon_amount,photo_url }) => (
             <div
               key={id}
               className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
@@ -139,6 +139,7 @@ function Home(props) {
                 title={name}
                 description={description}
                 price={price}
+                carbon={carbon_amount}
                 img={photo_url}
                 isInCart={
                   cartState ? cartState.map((e) => e.id).includes(id) : false
@@ -149,7 +150,7 @@ function Home(props) {
                 onAddToCart={() =>
                   cartDispatch((prev) => [
                     ...prev,
-                    { id, name, price, img: photo_url },
+                    { id, name, price,carbon_amount, img: photo_url },
                   ])
                 }
               />
