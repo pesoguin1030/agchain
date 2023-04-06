@@ -3,24 +3,24 @@ import Constants from "./constants";
 import storage from "../utils/storage";
 
 const fetchProducts = async () => {
+  const userToken = storage.getAccessToken()
   try {
-    const { data } = await request.get("/products/all?offset=0");
-    return data;
+    const { data } = await request.get("/productsv2/list");
+    const result = {
+      items:data.message
+    }
+
+    return result;
   } catch (err) {
     return Promise.reject(err);
   }
 };
 
 const ProductDetail = async (id) => {
-  const userToken = storage.getAccessToken();
+  const userToken = storage.getAccessToken()
   try {
-    const { data } = await request.get(`/products/` + id, {
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    });
-    // const {data} = await request.get(`/products/`+id)
-    return data;
+    const { data } = await request.get(`/productsv2/info?productId=`+id);
+    return data.message;
   } catch (err) {
     return err;
   }

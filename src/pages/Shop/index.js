@@ -91,7 +91,7 @@ function Shop() {
   return (
     <div className="container space-2 space-lg-3 mt-10">
       <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-        <h2>農夫市集</h2>
+        <h2>選購商品</h2>
       </div>
       <div className="row">
         <div className="col-lg-10">
@@ -165,7 +165,7 @@ function Shop() {
         <div className="col-lg-2">
           <form>
             <div className="border-bottom pb-4 mb-4">
-              <h3>農場</h3>
+              <h3>商店</h3>
               <div className="form-group d-flex align-items-center justify-content-between font-size-1 text-lh-lg text-body mb-1">
                 <div className="custom-control custom-checkbox ">
                   <input

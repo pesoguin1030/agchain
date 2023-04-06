@@ -10,6 +10,7 @@ function Payment(props) {
   const [orderInfo, setOrderInfo] = useState([]);
   const [total_price, setTotalPrice] = useState(0);
   const [totalCarbon,setTotalCarbon] = useState(0);
+  const [buttonDisable, setButtonDisable] = useState(false);
 
   const html = localStorage.getItem('payHtml');
   const orderNumber = localStorage.getItem('orderNumber')
@@ -44,16 +45,25 @@ function Payment(props) {
 
   const doDummyPurchase = async() =>{
 
-    const orderNumber = localStorage.getItem('orderNumber')
-    const purchaseStatus = await dummyPurchase(orderNumber)
-    console.log('Debug: purchaseStatus=',purchaseStatus)
-    if(purchaseStatus.status==200){
-      alert('購買成功！')
-      history.push({
-        pathname: "/order",
-      });
-    }else{
-      alert('購買失敗！\n原因：'+purchaseStatus.statusText)
+    try{
+      setButtonDisable(true)
+
+      const orderNumber = localStorage.getItem('orderNumber')
+      const purchaseStatus = await dummyPurchase(orderNumber)
+      console.log('Debug: purchaseStatus=',purchaseStatus)
+      if(purchaseStatus.status==200){
+        alert('購買成功！')
+        history.push({
+          pathname: "/order",
+        });
+      }else{
+        alert('購買失敗！\n原因：'+purchaseStatus.statusText)
+      }
+    }catch (error) {
+      console.log('Error in doDummyPurchase:',error.message)
+      alert("購買發生錯誤！\n原因："+error.message)
+    }finally {
+      setButtonDisable(false)
     }
   }
 
@@ -95,7 +105,13 @@ function Payment(props) {
           <h3>價格總價：{total_price}</h3>
           <h3>獲得點數：{totalCarbon}</h3>
           {/*<div dangerouslySetInnerHTML={{ __html: decode_html }} />*/}
-          <button className='btn btn-primary' onClick={()=>doDummyPurchase()}>立即購買</button>
+          <button
+              className='btn btn-primary'
+              onClick={()=>doDummyPurchase()}
+              disabled={buttonDisable}
+          >
+            立即購買
+          </button>
         </div>
       </div>
     </div>

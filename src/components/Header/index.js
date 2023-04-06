@@ -393,7 +393,7 @@ const Header = () => {
                 <ul className="navbar-nav">
                   <li className="navbar-nav-item">
                     <Link to="/shop" className="nav-link">
-                      農夫市集
+                      選購商品
                     </Link>
                   </li>
                   <MegaMenu title="區塊鏈服務">
@@ -405,7 +405,7 @@ const Header = () => {
                     <MegaMenuItem
                       icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-59.svg`}
                       to="/carbon/wallet"
-                      title="碳權錢包"
+                      title="碳權存摺"
                     />
                     <MegaMenuItem
                       icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-48.svg`}
