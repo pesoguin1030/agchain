@@ -28,17 +28,12 @@ function Payment(props) {
         console.log('Debug: item=',orderItem[index])
         const item = orderItem[index];
         sum += item["amount"] * item["price"];
-        console.log('Debug: sum=',sum)
-        sumCarbon += item["carbon_amount_total"]
+        sumCarbon += item["carbon_amount_total"]// 該項物品獲得碳點數
       }
-      console.log('Debug: sum=',sum)
       sum += Number(total_fee);
       setTotalPrice(sum);
-      console.log('Debug: total_fee=',total_fee)
-      console.log('Debug: sum=',sum)
       setTotalCarbon(sumCarbon);
       setOrderInfo(orderItem);
-      // console.log(orderItem);
     })(orderNumber);
     return () => {};
   }, []);
@@ -107,7 +102,7 @@ function Payment(props) {
             </Table>
             <span>運費：{total_fee}</span>
           </div>
-          <h3>價格總價：{total_price}</h3>
+          <h3>價格總計：{total_price}</h3>
           <h3>獲得點數：{totalCarbon}</h3>
           {/*<div dangerouslySetInnerHTML={{ __html: decode_html }} />*/}
           <button

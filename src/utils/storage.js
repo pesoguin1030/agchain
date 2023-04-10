@@ -10,6 +10,9 @@ const storage = {
     localStorage.setItem("shopping_cart", JSON.stringify(cart));
   },
   getShoppingCart: () => {
+    if(!localStorage.getItem("shopping_cart")){
+      return []
+    }
     return JSON.parse(localStorage.getItem("shopping_cart"));
   },
   setShoppingDest: (dest) => {
