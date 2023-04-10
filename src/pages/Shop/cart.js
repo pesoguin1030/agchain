@@ -109,6 +109,16 @@ function ShoppingCart(props) {
     return total_bill;
   };
 
+  const countCarbon = () => {
+    let total_carbon_amount = 0;
+    Object.keys(item_and_amount).map((key) => {
+      let num = item_and_amount[key];
+      let carbon_amount = JSON.parse(key)["carbon_amount"];
+      total_carbon_amount += num * carbon_amount;
+    });
+    return total_carbon_amount;
+  };
+
   const decrement = (key) => {
     console.log(cartState);
     let value = item_and_amount[key];
@@ -351,7 +361,7 @@ function ShoppingCart(props) {
             cartEmpty
               ? null
               : Object.keys(item_and_amount).map((key) => {
-                  const { id, name, price, img } = JSON.parse(key);
+                  const { id, name, price,carbon_amount, img } = JSON.parse(key);
                   const num = item_and_amount[key];
                   return (
                     <div key={id} className="border-bottom pb-5 mb-5">
@@ -362,7 +372,7 @@ function ShoppingCart(props) {
                         <div className="media-body">
                           <div className="row">
                             <div className="col-md-7 mb-3 mb-md-0">
-                              <a className="h5 d-block" href="#">
+                              <a className="h5 d-block" href={"./single-product/" + id}>
                                 {name}
                               </a>
                               <a
@@ -410,7 +420,10 @@ function ShoppingCart(props) {
                             </div>
                             <div className="col-4 col-md-2 d-none d-md-inline-block text-right">
                               <span className="h5 d-block mb-1">
-                                {price * num}
+                                {'$ ' + price * num}
+                              </span>
+                              <span className="h5 d-block mb-1">
+                                {carbon_amount * num + ' 點'}
                               </span>
                             </div>
                             <div className="text-body font-size-1 mb-1">
@@ -474,7 +487,7 @@ function ShoppingCart(props) {
                   </span>
                   <div className="media-body text-right">
                     <span className="text-dark font-weight-bold">
-                      {countBill()}
+                      {'$ ' + countBill()}
                     </span>
                   </div>
                 </div>
@@ -538,29 +551,40 @@ function ShoppingCart(props) {
                   )}
                 </div>
               </div>
-              <span className="d-block font-size-2 mr-3">運費</span>
-
-              {Object.keys(farms_fee).map((key,index) => {
-                return (
-                  <div className="border-bottom media align-items-center mb-3" key={index}>
+              <div className="media align-items-center mb-3">
+                <span className="d-block font-size-2 mr-3">運費</span>
+                {Object.keys(farms_fee).map((key,index) => {
+                  return (
+                      <div className="border-bottom media align-items-center mb-3" key={index}>
                     <span className="d-block mr-3">
                       {JSON.parse(JSON.stringify(farms_fee[key]["farm"]))}
                     </span>
-                    <div className="media-body text-right">
+                        <div className="media-body text-right">
                       <span className="text-dark font-weight-bold">
                         {JSON.stringify(farms_fee[key]["fee"])}
                       </span>
-                    </div>
-                  </div>
-                );
-              })}
+                        </div>
+                      </div>
+                  );
+                })}
+              </div>
               <div className="media align-items-center mb-3">
                 <span className="d-block font-size-2 mr-3">總額</span>
                 <div className="media-body text-right">
                   <span className="text-dark font-weight-bold">
-                    {countBill() + totalFee}
+                    {'$ ' + (countBill() + totalFee).toString()}
                   </span>
                 </div>
+                <br />
+              </div>
+              <div className="media align-items-center mb-3">
+                <span className="d-block font-size-2 mr-3">點數</span>
+                <div className="media-body text-right">
+                  <span className="text-dark font-weight-bold">
+                    {countCarbon() + ' 點'}
+                  </span>
+                </div>
+                <br />
               </div>
 
               <div className="row mx-1">
