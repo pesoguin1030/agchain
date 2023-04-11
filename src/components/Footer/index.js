@@ -69,6 +69,14 @@ const Footer = () => (
                 退款政策
               </a>
             </li>
+            <li className="nav-item">
+              <a
+                className="nav-link"
+                href="https://hackmd.io/eoeOtM7BQD2RoI-uSj0sEw?view"
+              >
+                使用錢包
+              </a>
+            </li>
           </ul>
         </div>
         <div className="col-md-4 col-lg-2 mb-5 mb-lg-0">
