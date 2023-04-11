@@ -23,6 +23,18 @@ const fetch2Products = async (id) => {
   }
 };
 
+const fetch3Products = async () => {
+  try {
+    const { data } = await request.get(
+      `/productsv2/list?storeId=&page=0&limit=40&order=desc`
+    );
+
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
 const fetchStore = async (id) => {
   const userToken = storage.getAccessToken();
   try {
@@ -113,6 +125,7 @@ export {
   FarmInfo,
   findFeeProduct,
   fetch2Products,
+  fetch3Products,
   fetchownercarbon,
   fetchStore,
 };

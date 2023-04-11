@@ -1,7 +1,7 @@
 import React from "react";
 import { AuthContext, CartContext } from "../../appContext";
 import { useEffect, useState, useContext } from "react";
-import { fetchProducts } from "../../api/product";
+import { fetchProducts, fetch3Products } from "../../api/product";
 import { ProductCard } from "../../components/Card";
 import { getFarmList } from "../../api/farm";
 import { event } from "jquery";
@@ -16,9 +16,9 @@ function Shop() {
   const [selectChecked, setSelectChecked] = useState(false);
   useEffect(() => {
     const handleFetchProducts = async () => {
-      const { items, offset } = await fetchProducts();
-      if (Array.isArray(items)) {
-        setProducts(items);
+      const { message, offset } = await fetch3Products();
+      if (Array.isArray(message)) {
+        setProducts(message);
       }
     };
 
@@ -97,34 +97,15 @@ function Shop() {
         <div className="col-lg-10">
           <div className="row mx-n2 mb-5">
             {initDisplay
-              ? products.map(({ id, name, description, price, photo_url }) => (
-                  <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-                    <ProductCard
-                      key={id}
-                      product_id={id}
-                      title={name}
-                      description={description}
-                      price={price}
-                      img={photo_url}
-                      isInCart={
-                        cartState
-                          ? cartState.map((e) => e.id).includes(id)
-                          : false
-                      }
-                      onRemoveFromCart={() =>
-                        cartDispatch((prev) => prev.filter((e) => e.id !== id))
-                      }
-                      onAddToCart={() =>
-                        cartDispatch((prev) => [
-                          ...prev,
-                          { id, name, price, img: photo_url },
-                        ])
-                      }
-                    />
-                  </div>
-                ))
-              : selectedFarm.map(
-                  ({ id, name, description, price, photo_url }) => (
+              ? products.map(
+                  ({
+                    id,
+                    name,
+                    description,
+                    price,
+                    photo_url,
+                    carbon_amount,
+                  }) => (
                     <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
                       <ProductCard
                         key={id}
@@ -133,6 +114,45 @@ function Shop() {
                         description={description}
                         price={price}
                         img={photo_url}
+                        carbon={carbon_amount}
+                        isInCart={
+                          cartState
+                            ? cartState.map((e) => e.id).includes(id)
+                            : false
+                        }
+                        onRemoveFromCart={() =>
+                          cartDispatch((prev) =>
+                            prev.filter((e) => e.id !== id)
+                          )
+                        }
+                        onAddToCart={() =>
+                          cartDispatch((prev) => [
+                            ...prev,
+                            { id, name, price, img: photo_url },
+                          ])
+                        }
+                      />
+                    </div>
+                  )
+                )
+              : selectedFarm.map(
+                  ({
+                    id,
+                    name,
+                    description,
+                    price,
+                    photo_url,
+                    carbon_amount,
+                  }) => (
+                    <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
+                      <ProductCard
+                        key={id}
+                        product_id={id}
+                        title={name}
+                        description={description}
+                        price={price}
+                        img={photo_url}
+                        carbon={carbon_amount}
                         isInCart={
                           cartState
                             ? cartState.map((e) => e.id).includes(id)

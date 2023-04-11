@@ -3,6 +3,7 @@ import storage from "../../utils/storage";
 import request from "../../utils/request";
 import { fetch2Products } from "../../api/product";
 import { CartContext } from "../../appContext";
+import Toast from "react-bootstrap/Toast";
 
 import { EnterpriseCard } from "../../components/Card/EnterpriceCard/index";
 
@@ -19,14 +20,10 @@ function EnterpriseProduct() {
   const [storeId, setstoreid] = useState(0);
   const [Location, setlocation] = useState("新竹市");
   const [render, setrender] = useState(true);
+  const [showA, setShowA] = useState(true);
+  const toggleShowA = () => setShowA(!showA);
 
-  const options = [
-    { value: "", text: "選擇種類" },
-    // { value: "vegetables", text: "vegetables " },
-    // { value: "rice", text: "rice " },
-    // { value: "shippingfee", text: "shippingfee " },
-    { value: "carbon", text: "附碳商品" },
-  ];
+  const options = [{ value: "carbon", text: "附碳商品" }];
   const [selected, setSelected] = useState(options[0].value);
 
   useEffect(() => {
@@ -41,7 +38,7 @@ function EnterpriseProduct() {
         if (response.data.code === 200) {
           const data = response.data.message[0];
           console.log("res", data);
-          setstoreid(data);
+          setstoreid(data.toString());
           console.log("storeid", storeId);
           return true;
         } else if (response.data.code === 403) {
@@ -74,6 +71,7 @@ function EnterpriseProduct() {
   async function createProduct() {
     try {
       const userToken = storage.getAccessToken();
+      console.log("shangjia");
       const response = await request.post(
         `/productsv2/create`,
         {
@@ -96,11 +94,18 @@ function EnterpriseProduct() {
           },
         }
       );
+      console.log("response", response);
       if (response.data.code === 200) {
         alert("上架成功");
         return true;
+      } else if (response.data.code === 405) {
+        alert("參數不合法");
+        return false;
       } else if (response.data.code === 403) {
         alert("并非該商店成員");
+        return false;
+      } else if (response.data.code === 500) {
+        alert("伺服器發生問題，上架失敗");
         return false;
       }
     } catch (err) {
@@ -146,6 +151,20 @@ function EnterpriseProduct() {
 
   return (
     <div className="container space-top-1 space-top-sm-2 mt-12">
+      {/* <Toast show={showA} onClose={toggleShowA}>
+        <Toast.Header>
+          <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+          <strong className="me-auto"></strong>
+          <small>just now</small>
+        </Toast.Header>
+        <Toast.Body>
+          安裝
+          <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn">
+            metamask
+          </a>
+          來使用我們的平臺
+        </Toast.Body>
+      </Toast> */}
       <div class="d-sm-flex align-items-center row mb-4">
         <h1 class="col h3 mb-0 text-gray-800">商品管理</h1>
         <ul class="nav nav-sub nav-lg  ">
@@ -204,7 +223,7 @@ function EnterpriseProduct() {
                   <div class="form-group col-md-6">
                     <label for="inputnumber">數量</label>
                     <input
-                      type="number"
+                      type="text"
                       class="form-control"
                       id="inputnumber"
                       placeholder="數量"
@@ -228,7 +247,7 @@ function EnterpriseProduct() {
                 <div class="form-group">
                   <label for="inputvalue">價格</label>
                   <input
-                    type="value"
+                    type="text"
                     class="form-control"
                     id="inputvalue"
                     placeholder="價格"
@@ -240,7 +259,7 @@ function EnterpriseProduct() {
                 <div class="form-group">
                   <label for="inputvalue">碳權點數</label>
                   <input
-                    type="number"
+                    type="text"
                     class="form-control"
                     id="carbonvalue"
                     placeholder="10"
@@ -277,7 +296,7 @@ function EnterpriseProduct() {
                   <div class="form-group col-md-6">
                     <label for="inputweight">重量</label>
                     <input
-                      type="number"
+                      type="text"
                       class="form-control"
                       id="inputweight"
                       onChange={(e) => {
@@ -288,7 +307,7 @@ function EnterpriseProduct() {
                   <div class="form-group col-md-4">
                     <label for="inputState">商品種類</label>
                     <select
-                      id="inputType"
+                      id="text"
                       class="form-control"
                       value={selected}
                       onChange={handleChange}

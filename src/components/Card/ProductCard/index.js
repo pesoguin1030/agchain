@@ -9,6 +9,7 @@ const ProductCard = ({
   isInCart,
   onRemoveFromCart,
   onAddToCart,
+  carbon,
 }) => (
   <div
     className="card border shadow-none text-center h-100"
@@ -66,6 +67,11 @@ const ProductCard = ({
         </span>
         <div className="d-block">
           <span className="text-dark font-weight-bold">{`NTD ${price}`}</span>
+        </div>
+        <div className="d-block">
+          <span className="text-dark font-weight-bold">
+            碳權點數 ： {carbon}
+          </span>
         </div>
       </div>
     </div>
