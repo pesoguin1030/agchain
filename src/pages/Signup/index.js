@@ -327,7 +327,6 @@ function Signup(props) {
                     <div></div>
                   )}
                 </div>
-
                 <div className="js-form-message form-group">
                   <label className="input-label" htmlFor="signinSrEmail">
                     你的信箱
@@ -392,7 +391,6 @@ function Signup(props) {
                         setPassword(e.target.value);
                       }}
                     />
-
                     <div id="changePassTarget" className="input-group-append">
                       <a className="input-group-text" href="">
                         <i
@@ -442,7 +440,6 @@ function Signup(props) {
                     ) : (
                       <div></div>
                     )}
-
                     <label className="input-label" htmlFor="storedescription">
                       描述
                     </label>
@@ -471,7 +468,6 @@ function Signup(props) {
                     ) : (
                       <div></div>
                     )}
-
                     <label className="input-label" htmlFor="storebrand">
                       品牌
                     </label>
@@ -491,7 +487,6 @@ function Signup(props) {
                         setbrand(e.target.value);
                       }}
                     />
-
                     {brandStatus === "danger" ? (
                       <div>
                         <small id="name" class="text-danger">
@@ -503,7 +498,6 @@ function Signup(props) {
                     )}
                   </div>
                 )}
-
                 {/* <div className="js-form-message form-group">
                   <label className="input-label" htmlFor="address" tabIndex="0">
                     居住地
@@ -549,7 +543,6 @@ function Signup(props) {
                     <div></div>
                   )}
                 </div> */}
-
                 <div className="form-group">
                   <div className="custom-control custom-checkbox">
                     <input
