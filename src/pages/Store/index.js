@@ -95,16 +95,41 @@ function StoreInfo(props) {
           <div class="card mb-3 mb-lg-5">
             <div class="card-header">
               <h5 class="card-title">{authState.user.name}的商店</h5>
-              <a class="nav-link">
-                <i
-                  class="fas fa-plane"
-                  aria-hidden="true"
-                  onClick={handleShow}
-                ></i>
-                運費設置
-              </a>
+              <div
+                class="btn-toolbar"
+                role="toolbar"
+                aria-label="Toolbar with button groups"
+              >
+                <div
+                  class="btn-group mr-2"
+                  role="group"
+                  aria-label="First group"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-info"
+                    onClick={handleShow}
+                  >
+                    <i class="fas fa-plane" aria-hidden="true">
+                      運費設置
+                    </i>
+                  </button>
+                </div>
+                <div
+                  class="btn-group mr-2"
+                  role="group"
+                  aria-label="Second group"
+                >
+                  <button type="button" class="btn btn-success">
+                    <a href="/carbon/external">
+                      <i class="fa fa-credit-card" aria-hidden="true">
+                        取得token
+                      </i>
+                    </a>
+                  </button>
+                </div>
+              </div>
             </div>
-
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>設置運費</Modal.Title>

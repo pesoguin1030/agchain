@@ -399,8 +399,8 @@ const Header = () => {
                   <MegaMenu title="區塊鏈服務">
                     <MegaMenuItem
                       icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-54.svg`}
-                      to="/dapp"
-                      title="產品履歷"
+                      to="/carbon/external"
+                      title="開通外部平臺"
                     />
                     <MegaMenuItem
                       icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-59.svg`}
