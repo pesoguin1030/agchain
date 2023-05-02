@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { event } from "jquery";
 
 const MegaMenuItem = ({ to, children, icon, title, description }) => {
   return (
@@ -44,7 +45,7 @@ const MegaMenu = ({ children, title }) => {
       <motion.div
         animate={isOpen ? "open" : "closed"}
         variants={{
-          open: { opacity: 1, y: 0, visibility: "visible" },
+          open: { opacity: 10, y: 0, visibility: "visible" },
           closed: { opacity: 0, y: 10, visibility: "hidden" },
         }}
         onMouseLeave={() => {

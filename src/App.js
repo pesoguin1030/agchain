@@ -37,6 +37,7 @@ import CarbonApprovalRecord from "./pages/Carbon/Wallet/approvalRecord";
 import CarbonConsumeRecord from "./pages/Carbon/Wallet/consumeRecord";
 import EnterpriseProduct from "./pages/Enterprise/index";
 import Store from "./pages/Store/index";
+import External from "./pages/external";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -223,6 +224,9 @@ function App() {
                   <Route exact path="/carbon/consumeRecord">
                     {authState.user ? <CarbonConsumeRecord /> : <Login />}
                   </Route>
+                  <Route exact path="/carbon/external">
+                    <External />
+                  </Route>
                 </Switch>
               </Route>
               <Route path="/enterprise">
@@ -234,6 +238,9 @@ function App() {
                   <Route exact path="/enterprise/store">
                     {authState.user ? <Store /> : <Login />}
                   </Route>
+                  <Route exact path="/enterprise/gettoken">
+                    {authState.user ? <External /> : <Login />}
+                  </Route>
                 </Switch>
               </Route>
               <Route path="/">
@@ -242,7 +249,6 @@ function App() {
                   <Route exact path="/">
                     <Home />
                   </Route>
-
                   <Route exact path="/dapp/:traceID">
                     <Dapp />
                   </Route>
