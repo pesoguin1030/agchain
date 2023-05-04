@@ -249,6 +249,7 @@ function App() {
                   <Route exact path="/">
                     <Home />
                   </Route>
+
                   <Route exact path="/dapp/:traceID">
                     <Dapp />
                   </Route>
