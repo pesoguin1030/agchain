@@ -195,7 +195,7 @@ function AccountInfo(props) {
                       <li className="nav-item">
                         <a className="nav-link" href="/carbon/wallet">
                           <i className="fas fa-wallet nav-icon"></i>
-                          碳權錢包
+                          碳權存摺
                         </a>
                       </li>
                       <li class="nav-item">

@@ -309,19 +309,10 @@ function CarbonWallet() {
               存摺地址
             </label>
             <div className="col-sm-6">
-              {/* <input
-                value={walletAddress}
-                type="text"
-                className="form-control-plaintext"
-                id="inputAddress"
-                placeholder="使用者未綁定存摺"
-                readOnly
-              /> */}
-              {/* {walletAddress?<a href={polygonscan + "/address/" + walletAddress} target="_blank">{walletAddress}</a> */}
               {walletAddress ? (
                 <input
                   value={walletAddress}
-                  type="button"
+                  type="text"
                   className="form-control-plaintext"
                   id="inputAddress"
                   placeholder="使用者未綁定存摺"
@@ -354,7 +345,7 @@ function CarbonWallet() {
             </label>
             <div className="col-sm-6">
               <input
-                value={walletBalance}
+                value={walletBalance + "  點"}
                 type="text"
                 readOnly
                 className="form-control-plaintext"

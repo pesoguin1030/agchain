@@ -91,13 +91,13 @@ function Shop() {
   return (
     <div className="container space-2 space-lg-3 mt-10">
       <div className="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-        <h2>農夫市集</h2>
+        <h2>選購商品</h2>
       </div>
       <div className="row">
         <div className="col-lg-10">
           <div className="row mx-n2 mb-5">
             {initDisplay
-              ? products.map(({ id, name, description, price, photo_url }) => (
+              ? products.map(({ id, name, description, price,carbon_amount, photo_url }) => (
                   <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
                        key={id}
                   >
@@ -107,6 +107,7 @@ function Shop() {
                       title={name}
                       description={description}
                       price={price}
+                      carbon={carbon_amount}
                       img={photo_url}
                       isInCart={
                         cartState
@@ -119,21 +120,21 @@ function Shop() {
                       onAddToCart={() =>
                         cartDispatch((prev) => [
                           ...prev,
-                          { id, name, price, img: photo_url },
+                          { id, name, price,carbon_amount, img: photo_url },
                         ])
                       }
                     />
                   </div>
                 ))
               : selectedFarm.map(
-                  ({ id, name, description, price, photo_url }) => (
-                    <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
+                  ({ id, name, description, price,carbon_amount, photo_url }) => (
+                    <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5" key={id}>
                       <ProductCard
-                        key={id}
                         product_id={id}
                         title={name}
                         description={description}
                         price={price}
+                        carbon={carbon_amount}
                         img={photo_url}
                         isInCart={
                           cartState
@@ -141,17 +142,20 @@ function Shop() {
                             : false
                         }
                         onRemoveFromCart={(e) => {
-                          e.stopPropagation();
+                          if(e) {
+                            e.stopPropagation();
+                          }
                           cartDispatch((prev) =>
                             prev.filter((e) => e.id !== id)
                           );
                         }}
                         onAddToCart={(e) => {
-                          console.log(e);
-                          e.stopPropagation();
+                          if(e) {
+                            e.stopPropagation();
+                          }
                           cartDispatch((prev) => [
                             ...prev,
-                            { id, name, price, img: photo_url },
+                            { id, name, price,carbon_amount, img: photo_url },
                           ]);
                         }}
                       />
@@ -163,7 +167,7 @@ function Shop() {
         <div className="col-lg-2">
           <form>
             <div className="border-bottom pb-4 mb-4">
-              <h3>農場</h3>
+              <h3>商店</h3>
               <div className="form-group d-flex align-items-center justify-content-between font-size-1 text-lh-lg text-body mb-1">
                 <div className="custom-control custom-checkbox ">
                   <input

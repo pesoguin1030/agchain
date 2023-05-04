@@ -46,30 +46,100 @@ function CarbonNftList() {
 
   const buttonNftFragmentation = async (tokenId) => {
     setButtonDisable(true);
-    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    let signer = provider.getSigner();
-    alert("確定將您的NFT兌換成碳權點數？");
+
+    // 獲取用戶錢包地址
+    let walletAddress = "";
     try {
-      await TokenFactory.fractionalizeNFT(signer, tokenId);
-    } catch (error) {
-      console.log("Error: ＮNFT Fragmentation=", error);
+      const getWalletResult = await CarbonWalletApi.getWallet();
+      console.log("Debug: getWallet=", getWalletResult);
+      if (getWalletResult.code === 200) {
+        walletAddress = getWalletResult.message;
+      } else {
+        throw new Error(getWalletResult.message);
+      }
+    } catch (e) {
+      alert("獲取錢包地址出錯！", e.message);
+      console.log("Debug: getWallet error=", e.message);
+      setButtonDisable(false);
+      return;
     }
 
-    alert("兌換成功！您可至碳權錢包確認您的碳權點數！");
-    //重新載入頁面
-    getUserNftList();
+    // 獲取signer
+    let signer;
+    let fromAddress;
+    try {
+      if (!window.ethereum) {
+        alert("請安裝MetaMask錢包");
+        setButtonDisable(false);
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+          "any"
+      );
+      console.log("Debug: provider=", provider);
+      signer = provider.getSigner();
+      console.log("Debug: signer=", signer);
 
-    setButtonDisable(false);
+      // 確認address
+      await provider.send("eth_requestAccounts", []);
+      fromAddress = await signer.getAddress();
+      console.log("Debug: fromAddress=", fromAddress.toLowerCase());
+      if (fromAddress.toLowerCase() !== walletAddress.toLowerCase()) {
+        console.log("Debug: walletAddress=", walletAddress.toLowerCase());
+        alert("請使用在本平臺綁定的錢包");
+        setButtonDisable(false);
+        return;
+      }
+    } catch (e) {
+      alert("請允許網站連接到MetaMask錢包");
+      console.log("Debug: wallet_switchEthereumChain error=", e.message);
+      setButtonDisable(false);
+      return;
+    }
+
+    // 切換network
+    const polygonChainId = "0x" + chainId.toString(16);
+    console.log("Debug: polygonChainId=", polygonChainId);
+
+    try {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: polygonChainId }], // chainId must be in hexadecimal numbers
+      });
+    } catch (e) {
+      alert("請允許將MetaMask錢包切換到Polygon network");
+      console.log("Debug: wallet_switchEthereumChain error=", e.message);
+      setButtonDisable(false);
+      return;
+    }
+
+    const nowChain = await signer.getChainId();
+    console.log("Debug: nowChain=", nowChain);
+    if (nowChain.toString() !== chainId.toString()) {
+      alert("請允許將MetaMask錢包切換到Polygon network");
+      setButtonDisable(false);
+      return;
+    }
+
+    try{
+      const action = window.confirm("確定將您的NFT兌換成碳權點數？")
+      if(action){
+        await TokenFactory.fractionalizeNFT(signer, tokenId);
+        alert("兌換成功！您可至碳權存摺確認您的碳權點數！");
+      }
+    }catch (error) {
+      console.log("Error: NFT Fragmentation=", error.message);
+      alert("兌換失敗！\n原因："+error.message)
+    }finally {
+      //重新載入頁面
+      getUserNftList();
+      setButtonDisable(false);
+    }
   };
 
   const buttonNftTransfer = async (tokenId) => {
     setButtonDisable(true);
-
-    // 獲取tokenId
-    if (!tokenId) {
-      setButtonDisable(false);
-      return;
-    }
 
     // 獲取轉賬目標的錢包地址
     const toAddress = prompt("請輸入對方的錢包地址");

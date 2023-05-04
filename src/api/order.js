@@ -3,24 +3,23 @@ import Constants from "./constants";
 import storage from "../utils/storage";
 
 const createOrder = async (orders) => {// 處理payment
-  console.log("orders=",orders)
-  const userToken = storage.getAccessToken();
-  try {
+  try{
+    const userToken = storage.getAccessToken();
     const response = await request.post(`/orders/newebpay`, orders, {
       headers: {
         Authorization: `Bearer ${userToken}`,
       },
     });
     return response;
-  } catch (err) {
-    return Promise.reject(err);
+  }catch (error) {
+    const errorMessage = `Error: dummyPurchase reason=${error.message}`
+    console.log(errorMessage)
   }
 };
 
 const createGiftOrder = async (orders) => {
   const userToken = storage.getAccessToken();
-  try {
-    const response = await request.post(
+  const response = await request.post(
       Constants.SERVER_URL + `/orders/giftorder`,
       orders,
       {
@@ -28,11 +27,7 @@ const createGiftOrder = async (orders) => {
           Authorization: `Bearer ${userToken}`,
         },
       }
-    );
-    return response;
-  } catch (err) {
-    return Promise.reject(err);
-  }
+  );
 };
 
 const getOrder = async (userToken) => {
@@ -117,6 +112,7 @@ const getOrderItem = async (orderNumber, userToken) => {// TODO 添加碳權點�
       },
     });
     const { data } = response;
+    console.log('Debug: getOrderItem=',response)
     let return_data = [];
     for (let index = 0; index < data.length; index++) {
       if (!data[index].name.includes("運費")) {
@@ -124,6 +120,8 @@ const getOrderItem = async (orderNumber, userToken) => {// TODO 添加碳權點�
           amount: data[index].amount,
           name: data[index].name,
           price: data[index].price,
+          carbon_amount: data[index].carbon_amount,
+          carbon_amount_total: data[index].carbon_amount_total,
         });
       }
     }
@@ -172,6 +170,7 @@ async function getDestinations() {
 
 async function getAllShippingInfo(farm_ids) {
   try {
+    console.log("Debug: getAllShippingInfo farm_ids=",farm_ids)
     const response = await request.get(`/destination/allshippinginfo`, {
       params: {
         user: farm_ids,
@@ -199,6 +198,26 @@ async function getPressLikeNum(orderNumber) {
   }
 }
 
+async function dummyPurchase(orderNumber){
+  try{
+    console.log('Debug: dummyPurchase orderNumber=',orderNumber)
+    const userToken = storage.getAccessToken();
+    const response = await request.post('/orders/dummy_return/',
+        {
+          orderNumber
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        },);
+    return response
+  }catch (error) {
+    const errorMessage = `Error: dummyPurchase reason=${error.message}`
+    console.log(errorMessage)
+  }
+}
+
 export {
   createOrder,
   createGiftOrder,
@@ -208,4 +227,5 @@ export {
   getPressLikeNum,
   getAllShippingInfo,
   getFeeItem,
+  dummyPurchase,
 };

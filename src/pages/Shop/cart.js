@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Redirect, Link } from "react-router-dom";
+import {Redirect, Link, useHistory} from "react-router-dom";
 import { CartContext } from "../../appContext";
 import {
   createOrder,
@@ -9,9 +9,10 @@ import {
 import storage from "../../utils/storage";
 import { FarmInfo, findFeeProduct } from "../../api/product";
 import { fetchDestination } from "../../api/destination";
-import Payment from "../Payment";
+// import Payment from "../Payment";
 
 function ShoppingCart(props) {
+  const history = useHistory();
   const { cartState, cartDispatch } = useContext(CartContext);
   const [cartEmpty, setCartEmpty] = useState(true);
   const [item_and_amount, setItem_and_amount] = useState({});
@@ -30,6 +31,7 @@ function ShoppingCart(props) {
   const [selectedAddress, setSelectedAddress] = useState(
     "新竹市東區復興路二段"
   );
+
 
   const countys = [
     { text: "基隆市" },
@@ -83,7 +85,7 @@ function ShoppingCart(props) {
 
   useEffect(() => {
     if (cartState && cartState.length !== 0) {
-      getShippingInfo();
+      // getShippingInfo();
     }
     return () => {};
   }, [item_and_amount, destinationId, selectedCounty]);
@@ -105,6 +107,16 @@ function ShoppingCart(props) {
       total_bill += num * price;
     });
     return total_bill;
+  };
+
+  const countCarbon = () => {
+    let total_carbon_amount = 0;
+    Object.keys(item_and_amount).map((key) => {
+      let num = item_and_amount[key];
+      let carbon_amount = JSON.parse(key)["carbon_amount"];
+      total_carbon_amount += num * carbon_amount;
+    });
+    return total_carbon_amount;
   };
 
   const decrement = (key) => {
@@ -289,37 +301,55 @@ function ShoppingCart(props) {
       return result;
     })();
 
-    //由此拿到orderNumber 以及支付api拿到的html
-    orderlist.then(async (product_orders) => {
-      const userToken = storage.getAccessToken();
-      const shipping_order = getFreeThreshold ? [] : ship_as_orders();
-      const orders = [...product_orders, ...shipping_order];
-      console.log('Debug: oeder=',orders)
-      console.log("Cart: giftToggled=",giftToggled);// 目前使用的購物車總是false
-      if (giftToggled) {
-        const response = await createGiftOrder(orders);
-        const { data } = response;
-        console.log(data);
-        const encode_html = data["html"];
-        const orderNumber = data["orderNumber"];
-        setPayHtml(encode_html);
-        setOrderNumber(orderNumber);
-        setJumpTo(true);
-      } else {
-        const response = await createOrder(orders);// 獲取payment傳回的支付html
-        const { data } = response;
-        const encode_html = data["html"];
-        const orderNumber = data["orderNumber"];
-        setPayHtml(encode_html);
-        setOrderNumber(orderNumber);
-        setJumpTo(true);
-      }
-    });
+    try{
+      //由此拿到orderNumber 以及支付api拿到的html
+      orderlist.then(async (product_orders) => {
+        const userToken = storage.getAccessToken();
+        const shipping_order = getFreeThreshold ? [] : ship_as_orders();
+        const orders = [...product_orders, ...shipping_order];
+        console.log('Debug: orders=',orders)
+        console.log("Cart: giftToggled=",giftToggled);// 目前使用的購物車總是false
+        if (giftToggled) {
+          // const response = await createGiftOrder(orders);
+          // const { data } = response;
+          // console.log(data);
+          // const encode_html = data["html"];
+          // const orderNumber = data["orderNumber"];
+          // setPayHtml(encode_html);
+          // setOrderNumber(orderNumber);
+          // setJumpTo(true);
+        } else {
+          const response = await createOrder(orders);// 獲取payment傳回的支付html
+          const { data } = response;
+          if(data.code!=200){
+            alert("創建訂單失敗！\n原因："+data.message)
+            return
+          }
+          console.log("Debug: handleItem response=",response)
+          const encode_html = data["html"];
+          const orderNumber = data["orderNumber"];
+          setPayHtml(encode_html);
+          setOrderNumber(orderNumber);
+          // setJumpTo(true);
+          localStorage.setItem('payHtml',payHtml)
+          localStorage.setItem('orderNumber',orderNumber)
+          localStorage.setItem('totalFee',totalFee)
+          history.push({
+            pathname: '/shop/payment',
+          })
+        }
+      });
+    }catch (error) {
+      console.log("Error in handleItem:",+error.message)
+      alert("創建訂單失敗！\n原因："+error.message)
+    }
   };
 
-  return jumpTo ? (
-    <Payment html={payHtml} orderNumber={orderNumber} totalFee={totalFee} />
-  ) : (
+  // return jumpTo ?
+  //     (
+  //   <Payment html={payHtml} orderNumber={orderNumber} totalFee={totalFee} />
+  // ) :
+  return (
     <div className="container space-1 space-md-2 mt-11">
       <div className="row">
         <div className="col-lg-7 mb-7 mb-lg-0">
@@ -331,7 +361,7 @@ function ShoppingCart(props) {
             cartEmpty
               ? null
               : Object.keys(item_and_amount).map((key) => {
-                  const { id, name, price, img } = JSON.parse(key);
+                  const { id, name, price,carbon_amount, img } = JSON.parse(key);
                   const num = item_and_amount[key];
                   return (
                     <div key={id} className="border-bottom pb-5 mb-5">
@@ -342,7 +372,7 @@ function ShoppingCart(props) {
                         <div className="media-body">
                           <div className="row">
                             <div className="col-md-7 mb-3 mb-md-0">
-                              <a className="h5 d-block" href="#">
+                              <a className="h5 d-block" href={"./single-product/" + id}>
                                 {name}
                               </a>
                               <a
@@ -390,7 +420,10 @@ function ShoppingCart(props) {
                             </div>
                             <div className="col-4 col-md-2 d-none d-md-inline-block text-right">
                               <span className="h5 d-block mb-1">
-                                {price * num}
+                                {'$ ' + price * num}
+                              </span>
+                              <span className="h5 d-block mb-1">
+                                {carbon_amount * num + ' 點'}
                               </span>
                             </div>
                             <div className="text-body font-size-1 mb-1">
@@ -454,7 +487,7 @@ function ShoppingCart(props) {
                   </span>
                   <div className="media-body text-right">
                     <span className="text-dark font-weight-bold">
-                      {countBill()}
+                      {'$ ' + countBill()}
                     </span>
                   </div>
                 </div>
@@ -518,29 +551,40 @@ function ShoppingCart(props) {
                   )}
                 </div>
               </div>
-              <span className="d-block font-size-2 mr-3">運費</span>
-
-              {Object.keys(farms_fee).map((key,index) => {
-                return (
-                  <div className="border-bottom media align-items-center mb-3" key={index}>
+              <div className="media align-items-center mb-3">
+                <span className="d-block font-size-2 mr-3">運費</span>
+                {Object.keys(farms_fee).map((key,index) => {
+                  return (
+                      <div className="border-bottom media align-items-center mb-3" key={index}>
                     <span className="d-block mr-3">
                       {JSON.parse(JSON.stringify(farms_fee[key]["farm"]))}
                     </span>
-                    <div className="media-body text-right">
+                        <div className="media-body text-right">
                       <span className="text-dark font-weight-bold">
                         {JSON.stringify(farms_fee[key]["fee"])}
                       </span>
-                    </div>
-                  </div>
-                );
-              })}
+                        </div>
+                      </div>
+                  );
+                })}
+              </div>
               <div className="media align-items-center mb-3">
                 <span className="d-block font-size-2 mr-3">總額</span>
                 <div className="media-body text-right">
                   <span className="text-dark font-weight-bold">
-                    {countBill() + totalFee}
+                    {'$ ' + (countBill() + totalFee).toString()}
                   </span>
                 </div>
+                <br />
+              </div>
+              <div className="media align-items-center mb-3">
+                <span className="d-block font-size-2 mr-3">點數</span>
+                <div className="media-body text-right">
+                  <span className="text-dark font-weight-bold">
+                    {countCarbon() + ' 點'}
+                  </span>
+                </div>
+                <br />
               </div>
 
               <div className="row mx-1">

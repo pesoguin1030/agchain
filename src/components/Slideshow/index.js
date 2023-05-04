@@ -4,14 +4,13 @@ import Slider from "react-slick";
 
 const Slide = (src_arr) => {
   return src_arr.map((src, index) => {
-    console.log("index: ", index);
     return (
-      <div className="js-slide bg-img-hero-center">
+      <div className="js-slide bg-img-hero-center"
+           key={index}>
         <img
           className="mx-auto responsive-img"
           style={{ maxHeight: "360px" }}
           src={src}
-          key={index}
         />
       </div>
     );
@@ -22,7 +21,7 @@ const PrevArrow = (props) => {
   const { className, style, onClick } = props;
   return (
     <span
-      class="fas fa-arrow-left slick-arrow slick-arrow-primary slick-arrow-left slick-arrow-centered-y rounded-circle"
+      className="fas fa-arrow-left slick-arrow slick-arrow-primary slick-arrow-left slick-arrow-centered-y rounded-circle"
       onClick={onClick}
     ></span>
   );
@@ -32,7 +31,7 @@ const NextArrow = (props) => {
   const { className, style, onClick } = props;
   return (
     <span
-      class="fas fa-arrow-right slick-arrow slick-arrow-primary slick-arrow-right slick-arrow-centered-y rounded-circle"
+      className="fas fa-arrow-right slick-arrow slick-arrow-primary slick-arrow-right slick-arrow-centered-y rounded-circle"
       onClick={onClick}
     ></span>
   );
@@ -62,8 +61,8 @@ const Slideshow = ({ src_arr }) => {
 //     <div
 //       className="js-slick-carousel slick"
 //       data-hs-slick-carousel-options='{
-// 				"prevArrow": "<span class=\"fas fa-arrow-left slick-arrow slick-arrow-primary slick-arrow-left slick-arrow-centered-y rounded-circle\"></span>",
-// 				"nextArrow": "<span class=\"fas fa-arrow-right slick-arrow slick-arrow-primary slick-arrow-right slick-arrow-centered-y rounded-circle\"></span>",
+// 				"prevArrow": "<span className=\"fas fa-arrow-left slick-arrow slick-arrow-primary slick-arrow-left slick-arrow-centered-y rounded-circle\"></span>",
+// 				"nextArrow": "<span className=\"fas fa-arrow-right slick-arrow slick-arrow-primary slick-arrow-right slick-arrow-centered-y rounded-circle\"></span>",
 // 				"infinite": true,
 // 				"slidesToShow": 1,
 //         "autoplay": true,

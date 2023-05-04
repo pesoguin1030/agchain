@@ -50,16 +50,17 @@ function Order() {
           <thead>
             <tr>
               <th>訂單編號</th>
-              <th>時間</th>
+              <th>成立時間</th>
               <th>訂單狀態</th>
-              <th>簡述</th>
-              <th>電子賀卡</th>
+              {/*<th>獲得點數</th>*/}
+              <th>訂單内商品</th>
+              {/*<th>電子賀卡</th>*/}
             </tr>
           </thead>
           <tbody>
-            {orderlist.map((item) => {
+            {orderlist.map((item,index) => {
               return (
-                <tr>
+                <tr key={index}>
                   <td>
                     <a href={"./shop/analysis/" + item["orderNumber"]}>
                       {item["orderNumber"]}
@@ -67,10 +68,11 @@ function Order() {
                   </td>
                   <td>{item["time"]}</td>
                   <td>{item["state"]}</td>
+                  {/*<td>{item["carbon_amount_total"]}</td>*/}
                   <td>{item["description"]}</td>
-                  <td>
-                    <a href={item["video_url"]}>{item["order_type"]}</a>
-                  </td>
+                  {/*<td>*/}
+                  {/*  <a href={item["video_url"]}>{item["order_type"]}</a>*/}
+                  {/*</td>*/}
                 </tr>
               );
             })}
