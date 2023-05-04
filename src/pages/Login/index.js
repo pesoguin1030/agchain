@@ -46,18 +46,17 @@ function Login(props) {
 
   const defaultSignIn = async () => {
     try {
-      const { access_token } = await emailSignIn({
+      const { access_token,user } = await emailSignIn({
         username,
         password,
       });
       authDispatch({
         type: "LOGIN",
-        user: {
-          name: username,
-        },
+        user,
         accessToken: access_token,
       });
-      console.log(access_token);
+      console.log('access_token:',access_token);
+      console.log('user:',user);
     } catch (error) {
       setLoggingStatus(false);
       console.error(error);

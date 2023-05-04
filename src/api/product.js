@@ -71,63 +71,6 @@ const fetchownercarbon = async (id) => {
     return Promise.reject(err);
   }
 };
-
-const fetch2Products = async (id) => {
-  try {
-    const { data } = await request.get(
-      `/productsv2/list?storeId=${id}&page=0&limit=40&order=desc`
-    );
-
-    return data;
-  } catch (err) {
-    return Promise.reject(err);
-  }
-};
-
-const fetch3Products = async () => {
-  try {
-    const { data } = await request.get(
-      `/productsv2/list?storeId=&page=0&limit=40&order=desc`
-    );
-
-    return data;
-  } catch (err) {
-    return Promise.reject(err);
-  }
-};
-
-const fetchStore = async (id) => {
-  const userToken = storage.getAccessToken();
-  try {
-    const { data } = await request.get(`farmsv2/info?farm_id=${id}`, {
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    });
-    return data;
-  } catch (err) {
-    return Promise.reject(err);
-  }
-};
-
-const fetchownercarbon = async (id) => {
-  const userToken = storage.getAccessToken();
-  try {
-    const { data } = await request.get(
-      `farmsv2/carbonCreditAllowanceByStoreOwner?storeId=${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
-
-    return data;
-  } catch (err) {
-    return Promise.reject(err);
-  }
-};
-
 const ProductDetail = async (id) => {
   const userToken = storage.getAccessToken()
   try {

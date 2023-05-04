@@ -58,6 +58,8 @@ function StoreInfo(props) {
     };
     searchstoreid();
     handleOwnerCarbon();
+
+    console.log("User from authState.user.role:",authState.user.role)
   }, [storeId]);
 
   return (
