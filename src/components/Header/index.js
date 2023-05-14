@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import {Link, useHistory} from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -210,7 +210,10 @@ const Header = () => {
                           ) : (
                             <ListGroup variant="flush">
                               {cartState.map(
-                                ({ id, name, price, carbon_amount, img }, index) => (
+                                (
+                                  { id, name, price, carbon_amount, img },
+                                  index
+                                ) => (
                                   <ListGroup.Item key={index}>
                                     <Container>
                                       <Row>
@@ -240,7 +243,11 @@ const Header = () => {
                                             </small>
                                             <br />
                                             <small>
-                                              <strong className="text-dark">{`${carbon_amount?carbon_amount:0} 點`}</strong>
+                                              <strong className="text-dark">{`${
+                                                carbon_amount
+                                                  ? carbon_amount
+                                                  : 0
+                                              } 點`}</strong>
                                             </small>
                                           </span>
                                         </Col>
@@ -275,9 +282,7 @@ const Header = () => {
                         <Card.Footer>
                           <Container>
                             <Row>
-                              <Col>
-                                {/*<small>當地直送免費</small>*/}
-                              </Col>
+                              <Col>{/*<small>當地直送免費</small>*/}</Col>
                               {cartState && cartState.length > 0 ? (
                                 <Col>
                                   <button
@@ -405,6 +410,11 @@ const Header = () => {
                       icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-29.svg`}
                       to="/enterprise/product"
                       title="商品管理"
+                    />
+                    <MegaMenuItem
+                      icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-19.svg`}
+                      to="/enterprise/store"
+                      title="商店管理"
                     />
                   </MegaMenu>
                   <MegaMenu title="區塊鏈服務">

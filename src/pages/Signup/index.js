@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import validator from "validator";
 import request from "../../utils/request";
 import { createDestination } from "../../api/destination";
+// import "../../themes/sign.css"
 
 function Signup(props) {
   const [name, setName] = useState("");
@@ -34,6 +35,8 @@ function Signup(props) {
   const [brand, setbrand] = useState("");
   const [brandStatus, setbrandStatus] = useState("basic");
   const [brandMessage, setbrandMessage] = useState(null);
+  // const [consumerButtonDisabled, setconsumerButtonDisabled] = useState(false);
+  // const [enterButtonDisabled, setenterButtonDisabled] = useState(false);
 
   const [countys, setCountys] = useState([
     { text: "基隆市" },
@@ -106,7 +109,7 @@ function Signup(props) {
             name: name,
             email: email,
             password: password,
-            role: roleid,
+            role: "1",
             store: store,
             description: storedescription,
             brand: brand,
@@ -207,7 +210,7 @@ function Signup(props) {
             name: name,
             email: email,
             password: password,
-            role: roleid,
+            role: "2",
             store: store,
             description: storedescription,
             brand: brand,
@@ -255,9 +258,46 @@ function Signup(props) {
               <div className="card-body">
                 <div className="text-center">
                   <div className="mb-5">
-                    <h1 className="display-4">註冊</h1>
-                  </div>
-                  <a className="btn btn-lg btn-block btn-white mb-4" href="#">
+                    <ul
+                      class="nav nav-pills nav-fill"
+                      id="myTab"
+                      role="tablist"
+                    >
+                      <li class="nav-item">
+                        <a
+                          class="nav-link"
+                          id="consumer-tab"
+                          data-toggle="tab"
+                          href="#consumer"
+                          role="tab"
+                          aria-controls="One"
+                          aria-selected="true"
+                        >
+                          消費者
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a
+                          class="nav-link"
+                          id="enterprise-tab"
+                          data-toggle="tab"
+                          href="#enterprise"
+                          role="tab"
+                          aria-controls="Two"
+                          aria-selected="false"
+                        >
+                          企業
+                        </a>
+                      </li>
+                    </ul>
+                    <div class="tab-content">
+                      <div
+                        role="tabpanel"
+                        class="tab-pane fade in active"
+                        id="consumer"
+                      >
+                        <h1 className="display-4">註冊</h1>
+                        {/* <a className="btn btn-lg btn-block btn-white mb-4" href="#">
                     <span className="d-flex justify-content-center align-items-center">
                       <img
                         className="avatar avatar-xss mr-2"
@@ -265,239 +305,378 @@ function Signup(props) {
                       />
                       Sign up with Google
                     </span>
-                  </a>
-                  <span className="divider text-muted mb-4">OR</span>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    id="consumer"
-                    value={1}
-                    checked={roleid == 1}
-                    onChange={handleChange}
-                  />
-                  <label class="form-check-label" for="consumer">
-                    消費者
-                  </label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    id="enterprise"
-                    value={2}
-                    checked={roleid == 2}
-                    onChange={handleChange}
-                  />
-                  <label class="form-check-label" for="enterprise">
-                    企業
-                  </label>
-                </div>
+                  </a> */}
+                        {/* <span className="divider text-muted mb-4">OR</span> */}
+                        <div className="js-form-message form-group">
+                          <label className="input-label text-left" htmlFor="">
+                            名字
+                          </label>
+                          <input
+                            type="name"
+                            className="form-control form-control-lg "
+                            name="name"
+                            id="signupName"
+                            tabIndex="1"
+                            placeholder=""
+                            aria-label=""
+                            required
+                            status={nameStatus}
+                            caption={nameMessage}
+                            data-msg="請輸入正確的名字"
+                            onChange={(e) => {
+                              setName(e.target.value);
+                            }}
+                          />
+                          {nameStatus === "danger" ? (
+                            <div>
+                              <small id="name" class="text-danger">
+                                {nameMessage}
+                              </small>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                        <div className="js-form-message form-group">
+                          <label
+                            className="input-label text-left"
+                            htmlFor="signinSrEmail"
+                          >
+                            你的信箱
+                          </label>
 
-                <div className="js-form-message form-group">
-                  <label className="input-label" htmlFor="">
-                    名字
-                  </label>
-                  <input
-                    type="name"
-                    className="form-control form-control-lg "
-                    name="name"
-                    id="signupName"
-                    tabIndex="1"
-                    placeholder=""
-                    aria-label=""
-                    required
-                    status={nameStatus}
-                    caption={nameMessage}
-                    data-msg="請輸入正確的名字"
-                    onChange={(e) => {
-                      setName(e.target.value);
-                    }}
-                  />
-                  {nameStatus === "danger" ? (
-                    <div>
-                      <small id="name" class="text-danger">
-                        {nameMessage}
-                      </small>
-                    </div>
-                  ) : (
-                    <div></div>
-                  )}
-                </div>
-                <div className="js-form-message form-group">
-                  <label className="input-label" htmlFor="signinSrEmail">
-                    你的信箱
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control form-control-lg"
-                    name="email"
-                    id="signinSrEmail"
-                    tabIndex="1"
-                    placeholder="email@address.com"
-                    aria-label="email@address.com"
-                    required
-                    data-msg="Please enter a valid email address."
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                    }}
-                  />
-                  {emailStatus === "danger" ? (
-                    <div>
-                      <small id="name" class="text-danger">
-                        {emailMessage}
-                      </small>
-                    </div>
-                  ) : (
-                    <div></div>
-                  )}
-                </div>
-                <div className="js-form-message form-group">
-                  <label
-                    className="input-label"
-                    htmlFor="signupSrPassword"
-                    tabIndex="0"
-                  >
-                    <span className="d-flex justify-content-between align-items-center">
-                      密碼
-                      <a
-                        className="input-label-secondary"
-                        href="authentication-reset-password-basic.html"
-                      >
-                        忘記密碼
-                      </a>
-                    </span>
-                  </label>
-                  <div className="input-group input-group-merge">
-                    <input
-                      type="password"
-                      className="js-toggle-password form-control form-control-lg"
-                      name="password"
-                      id="signupSrPassword"
-                      placeholder="需要8+ 個字元"
-                      aria-label="需要8+ 個字元"
-                      required
-                      data-msg="Your password is invalid. Please try again."
-                      data-hs-toggle-password-options='{
+                          <input
+                            type="email"
+                            className="form-control form-control-lg"
+                            name="email"
+                            id="signinSrEmail"
+                            tabIndex="1"
+                            placeholder="email@address.com"
+                            aria-label="email@address.com"
+                            required
+                            data-msg="Please enter a valid email address."
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                            }}
+                          />
+                          {emailStatus === "danger" ? (
+                            <div>
+                              <small id="name" class="text-danger">
+                                {emailMessage}
+                              </small>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                        <div className="js-form-message form-group">
+                          <label
+                            className="input-label"
+                            htmlFor="signupSrPassword"
+                            tabIndex="0"
+                          >
+                            <span className="d-flex justify-content-between align-items-center">
+                              密碼
+                              <a
+                                className="input-label-secondary"
+                                href="authentication-reset-password-basic.html"
+                              >
+                                忘記密碼
+                              </a>
+                            </span>
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="password"
+                              className="js-toggle-password form-control form-control-lg"
+                              name="password"
+                              id="signupSrPassword"
+                              placeholder="需要8+ 個字元"
+                              aria-label="需要8+ 個字元"
+                              required
+                              data-msg="Your password is invalid. Please try again."
+                              data-hs-toggle-password-options='{
                                  "target": "#changePassTarget",
                                  "defaultClass": "tio-hidden-outlined",
                                  "showClass": "tio-visible-outlined",
                                  "classChangeTarget": "#changePassIcon"
                                }'
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                    />
-                    <div id="changePassTarget" className="input-group-append">
-                      <a className="input-group-text" href="">
-                        <i
-                          id="changePassIcon"
-                          className="tio-visible-outlined"
-                        />
-                      </a>
+                              onChange={(e) => {
+                                setPassword(e.target.value);
+                              }}
+                            />
+                            <div
+                              id="changePassTarget"
+                              className="input-group-append"
+                            >
+                              <a className="input-group-text" href="">
+                                <i
+                                  id="changePassIcon"
+                                  className="tio-visible-outlined"
+                                />
+                              </a>
+                            </div>
+                          </div>
+                          {passwordStatus === "danger" ? (
+                            <div>
+                              <small id="name" class="text-danger">
+                                {passwordMessage}
+                              </small>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                        <button
+                          className="btn btn-lg btn-block btn-primary"
+                          onClick={userSignup}
+                        >
+                          註冊
+                        </button>
+                      </div>
+
+                      <div
+                        role="tabpanel"
+                        class="tab-pane fade"
+                        id="enterprise"
+                      >
+                        <h1 className="display-4">註冊</h1>
+                        {/* <a className="btn btn-lg btn-block btn-white mb-4" href="#">
+                    <span className="d-flex justify-content-center align-items-center">
+                      <img
+                        className="avatar avatar-xss mr-2"
+                        src="./assets/svg/brands/google.svg"
+                      />
+                      Sign up with Google
+                    </span>
+                  </a> */}
+                        {/* <span className="divider text-muted mb-4">OR</span> */}
+                        <div className="js-form-message form-group">
+                          <label className="input-label text-left" htmlFor="">
+                            名字
+                          </label>
+                          <input
+                            type="name"
+                            className="form-control form-control-lg "
+                            name="name"
+                            id="signupName"
+                            tabIndex="1"
+                            placeholder=""
+                            aria-label=""
+                            required
+                            status={nameStatus}
+                            caption={nameMessage}
+                            data-msg="請輸入正確的名字"
+                            onChange={(e) => {
+                              setName(e.target.value);
+                            }}
+                          />
+                          {nameStatus === "danger" ? (
+                            <div>
+                              <small id="name" class="text-danger">
+                                {nameMessage}
+                              </small>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                        <div className="js-form-message form-group">
+                          <label
+                            className="input-label text-left"
+                            htmlFor="signinSrEmail"
+                          >
+                            你的信箱
+                          </label>
+
+                          <input
+                            type="email"
+                            className="form-control form-control-lg"
+                            name="email"
+                            id="signinSrEmail"
+                            tabIndex="1"
+                            placeholder="email@address.com"
+                            aria-label="email@address.com"
+                            required
+                            data-msg="Please enter a valid email address."
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                            }}
+                          />
+                          {emailStatus === "danger" ? (
+                            <div>
+                              <small id="name" class="text-danger">
+                                {emailMessage}
+                              </small>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                        <div className="js-form-message form-group">
+                          <label
+                            className="input-label"
+                            htmlFor="signupSrPassword"
+                            tabIndex="0"
+                          >
+                            <span className="d-flex justify-content-between align-items-center">
+                              密碼
+                              <a
+                                className="input-label-secondary"
+                                href="authentication-reset-password-basic.html"
+                              >
+                                忘記密碼
+                              </a>
+                            </span>
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="password"
+                              className="js-toggle-password form-control form-control-lg"
+                              name="password"
+                              id="signupSrPassword"
+                              placeholder="需要8+ 個字元"
+                              aria-label="需要8+ 個字元"
+                              required
+                              data-msg="Your password is invalid. Please try again."
+                              data-hs-toggle-password-options='{
+                                 "target": "#changePassTarget",
+                                 "defaultClass": "tio-hidden-outlined",
+                                 "showClass": "tio-visible-outlined",
+                                 "classChangeTarget": "#changePassIcon"
+                               }'
+                              onChange={(e) => {
+                                setPassword(e.target.value);
+                              }}
+                            />
+                            <div
+                              id="changePassTarget"
+                              className="input-group-append"
+                            >
+                              <a className="input-group-text" href="">
+                                <i
+                                  id="changePassIcon"
+                                  className="tio-visible-outlined"
+                                />
+                              </a>
+                            </div>
+                          </div>
+                          {passwordStatus === "danger" ? (
+                            <div>
+                              <small id="name" class="text-danger">
+                                {passwordMessage}
+                              </small>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                        <div className="js-form-message form-group">
+                          <label
+                            className="input-label text-left"
+                            htmlFor="storename"
+                          >
+                            商店名稱
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control form-control-lg"
+                            name="store"
+                            id="storenmae"
+                            tabIndex="1"
+                            placeholder="三光米"
+                            aria-label="三光米"
+                            required
+                            status={storeStatus}
+                            caption={storeMesssage}
+                            data-msg="Please enter a store name."
+                            onChange={(e) => {
+                              setstore(e.target.value);
+                            }}
+                          />
+                          {storeStatus === "danger" ? (
+                            <div>
+                              <small id="name" class="text-danger">
+                                {storeMesssage}
+                              </small>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                          <label
+                            className="input-label text-left"
+                            htmlFor="storedescription"
+                          >
+                            描述
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control form-control-lg"
+                            name="description"
+                            id="storedescription"
+                            tabIndex="1"
+                            placeholder="好米好實在"
+                            aria-label="好米好實在"
+                            required
+                            status={storedescriptionStatus}
+                            caption={storedescriptionMessage}
+                            data-msg="Please enter a description."
+                            onChange={(e) => {
+                              setstoredesription(e.target.value);
+                            }}
+                          />
+                          {storedescriptionStatus === "danger" ? (
+                            <div>
+                              <small id="name" class="text-danger">
+                                {storedescriptionMessage}
+                              </small>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                          <label
+                            className="input-label text-left"
+                            htmlFor="storebrand"
+                          >
+                            品牌
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control form-control-lg"
+                            name="brand"
+                            id="storebrand"
+                            tabIndex="1"
+                            placeholder="......."
+                            aria-label="........"
+                            required
+                            status={brandStatus}
+                            caption={brandMessage}
+                            data-msg="Please enter a store brand."
+                            onChange={(e) => {
+                              setbrand(e.target.value);
+                            }}
+                          />
+                          {brandStatus === "danger" ? (
+                            <div>
+                              <small id="name" class="text-danger">
+                                {brandMessage}
+                              </small>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                        <button
+                          className="btn btn-lg btn-block btn-primary"
+                          onClick={EenterpriseSignup}
+                        >
+                          註冊
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  {passwordStatus === "danger" ? (
-                    <div>
-                      <small id="name" class="text-danger">
-                        {passwordMessage}
-                      </small>
-                    </div>
-                  ) : (
-                    <div></div>
-                  )}
                 </div>
-                {roleid == 1 ? null : (
-                  <div className="js-form-message form-group">
-                    <label className="input-label" htmlFor="storename">
-                      商店名稱
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control form-control-lg"
-                      name="store"
-                      id="storenmae"
-                      tabIndex="1"
-                      placeholder="三光米"
-                      aria-label="三光米"
-                      required
-                      status={storeStatus}
-                      caption={storeMesssage}
-                      data-msg="Please enter a store name."
-                      onChange={(e) => {
-                        setstore(e.target.value);
-                      }}
-                    />
-                    {storeStatus === "danger" ? (
-                      <div>
-                        <small id="name" class="text-danger">
-                          {storeMesssage}
-                        </small>
-                      </div>
-                    ) : (
-                      <div></div>
-                    )}
-                    <label className="input-label" htmlFor="storedescription">
-                      描述
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control form-control-lg"
-                      name="description"
-                      id="storedescription"
-                      tabIndex="1"
-                      placeholder="好米好實在"
-                      aria-label="好米好實在"
-                      required
-                      status={storedescriptionStatus}
-                      caption={storedescriptionMessage}
-                      data-msg="Please enter a description."
-                      onChange={(e) => {
-                        setstoredesription(e.target.value);
-                      }}
-                    />
-                    {storedescriptionStatus === "danger" ? (
-                      <div>
-                        <small id="name" class="text-danger">
-                          {storedescriptionMessage}
-                        </small>
-                      </div>
-                    ) : (
-                      <div></div>
-                    )}
-                    <label className="input-label" htmlFor="storebrand">
-                      品牌
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control form-control-lg"
-                      name="brand"
-                      id="storebrand"
-                      tabIndex="1"
-                      placeholder="......."
-                      aria-label="........"
-                      required
-                      status={brandStatus}
-                      caption={brandMessage}
-                      data-msg="Please enter a store brand."
-                      onChange={(e) => {
-                        setbrand(e.target.value);
-                      }}
-                    />
-                    {brandStatus === "danger" ? (
-                      <div>
-                        <small id="name" class="text-danger">
-                          {brandMessage}
-                        </small>
-                      </div>
-                    ) : (
-                      <div></div>
-                    )}
-                  </div>
-                )}
+
                 {/* <div className="js-form-message form-group">
                   <label className="input-label" htmlFor="address" tabIndex="0">
                     居住地
@@ -543,37 +722,6 @@ function Signup(props) {
                     <div></div>
                   )}
                 </div> */}
-                <div className="form-group">
-                  <div className="custom-control custom-checkbox">
-                    <input
-                      type="checkbox"
-                      className="custom-control-input"
-                      id="termsCheckbox"
-                      name="termsCheckbox"
-                    />
-                    <label
-                      className="custom-control-label font-size-sm text-muted"
-                      htmlFor="termsCheckbox"
-                    >
-                      記得我
-                    </label>
-                  </div>
-                </div>
-                {roleid == 1 ? (
-                  <button
-                    className="btn btn-lg btn-block btn-primary"
-                    onClick={userSignup}
-                  >
-                    註冊
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-lg btn-block btn-primary"
-                    onClick={EenterpriseSignup}
-                  >
-                    註冊
-                  </button>
-                )}
               </div>
             </div>
           </div>

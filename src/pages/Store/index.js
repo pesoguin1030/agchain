@@ -7,6 +7,8 @@ import request from "../../utils/request";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+import * as TokenCenter from "../../abi/ERC20TokenCenter";
+import * as CarbonWalletApi from "../../api/carbon/wallet";
 
 import validator from "validator";
 
@@ -21,6 +23,9 @@ function StoreInfo(props) {
   const [phone, setPhone] = useState(null);
   const [gender, setGender] = useState(null);
   const [ownercarbon, setownercarbon] = useState(null);
+  const [walletAllowance, setWalletAllowance] = useState(0);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [walletAddress, setWalletAddress] = useState("");
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -51,6 +56,50 @@ function StoreInfo(props) {
       }
     };
 
+    const getWallet = async () => {
+      try {
+        console.log("Debug: CarbonWalletApi.getWallet");
+        const result = await CarbonWalletApi.getWallet();
+        console.log("Debug: getWallet=", result);
+        if (result.code !== 200) {
+          setWalletAddress("");
+        } else {
+          setWalletAddress(result.message);
+          getBalance(result.message);
+          getAllowance(result.message);
+        }
+      } catch (error) {
+        console.log("Error: getWallet=", error);
+      }
+    };
+
+    const getBalance = async (address) => {
+      try {
+        console.log("Debug: CarbonWallet.getBalance");
+        const result = await TokenCenter.getBalance(
+          address ? address : walletAddress
+        );
+        console.log("Debug: CarbonWallet.getBalance=", result);
+        setWalletBalance(result);
+      } catch (error) {
+        console.log("Error: getBalance=", error);
+      }
+    };
+
+    const getAllowance = async (address) => {
+      try {
+        console.log("Debug: CarbonWallet.getAllowance");
+        const result = await TokenCenter.getAllowance(
+          address ? address : walletAddress
+        );
+        console.log("Debug: CarbonWallet.getAllowance=", result);
+        // alert(result);
+        setWalletAllowance(result);
+      } catch (error) {
+        // console.log("Error: getAllowance=", error);
+      }
+    };
+
     const handleOwnerCarbon = async () => {
       console.log("car1", storeId);
       const { message, code } = await fetchownercarbon(storeId);
@@ -58,8 +107,10 @@ function StoreInfo(props) {
     };
     searchstoreid();
     handleOwnerCarbon();
+    // getWallet();
+    // getBalance();
 
-    console.log("User from authState.user.role:",authState.user.role)
+    console.log("User from authState.user.role:", authState.user.role);
   }, [storeId]);
 
   return (
@@ -225,12 +276,28 @@ function StoreInfo(props) {
                       </div>
                       <div class="col-auto">
                         <a
-                          href="#"
+                          href="/carbon/wallet"
                           class="col-md-auto d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
                         >
                           {/* <i class="fas fa-download fa-sm text-white-50"> </i>  */}
                           管理
                         </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                          碳權餘額
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                          {200}
+                        </div>
                       </div>
                     </div>
                   </div>
