@@ -120,16 +120,16 @@ const EnterpriseCard = ({
       const response = await request.post(
         "productsv2/update",
         {
-          product_id: id,
+          product_id: id.toString(),
           store_id: store,
           name: productName,
-          price: priceNumber,
-          limit_amount: amountNumber,
+          price: priceNumber.toString(),
+          limit_amount: amountNumber.toString(),
           photo_url: picture,
-          weight: productweight,
+          weight: productweight.toString(),
           type: "carbon",
           description: productdescription,
-          carbon_amount: carbonAmount,
+          carbon_amount: carbonAmount.toString(),
           location: Location,
           shelf: "no",
         },
@@ -141,19 +141,19 @@ const EnterpriseCard = ({
       );
       console.log(response.data.code);
       if (response.data.code === 200) {
-        alert("编辑成功");
+        alert("編輯成功");
         return true;
       } else if (response.data.code === 405) {
-        alert("参数不合法");
+        alert("參數不合法");
         return false;
       } else if (response.data.code === 403) {
-        alert("并非该商店成员");
+        alert("並非該商店成員");
         return false;
       } else if (response.data.code === 404) {
         alert("找不到商品");
         return false;
       } else if (response.data.code === 500) {
-        alert("服务器错误");
+        alert("伺服器錯誤");
         return false;
       }
     } catch (err) {
@@ -165,7 +165,7 @@ const EnterpriseCard = ({
 
   function buttondelet() {
     deletproduct(product_id);
-    // window.location.reload();
+    window.location.reload();
   }
 
   function buttonupdate() {
@@ -216,7 +216,7 @@ const EnterpriseCard = ({
         <div class="row justify-content-between align-items-end">
           <div class="row-4">
             <Button variant=" btn  btn-outline-primary" onClick={handleShow}>
-              编辑
+              編輯
             </Button>
           </div>
 

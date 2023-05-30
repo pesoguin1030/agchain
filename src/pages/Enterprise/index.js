@@ -146,7 +146,7 @@ function EnterpriseProduct() {
       return;
     }
     createProduct();
-    // window.location.reload();
+    window.location.reload();
   }
 
   return (
@@ -176,11 +176,11 @@ function EnterpriseProduct() {
           </li>
         </ul>
         <a
-          class="col-md-auto d-none d-sm-inline-block btn btn-sm btn-danger "
+          class="col-md-auto d-none d-sm-inline-block btn btn-sm btn-danger text-white"
           data-toggle="modal"
           data-target="#exampleModal"
         >
-          <i class="fas fa-check"></i> 新增商品
+          <i class="fas fa-plus" /> 新增商品
         </a>
       </div>
 
