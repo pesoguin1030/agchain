@@ -3,12 +3,12 @@ import Constants from "./constants";
 import storage from "../utils/storage";
 
 const fetchProducts = async () => {
-  const userToken = storage.getAccessToken()
+  const userToken = storage.getAccessToken();
   try {
     const { data } = await request.get("/productsv2/list");
     const result = {
-      items:data.message
-    }
+      items: data.message,
+    };
 
     return result;
   } catch (err) {
@@ -34,6 +34,23 @@ const fetch3Products = async () => {
       `/productsv2/list?storeId=&page=0&limit=40&order=desc`
     );
 
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const fetchAcquire = async () => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.get(
+      `/carbon/acquire/list?page=&limit=&order`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
     return data;
   } catch (err) {
     return Promise.reject(err);
@@ -72,9 +89,9 @@ const fetchownercarbon = async (id) => {
   }
 };
 const ProductDetail = async (id) => {
-  const userToken = storage.getAccessToken()
+  const userToken = storage.getAccessToken();
   try {
-    const { data } = await request.get(`/productsv2/info?productId=`+id);
+    const { data } = await request.get(`/productsv2/info?productId=` + id);
     return data.message;
   } catch (err) {
     return err;
@@ -127,4 +144,5 @@ export {
   fetch3Products,
   fetchownercarbon,
   fetchStore,
+  fetchAcquire,
 };
