@@ -301,6 +301,7 @@ function CarbonWallet() {
           <div className="mb-3 row">
             <h1>碳權存摺管理</h1>
           </div>
+
           <div className="mb-3 row">
             <label htmlFor="inputAddress" className="col-sm-2 col-form-label">
               存摺地址
@@ -360,6 +361,15 @@ function CarbonWallet() {
               兌換
             </button>
           </div>
+          <button
+            className="btn btn-primary col-sm-12"
+            type="button"
+            onClick={() => {
+              window.location.replace("/carbon/tempPointRecord");
+            }}
+          >
+            查看暫存點數
+          </button>
           <hr />
           <div className="mb-3 row">
             <h1>碳權點數授權</h1>
