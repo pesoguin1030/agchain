@@ -45,7 +45,7 @@ function TempPointRecord() {
 
   const getExternalParty = async () => {
     try {
-      const externalParty = await ExternalApi.getExternalParty();
+      const externalParty = await ExternalApi.getExternalParty(1);
       if (externalParty.code === 200) {
         console.log("Debug: externalParty=", externalParty.message);
         setExternalParties(externalParty.message);
