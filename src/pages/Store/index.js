@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { AuthContext, CartContext } from "../../appContext";
+import { AuthContext } from "../../appContext";
 import axios from "axios";
 import storage from "../../utils/storage";
 import { fetchownercarbon, fetchStore } from "../../api/product";
@@ -110,7 +110,7 @@ function StoreInfo(props) {
     // getWallet();
     // getBalance();
 
-    console.log("User from authState.user.role:", authState.user.role);
+    console.log("User from authState.user:", authState.user);
   }, [storeId]);
 
   return (

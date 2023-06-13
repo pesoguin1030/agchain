@@ -471,10 +471,74 @@ function AccountInfo(props) {
                       </div>
                     </div>
                   </div>
+                  {/* <div class="row form-group">
+                    <label class="col-sm-3 col-form-label input-label">
+                      性別
+                    </label>
+
+                    <div class="col-sm-9">
+                      <div class="input-group input-group-md-down-break">
+                        <div class="form-control">
+                          <div class="custom-control custom-radio">
+                            <input
+                              type="radio"
+                              class="custom-control-input"
+                              name="genderTypeRadio"
+                              id="genderTypeRadio1"
+                            />
+                            <label
+                              class="custom-control-label"
+                              htmlFor="genderTypeRadio1"
+                            >
+                              男性
+                            </label>
+                          </div>
+                        </div>
+
+                        <div class="form-control">
+                          <div class="custom-control custom-radio">
+                            <input
+                              type="radio"
+                              class="custom-control-input"
+                              name="genderTypeRadio"
+                              id="genderTypeRadio2"
+                              checked
+                              onChange={(e) => {
+                                console.log(e + "is unchecked :)");
+                              }}
+                            />
+                            <label
+                              class="custom-control-label"
+                              htmlFor="genderTypeRadio2"
+                            >
+                              女性
+                            </label>
+                          </div>
+                        </div>
+
+                        <div class="form-control">
+                          <div class="custom-control custom-radio">
+                            <input
+                              type="radio"
+                              class="custom-control-input"
+                              name="genderTypeRadio"
+                              id="genderTypeRadio3"
+                            />
+                            <label
+                              class="custom-control-label"
+                              htmlFor="genderTypeRadio3"
+                            >
+                              其他
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div> */}
 
                   <div class="row form-group">
                     <label class="col-sm-3 col-form-label input-label">
-                      性別
+                      通知
                     </label>
 
                     <div class="col-sm-9">

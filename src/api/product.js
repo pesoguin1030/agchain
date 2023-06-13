@@ -40,11 +40,11 @@ const fetch3Products = async () => {
   }
 };
 
-const fetchAcquire = async () => {
+const fetchAcquire = async (id) => {
   const userToken = storage.getAccessToken();
   try {
     const { data } = await request.get(
-      `/carbon/acquire/list?page=&limit=&order`,
+      `/carbon/acquire/list?userId=${id}&page=&limit=&order`,
       {
         headers: {
           Authorization: `Bearer ${userToken}`,
