@@ -416,6 +416,11 @@ const Header = () => {
                       to="/enterprise/store"
                       title="商店管理"
                     />
+                    <MegaMenuItem
+                      icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-18.svg`}
+                      to="/enterprise/acquire"
+                      title="收購碳權"
+                    />
                   </MegaMenu>
                   <MegaMenu title="區塊鏈服務">
                     <MegaMenuItem

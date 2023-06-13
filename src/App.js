@@ -38,6 +38,7 @@ import CarbonConsumeRecord from "./pages/Carbon/Wallet/consumeRecord";
 import EnterpriseProduct from "./pages/Enterprise/index";
 import Store from "./pages/Store/index";
 import External from "./pages/external";
+import Acquire from "./pages/acquire";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -240,6 +241,9 @@ function App() {
                   </Route>
                   <Route exact path="/enterprise/gettoken">
                     {authState.user ? <External /> : <Login />}
+                  </Route>
+                  <Route exact path="/enterprise/acquire">
+                    {authState.user ? <Acquire /> : <Login />}
                   </Route>
                 </Switch>
               </Route>

@@ -70,9 +70,9 @@ section {
 
 body {
   margin: 0;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Mulish", sans-serif;
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.8;
   color: #677788;
   text-align: left;
@@ -26674,7 +26674,9 @@ a:hover .text-hover-primary {
 }
 
 .select2-container--default
-  .select2-results__option--highlighted[aria-selected]:not([aria-selected="true"]) {
+  .select2-results__option--highlighted[aria-selected]:not(
+    [aria-selected="true"]
+  ) {
   color: #1e2022;
   background-color: rgba(189, 197, 209, 0.3);
 }
