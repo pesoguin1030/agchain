@@ -42,3 +42,29 @@ export async function getExternalParty() {
     throw new Error(errorMessage);
   }
 }
+
+export async function getPartyData(userId) {
+  try {
+    const { data } = await request.post(`/carbonExternal/external/partyData`, {
+      userId,
+    });
+    return data;
+  } catch (error) {
+    const errorMessage = `getPartyData error=${error.message}`;
+    console.log(errorMessage);
+    throw new Error(errorMessage);
+  }
+}
+
+export async function applyParty(party_name) {
+  try {
+    const { data } = await request.post(`/carbonExternal/external/applyParty`, {
+      party_name,
+    });
+    return data;
+  } catch (error) {
+    const errorMessage = `applyParty error=${error.message}`;
+    console.log(errorMessage);
+    throw new Error(errorMessage);
+  }
+}

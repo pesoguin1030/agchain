@@ -37,6 +37,7 @@ import CarbonNftList from "./pages/Carbon/Nft/list";
 import CarbonApprovalRecord from "./pages/Carbon/Wallet/approvalRecord";
 import CarbonConsumeRecord from "./pages/Carbon/Wallet/consumeRecord";
 import CarbonTempPointRecord from "./pages/Carbon/Wallet/tempPointRecord";
+import CarbonApplyOrgan from "./pages/External/applyPage";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -228,6 +229,9 @@ function App() {
                   </Route>
                   <Route exact path="/carbon/tempPointRecord">
                     {authState.user ? <CarbonTempPointRecord /> : <Login />}
+                  </Route>
+                  <Route exact path="/carbon/applyOrgan">
+                    {authState.user ? <CarbonApplyOrgan /> : <Login />}
                   </Route>
                 </Switch>
               </Route>
