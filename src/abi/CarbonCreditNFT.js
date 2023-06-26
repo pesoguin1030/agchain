@@ -1,5 +1,5 @@
 import {ethers, BigNumber} from "ethers";
-import CarbonCredit from "./abi/nft/CarbonCreditNFT/CarbonCreditNFT.json"
+import CarbonCredit from "./abi/nft/CarbonCreditNFT.sol/CarbonCreditNFT.json"
 import PolygonNetwork from'./PolygonNetwork.json'
 
 const contractABI = CarbonCredit.abi

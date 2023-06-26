@@ -1,11 +1,11 @@
 {
-  "chainId": 80001,
+  "chainId":80001,
   "polygonProvider": "https://rpc.ankr.com/polygon_mumbai",
   "polygonscan": "https://mumbai.polygonscan.com",
   "contracts": {
-    "carbonCredit": "0xf09C9b6D8442E0876ACD7B48bc4897d5D4747121",
-    "erc20TokenCenter": "0x8c2B8fD57099C5f47B75d03eBD7979a9aE969176",
-    "erc721VaultFactory": "0x60E026E95223f9fad09601e4CA018bDE218469E7"
+    "carbonCredit": "0x6c631355bc1B563F3bEB053F7a2bE82F2A4cd47B",
+    "erc20TokenCenter": "0x53fAc3CEa28AE88fcf1d3fCFC9ED481D2B4a35e2",
+    "erc721VaultFactory": "0xF970b63283CD08F26C0FB2dafF1C65C80324B5a6"
   },
   "wallet": {
     "carbonCredit": "0x493D9C1106785b10B226D5b8932781716633dae1"

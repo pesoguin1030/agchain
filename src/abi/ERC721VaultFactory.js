@@ -1,5 +1,5 @@
 import ERC721VaultFactory from "./abi/fractional-art/ERC721VaultFactory.sol/ERC721VaultFactory.json";
-import CarbonCredit from "./abi/nft/CarbonCreditNFT/CarbonCreditNFT.json";
+import CarbonCredit from "./abi/nft/CarbonCreditNFT.sol/CarbonCreditNFT.json";
 import PolygonNetwork from "./PolygonNetwork.json";
 import { ethers } from "ethers";
 

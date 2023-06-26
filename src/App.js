@@ -30,6 +30,7 @@ import Shop from "./pages/Shop";
 import Order from "./pages/Order";
 import GiftMaker from "./pages/Shop/gift";
 import SingleProduct from "./pages/Shop/single-product";
+import CarbonAcquireDemo from "./pages/Carbon/Acquire/demo";
 import CarbonWallet from "./pages/Carbon/Wallet/index";
 import CarbonNft from "./pages/Carbon/Nft/index";
 import CarbonNftList from "./pages/Carbon/Nft/list";
@@ -220,6 +221,9 @@ function App() {
                   </Route>
                   <Route exact path="/carbon/consumeRecord">
                     {authState.user ? <CarbonConsumeRecord /> : <Login />}
+                  </Route>
+                  <Route exact path="/carbon/acquire/demo">
+                    {authState.user ? <CarbonAcquireDemo /> : <Login />}
                   </Route>
                 </Switch>
               </Route>
