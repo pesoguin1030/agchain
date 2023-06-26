@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
@@ -10,9 +10,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale, setDefaultLocale } from "react-datepicker";
 import cn from "date-fns/locale/zh-CN";
+import { AuthContext } from "../../appContext";
 registerLocale("cn", cn);
 
 function Acquire() {
+  const { authState, authDispatch } = useContext(AuthContext);
   const [acquire, setacquire] = useState([]);
   const [amount, setamount] = useState("");
   const [price, setprice] = useState("");
@@ -37,7 +39,7 @@ function Acquire() {
 
   useEffect(() => {
     const handleFetchAcquire = async () => {
-      const { message, code } = await fetchAcquire();
+      const { message, code } = await fetchAcquire(authState.user.id);
       console.log("message", message);
       setacquire(message);
       console.log("acquire", acquire);
@@ -96,7 +98,7 @@ function Acquire() {
     <div className="container py-5 py-sm-7">
       <div className="row align-items-start align-items-center latestArticles">
         <div className="col-lg-6 col-md-6 col-sm-6 col-xs-8 col-10">
-          <ul className="nav nav-pills list-group-horizontal" role="tablist">
+          {/* <ul className="nav nav-pills list-group-horizontal" role="tablist">
             <li className="nav-item">
               <button
                 type="button"
@@ -114,7 +116,7 @@ function Acquire() {
                 最新邀約
               </button>
             </li>
-          </ul>
+          </ul> */}
         </div>
         <div className="col d-flex justify-content-end p-0 pe-2 p-sm-2">
           <a
@@ -343,12 +345,23 @@ function Acquire() {
                             最小收購量 {blog.min} 收購倍數 {blog.multiplier}
                           </Card.Text>
                           <Card.Text>收購單價{blog.price}</Card.Text>
-                          <a
-                            href={blog.description}
-                            className="btn btn-primary"
-                          >
-                            查看 <i className="fas fa-chevron-right"></i>
-                          </a>
+                          <div className="row">
+                            <div className="col-md-6">
+                              <a
+                                href={blog.description}
+                                className="btn btn-primary"
+                              >
+                                編輯 <i className="fas fa-chevron-right"></i>
+                              </a>
+                            </div>
+                            <div className="col-md-6">
+                              <button type="button" class="btn btn-info">
+                                <i class="fas fa-plane" aria-hidden="true">
+                                  推送通知
+                                </i>
+                              </button>
+                            </div>
+                          </div>
                         </Card.Body>
                       </Card>
                     </div>
