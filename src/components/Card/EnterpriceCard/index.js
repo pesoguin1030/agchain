@@ -1,5 +1,5 @@
 import { id } from "ethers/lib/utils";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import request from "../../../utils/request";
 import storage from "../../../utils/storage";
 import Button from "react-bootstrap/Button";
@@ -25,14 +25,13 @@ const EnterpriseCard = ({
   const handleClose = () => setupdateShow(false);
   const handleShow = () => setupdateShow(true);
 
-  const [productName, setProductName] = useState("");
-
-  const [priceNumber, setPriceNumber] = useState(1);
-  const [amountNumber, setAmountNumber] = useState(1);
-  const [picture, setPicture] = useState(null);
-  const [productweight, setWeight] = useState(1);
-  const [productdescription, setproductdescription] = useState("");
-  const [carbonAmount, setcarbonamount] = useState(1);
+  const [productName, setProductName] = useState(title);
+  const [priceNumber, setPriceNumber] = useState(price);
+  const [amountNumber, setAmountNumber] = useState(amount);
+  const [picture, setPicture] = useState("");
+  const [productweight, setWeight] = useState(weight);
+  const [productdescription, setproductdescription] = useState(description);
+  const [carbonAmount, setcarbonamount] = useState(carbon);
   const Location = "新竹市";
   const options = [
     { value: "", text: "選擇種類" },
@@ -90,6 +89,11 @@ const EnterpriseCard = ({
 
   async function updateproduct(id) {
     try {
+      setProductName(document.getElementById("productName").value);
+      setPriceNumber(document.getElementById("inputnumber2").value);
+      setproductdescription(document.getElementById("inputdes").value);
+      setWeight(document.getElementById("inputweight2").value);
+      setcarbonamount(document.getElementById("inputcarbon").value);
       console.log(
         "id",
         id,
@@ -125,13 +129,14 @@ const EnterpriseCard = ({
           name: productName,
           price: priceNumber.toString(),
           limit_amount: amountNumber.toString(),
-          photo_url: picture,
+          photo_url:
+            "https://upload.wikimedia.org/wikipedia/commons/d/d0/Eth-diamond-rainbow.png",
           weight: productweight.toString(),
           type: "carbon",
           description: productdescription,
           carbon_amount: carbonAmount.toString(),
           location: Location,
-          shelf: "no",
+          shelf: shelfselected,
         },
         {
           headers: {
@@ -142,6 +147,7 @@ const EnterpriseCard = ({
       console.log(response.data.code);
       if (response.data.code === 200) {
         alert("編輯成功");
+        window.location.reload();
         return true;
       } else if (response.data.code === 405) {
         alert("參數不合法");
@@ -169,6 +175,8 @@ const EnterpriseCard = ({
   }
 
   function buttonupdate() {
+    // console.log("inputdes",document.getElementById('inputdes').value)
+    // console.log("productName",document.getElementById('productName').value)
     updateproduct(product_id);
   }
 
@@ -213,17 +221,17 @@ const EnterpriseCard = ({
             {Shelf == "yes" ? "已上架" : "已下架"}
           </a>
         </div>
-        <div class="row justify-content-between align-items-end">
-          <div class="row-4">
+        <div className="row justify-content-between align-items-end">
+          <div className="row-4">
             <Button variant=" btn  btn-outline-primary" onClick={handleShow}>
               編輯
             </Button>
           </div>
 
-          <div class="row-4">
+          <div className="row-4">
             <button
               type="button"
-              class="btn  btn-outline-danger "
+              className="btn  btn-outline-danger "
               data-toggle="modal"
               data-target={`#deletModal${product_id}`}
             >
@@ -239,25 +247,26 @@ const EnterpriseCard = ({
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="input2">商品名稱</label>
+            <div className="form-row">
+              <div className="form-group col-md-6">
+                <label htmlFor="input2">商品名稱</label>
                 <input
                   type="text"
+                  id="productName"
                   defaultValue={title}
-                  class="form-control"
+                  className="form-control"
                   onChange={(e) => {
                     setProductName(e.target.value);
                   }}
                   placeholder="商品名稱"
                 />
               </div>
-              <div class="form-group col-md-6">
-                <label for="inputnumber2">數量</label>
+              <div className="form-group col-md-6">
+                <label htmlFor="inputnumber2">數量</label>
                 <input
                   defaultValue={amount}
                   type="number"
-                  class="form-control"
+                  className="form-control"
                   id="inputnumber2"
                   placeholder="數量"
                   onChange={(e) => {
@@ -266,12 +275,12 @@ const EnterpriseCard = ({
                 />
               </div>
             </div>
-            <div class="form-group">
-              <label for="FormControlFile2">上傳照片</label>
+            <div className="form-group">
+              <label htmlFor="FormControlFile2">上傳照片</label>
               <input
-                type="file"
-                // defaultValue={img}
-                class="form-control-file"
+                type="input"
+                defaultValue={img}
+                className="form-control-file"
                 id="FormControlFile2"
                 onChange={(e) => {
                   setPicture(e.target.value);
@@ -279,12 +288,12 @@ const EnterpriseCard = ({
               />
             </div>
             <img src={img} style={{ maxWidth: 100, height: 100 }} />
-            <div class="form-group">
-              <label for="inputvalue2">價格</label>
+            <div className="form-group">
+              <label htmlFor="inputvalue2">價格</label>
               <input
                 defaultValue={price}
                 type="value"
-                class="form-control"
+                className="form-control"
                 id="inputvalue2"
                 placeholder="價格"
                 onChange={(e) => {
@@ -292,12 +301,12 @@ const EnterpriseCard = ({
                 }}
               />
             </div>
-            <div class="form-group">
-              <label for="inputcarbon">碳權點數</label>
+            <div className="form-group">
+              <label htmlFor="inputcarbon">碳權點數</label>
               <input
                 defaultValue={carbon}
                 type="number"
-                class="form-control"
+                className="form-control"
                 id="inputcarbon"
                 placeholder="10"
                 onChange={(e) => {
@@ -305,12 +314,12 @@ const EnterpriseCard = ({
                 }}
               />
             </div>
-            <div class="form-group">
-              <label for="inputdes">描述</label>
+            <div className="form-group">
+              <label htmlFor="inputdes">描述</label>
               <input
                 defaultValue={description}
                 type="text"
-                class="form-control"
+                className="form-control"
                 id="inputdes"
                 placeholder="商品描述"
                 onChange={(e) => {
@@ -318,25 +327,25 @@ const EnterpriseCard = ({
                 }}
               />
             </div>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="inputweight2">重量</label>
+            <div className="form-row">
+              <div className="form-group col-md-6">
+                <label htmlFor="inputweight2">重量</label>
                 <input
                   defaultValue={weight}
                   type="number"
-                  class="form-control"
+                  className="form-control"
                   id="inputweight2"
                   onChange={(e) => {
                     setWeight(e.target.value);
                   }}
                 />
               </div>
-              {/* <div class="form-group col-md-4">
-                <label for="inputState">商品種類</label>
+              {/* <div className="form-group col-md-4">
+                <label htmlFor="inputState">商品種類</label>
                 <select
                 //   defaultValue={{Producttype} == "carbon" ? }
                   id="inputType"
-                  class="form-control"
+                  className="form-control"
                   value={selected}
                   onChange={handleChange}
                 >
@@ -349,12 +358,12 @@ const EnterpriseCard = ({
               </div> */}
             </div>
 
-            <div class="form-group">
-              <label for="inputState2">上下架</label>
+            <div className="form-group">
+              <label htmlFor="inputState2">上下架</label>
               <select
                 defaultValue={Shelf}
                 id="inputState2"
-                class="form-control"
+                className="form-control"
                 onChange={shelfhandleChange}
               >
                 {shelfOption.map((option) => (
@@ -383,33 +392,33 @@ const EnterpriseCard = ({
       </Modal>
 
       <div
-        class="modal fade"
+        className="modal fade"
         id={`deletModal${product_id}`}
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-labelledby="exampleModalCenterTitle"
         aria-hidden="true"
       >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalCenterTitle">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalCenterTitle">
                 删除提示
               </h5>
               <button
                 type="button"
-                class="close"
+                className="close"
                 data-dismiss="modal"
                 aria-label="Close"
               >
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body">你確認刪除嗎？</div>
-            <div class="modal-footer">
+            <div className="modal-body">你確認刪除嗎？</div>
+            <div className="modal-footer">
               <button
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-dismiss="modal"
               >
                 關閉
@@ -417,7 +426,7 @@ const EnterpriseCard = ({
 
               <button
                 type="button"
-                class="btn btn-success"
+                className="btn btn-success"
                 data-dismiss="modal"
                 onClick={buttondelet}
               >
