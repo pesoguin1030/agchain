@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import validator from "validator";
@@ -37,6 +37,11 @@ function Signup(props) {
   const [brandMessage, setbrandMessage] = useState(null);
   // const [consumerButtonDisabled, setconsumerButtonDisabled] = useState(false);
   // const [enterButtonDisabled, setenterButtonDisabled] = useState(false);
+
+  useEffect(() => {
+    var button = document.getElementById("consumer-tab");
+    button.click();
+  }, []);
 
   const [countys, setCountys] = useState([
     { text: "基隆市" },
