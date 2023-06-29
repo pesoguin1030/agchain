@@ -2,8 +2,10 @@ import React, { useState, useContext, useEffect } from "react";
 import { AuthContext, CartContext } from "../../appContext";
 import axios from "axios";
 import storage from "../../utils/storage";
+import request from "../../utils/request";
 
 import validator from "validator";
+import { async } from "q";
 
 // TODO: 修改所有javascript:;
 
@@ -17,6 +19,59 @@ function AccountInfo(props) {
   const [gender, setGender] = useState(null);
 
   const [emailError, setEmailError] = useState(false);
+  const [notify, setnotify] = useState(false);
+  const [topping, setTopping] = useState("");
+
+  const onOptionChange = (e) => {
+    setnotify(e.target.value);
+    console.log(e.target.value);
+  };
+
+  async function setnotifymessage() {
+    try {
+      const userToken = storage.getAccessToken();
+
+      const response = await request.post(
+        `/usersv2/notify/set`,
+        {
+          accept: notify,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      console.log("response", response);
+      alert("已儲存變更");
+    } catch (err) {
+      alert("伺服器發生問題，上架失敗");
+      console.log(err);
+      return false;
+    }
+  }
+
+  function buttonsetnotify() {
+    setnotifymessage();
+  }
+  useEffect(() => {
+    async function getnotify() {
+      try {
+        const userToken = storage.getAccessToken();
+        const response = await request.get(`/usersv2/notify/get`, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        console.log("response111", response.data);
+        setTopping(response.data.message);
+      } catch (err) {
+        console.log("debug error", err);
+        return false;
+      }
+    }
+    getnotify();
+  }, []);
 
   // useEffect(()=>{
   // console.log("name: "+name);
@@ -471,75 +526,22 @@ function AccountInfo(props) {
                       </div>
                     </div>
                   </div>
-                  {/* <div class="row form-group">
-                    <label class="col-sm-3 col-form-label input-label">
-                      性別
-                    </label>
-
-                    <div class="col-sm-9">
-                      <div class="input-group input-group-md-down-break">
-                        <div class="form-control">
-                          <div class="custom-control custom-radio">
-                            <input
-                              type="radio"
-                              class="custom-control-input"
-                              name="genderTypeRadio"
-                              id="genderTypeRadio1"
-                            />
-                            <label
-                              class="custom-control-label"
-                              htmlFor="genderTypeRadio1"
-                            >
-                              男性
-                            </label>
-                          </div>
-                        </div>
-
-                        <div class="form-control">
-                          <div class="custom-control custom-radio">
-                            <input
-                              type="radio"
-                              class="custom-control-input"
-                              name="genderTypeRadio"
-                              id="genderTypeRadio2"
-                              checked
-                              onChange={(e) => {
-                                console.log(e + "is unchecked :)");
-                              }}
-                            />
-                            <label
-                              class="custom-control-label"
-                              htmlFor="genderTypeRadio2"
-                            >
-                              女性
-                            </label>
-                          </div>
-                        </div>
-
-                        <div class="form-control">
-                          <div class="custom-control custom-radio">
-                            <input
-                              type="radio"
-                              class="custom-control-input"
-                              name="genderTypeRadio"
-                              id="genderTypeRadio3"
-                            />
-                            <label
-                              class="custom-control-label"
-                              htmlFor="genderTypeRadio3"
-                            >
-                              其他
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
-
                   <div class="row form-group">
                     <label class="col-sm-3 col-form-label input-label">
                       通知
                     </label>
+                    {/* <select
+                      id="inputType"
+                      class="form-control"
+                      value={selected}
+                      onChange={handleChange}
+                    >
+                      {options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.text}
+                        </option>
+                      ))}
+                    </select> */}
 
                     <div class="col-sm-9">
                       <div class="input-group input-group-md-down-break">
@@ -550,12 +552,15 @@ function AccountInfo(props) {
                               class="custom-control-input"
                               name="genderTypeRadio"
                               id="genderTypeRadio1"
+                              value="true"
+                              // checked={topping == "true"}
+                              onChange={onOptionChange}
                             />
                             <label
                               class="custom-control-label"
                               htmlFor="genderTypeRadio1"
                             >
-                              男性
+                              願意接收到本平臺的通知
                             </label>
                           </div>
                         </div>
@@ -567,33 +572,15 @@ function AccountInfo(props) {
                               class="custom-control-input"
                               name="genderTypeRadio"
                               id="genderTypeRadio2"
-                              checked
-                              onChange={(e) => {
-                                console.log(e + "is unchecked :)");
-                              }}
+                              value="false"
+                              // checked={topping == "false"}
+                              onChange={onOptionChange}
                             />
                             <label
                               class="custom-control-label"
                               htmlFor="genderTypeRadio2"
                             >
-                              女性
-                            </label>
-                          </div>
-                        </div>
-
-                        <div class="form-control">
-                          <div class="custom-control custom-radio">
-                            <input
-                              type="radio"
-                              class="custom-control-input"
-                              name="genderTypeRadio"
-                              id="genderTypeRadio3"
-                            />
-                            <label
-                              class="custom-control-label"
-                              htmlFor="genderTypeRadio3"
-                            >
-                              其他
+                              不允許收到本平臺的通知
                             </label>
                           </div>
                         </div>
@@ -635,8 +622,7 @@ function AccountInfo(props) {
                 <button
                   class="btn btn-primary"
                   onClick={() => {
-                    changePersonalInfo(true);
-                    window.location.reload();
+                    buttonsetnotify();
                   }}
                 >
                   儲存變更

@@ -20,10 +20,10 @@ function Acquire() {
   const [price, setprice] = useState("");
   const [min, setmin] = useState("");
   const [multiplier, setmultiplier] = useState("");
-  const [picture, setPicture] = useState(null);
+  const [picture, setPicture] = useState("https://imgur.com/gallery/TSO1SX1");
   const [description, setdescription] = useState("");
   const [expire_time, setexpire_time] = useState("");
-
+  const expiretime = "2024-05-16 00:00:00";
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -36,6 +36,26 @@ function Acquire() {
     />
   );
   console.log("date", startDate);
+  const items = [
+    {
+      id: 1,
+      image: "image1.jpg",
+      date: "2023-04-26",
+      price: 29.99,
+    },
+    {
+      id: 2,
+      image: "image2.jpg",
+      date: "2023-04-27",
+      price: 39.99,
+    },
+    {
+      id: 3,
+      image: "image3.jpg",
+      date: "2023-04-28",
+      price: 49.99,
+    },
+  ];
 
   useEffect(() => {
     const handleFetchAcquire = async () => {
@@ -60,7 +80,7 @@ function Acquire() {
           multiplier: multiplier,
           image: picture,
           description: description,
-          expire_time: expire_time,
+          expire_time: expiretime,
         },
         {
           headers: {
@@ -284,7 +304,13 @@ function Acquire() {
               <Button variant="secondary" onClick={handleClose}>
                 關閉
               </Button>
-              <Button variant="primary" onClick={handleClose}>
+              <Button
+                variant="primary"
+                onClick={(event) => {
+                  buttonCreateAcquire();
+                  handleClose();
+                }}
+              >
                 發佈
               </Button>
             </Modal.Footer>
@@ -294,15 +320,27 @@ function Acquire() {
             className="list-group list-group-horizontal border-0 display-type"
           >
             <li className="list-group-item border-0  p-1 p-sm-2 ">
-              <a href="#display-card" data-bs-toggle="tab" aria-expanded="true">
+              <a
+                class="nav-link"
+                id="card-tab"
+                data-toggle="tab"
+                href="#card"
+                role="tab"
+                aria-controls="One"
+                aria-selected="true"
+              >
                 <i className="fa fa-th-large" aria-hidden="true"></i>
               </a>
             </li>
             <li className="list-group-item border-0 p-1 p-sm-2">
               <a
-                href="#display-table"
-                data-bs-toggle="tab"
-                aria-expanded="true"
+                class="nav-link"
+                id="list-tab"
+                data-toggle="tab"
+                href="#list"
+                role="tab"
+                aria-controls="Two"
+                aria-selected="false"
               >
                 <i className="fa fa-list-ul"></i>
               </a>
@@ -310,67 +348,86 @@ function Acquire() {
           </ul>
         </div>
       </div>
+
       <div className="tab-content" id="nav-tabContent">
-        <section id="blog" className="block blog-block">
-          <Container fluid>
-            <Row>
-              {acquire.map((blog) => {
-                return (
-                  <Col sm={4} key={blog.id}>
-                    <div className="holder">
-                      <Card>
-                        <img
-                          src={require("../../themes/sell1.jpg")}
-                          alt="Background"
-                        />
-                        <Card.Body>
-                          發佈時間:{" "}
-                          <time style={{ color: "green" }}>
-                            {blog.publish_time}
-                          </time>
-                          <Card.Title
-                            style={{
-                              color: "#f64b4b",
-                              fontWeight: "600",
-                              fontSize: "22px",
-                            }}
-                          >
-                            {blog.description}
-                          </Card.Title>
-                          <Card.Text>
-                            收購點數 {blog.acquire_amount} 已收購點數
-                            {blog.has_amount}
-                          </Card.Text>
-                          <Card.Text>
-                            最小收購量 {blog.min} 收購倍數 {blog.multiplier}
-                          </Card.Text>
-                          <Card.Text>收購單價{blog.price}</Card.Text>
-                          <div className="row">
-                            <div className="col-md-6">
-                              <a
-                                href={blog.description}
-                                className="btn btn-primary"
-                              >
-                                編輯 <i className="fas fa-chevron-right"></i>
-                              </a>
+        <div role="tabpanel" class="tab-pane fade in active" id="card">
+          <section id="blog" className="block blog-block">
+            <Container fluid>
+              <Row>
+                {acquire.map((blog) => {
+                  return (
+                    <Col sm={4} key={blog.id}>
+                      <div className="holder">
+                        <Card>
+                          <img
+                            src={require("../../themes/sell1.jpg")}
+                            alt="Background"
+                          />
+                          <Card.Body>
+                            發佈時間:{" "}
+                            <time style={{ color: "green" }}>
+                              {blog.publish_time}
+                            </time>
+                            <Card.Title
+                              style={{
+                                color: "#f64b4b",
+                                fontWeight: "600",
+                                fontSize: "22px",
+                              }}
+                            >
+                              {blog.description}
+                            </Card.Title>
+                            <Card.Text>
+                              收購點數 {blog.acquire_amount} 已收購點數
+                              {blog.has_amount}
+                            </Card.Text>
+                            <Card.Text>
+                              最小收購量 {blog.min} 收購倍數 {blog.multiplier}
+                            </Card.Text>
+                            <Card.Text>收購單價{blog.price}</Card.Text>
+                            <div className="row">
+                              <div className="col-md-6">
+                                <a
+                                  href={blog.description}
+                                  className="btn btn-primary"
+                                >
+                                  編輯 <i className="fas fa-chevron-right"></i>
+                                </a>
+                              </div>
+                              <div className="col-md-6">
+                                <button type="button" class="btn btn-info">
+                                  開啓
+                                </button>
+                              </div>
                             </div>
-                            <div className="col-md-6">
-                              <button type="button" class="btn btn-info">
-                                <i class="fas fa-plane" aria-hidden="true">
-                                  推送通知
-                                </i>
-                              </button>
-                            </div>
-                          </div>
-                        </Card.Body>
-                      </Card>
-                    </div>
-                  </Col>
-                );
-              })}
-            </Row>
+                          </Card.Body>
+                        </Card>
+                      </div>
+                    </Col>
+                  );
+                })}
+              </Row>
+            </Container>
+          </section>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="list">
+          <Container>
+            {acquire.map((blog) => (
+              <Card key={blog.id} className="my-3">
+                {/* <Card.Img variant="top" style={{height:100,width:100}} src={require("../../themes/sell1.jpg")} alt="Item Image"  /> */}
+                <Card.Body className="d-flex justify-content-between align-items-center">
+                  <div>
+                    <Card.Text>发布日期: {blog.publish_time}</Card.Text>
+                    <Card.Text>收购单价: ${blog.price}</Card.Text>
+                    <Card.Text>收购点数: {blog.acquire_amount}</Card.Text>
+                    <Card.Text>已收购点数: {blog.has_amount}</Card.Text>
+                  </div>
+                  <Button variant="outline-primary">编辑</Button>{" "}
+                </Card.Body>
+              </Card>
+            ))}
           </Container>
-        </section>
+        </div>
       </div>
     </div>
   );
