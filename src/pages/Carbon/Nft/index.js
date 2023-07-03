@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import uuid4 from "uuid4";
 import jsonFile from "../../../utils/jsonFile";
-import * as CarbonNftApi from"../../../api/carbon/nft";
+import * as CarbonNftApi from "../../../api/carbon/nft";
 
 function CarbonNft() {
   const history = useHistory();

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { useHistory } from "react-router-dom";
 import * as CarbonWalletApi from "../../../api/carbon/wallet";
 import * as TokenCenter from "../../../abi/ERC20TokenCenter";
 import PolygonNetwork from "../../../abi/PolygonNetwork.json";
 const polygonscan = PolygonNetwork.polygonscan;
 
 function CarbonWallet() {
-  const history = useHistory();
   // const INVALID_WALLET_ADDRESS = "使用者未綁定存摺"
   const [walletAddress, setWalletAddress] = useState("");
   const [walletBalance, setWalletBalance] = useState(0);
