@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import * as CarbonWalletApi from "../../../api/carbon/wallet";
 import * as TokenCenter from "../../../abi/ERC20TokenCenter";
-import PolygonNetwork from "../../../abi/PolygonNetwork.json";
-const polygonscan = PolygonNetwork.polygonscan;
+import ContractSettings from "../../../abi/ContractSettings.json";
+const polygonscan = ContractSettings.etherscan;
 
 function CarbonWallet() {
   // const INVALID_WALLET_ADDRESS = "使用者未綁定存摺"
@@ -23,8 +23,8 @@ function CarbonWallet() {
       } else {
         console.log("MetaMask is installed!");
 
-        getWallet();
-        getCurrentTransferEvent();
+        getWallet()
+        getCurrentTransferEvent()
       }
     },
     [walletAddress]
@@ -182,8 +182,7 @@ function CarbonWallet() {
             "\namount",
             amount
           );
-          if (walletAllowance.gte(amount)) {
-            //Bignumber>=other
+          if (walletAllowance>=amount) {
             const provider = new ethers.providers.Web3Provider(
               window.ethereum,
               "any"

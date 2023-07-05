@@ -6,10 +6,10 @@ import * as CarbonNftApi from "../../../api/carbon/nft";
 import * as CarbonCredit from "../../../abi/CarbonCreditNFT";
 import * as CarbonWalletApi from "../../../api/carbon/wallet";
 import * as TokenFactory from "../../../abi/ERC721VaultFactory";
-import PolygonNetwork from "../../../abi/PolygonNetwork.json";
-const chainId = PolygonNetwork.chainId;
-const polygonscan = PolygonNetwork.polygonscan;
-const carbonCreditWallet = PolygonNetwork.wallet.carbonCredit;
+import ContractSettings from "../../../abi/ContractSettings.json";
+const chainId = ContractSettings.chainId;
+const polygonscan = ContractSettings.etherscan;
+const carbonCreditWallet = ContractSettings.owner;
 function CarbonNftList() {
   const history = useHistory();
   let [rowData, setRowData] = useState([]);

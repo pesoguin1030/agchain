@@ -1,11 +1,11 @@
-import ERC20TokenCenter from "./abi/fractional-art/ERC20TokenCenter.sol/ERC20TokenCenter.json";
-import PolygonNetwork from "./PolygonNetwork.json";
 import { ethers } from "ethers";
+import contractSettings from'./ContractSettings.json'
+import ERC20TokenCenter from "./artifacts/contracts/fractional/ERC20TokenCenter.sol/ERC20TokenCenter.json"
 
-const center_ABI = ERC20TokenCenter.abi;
-const center_Address = PolygonNetwork.contracts.erc20TokenCenter;
+const ERC20TokenCenterABI = ERC20TokenCenter.abi;
+const ERC20TokenCenterAddress = contractSettings.contracts.ERC20TokenCenter;
 const provider = new ethers.providers.JsonRpcProvider(
-  PolygonNetwork.polygonProvider
+    contractSettings.rpcProvider
 );
 
 // Read------------------------------------------------------------------------
@@ -14,12 +14,12 @@ const provider = new ethers.providers.JsonRpcProvider(
 export async function getAllowance(owner) {
   try {
     const contractInstance = new ethers.Contract(
-      center_Address,
-      center_ABI,
+      ERC20TokenCenterAddress,
+      ERC20TokenCenterABI,
       provider
     );
     const result = await contractInstance
-      .allowance(owner, PolygonNetwork.wallet.carbonCredit)
+      .allowance(owner, contractSettings.owner)
       .then((result) => {
         return result;
       });
@@ -35,13 +35,12 @@ export async function getAllowance(owner) {
 export async function getBalance(account) {
   try {
     const contractInstance = new ethers.Contract(
-      center_Address,
-      center_ABI,
+      ERC20TokenCenterAddress,
+      ERC20TokenCenterABI,
       provider
     );
-    const result = await contractInstance.balanceOf(account).then((result) => {
-      return result;
-    });
+    const result = await contractInstance.balanceOf(account)
+
     console.log(result);
     return result;
   } catch (error) {
@@ -50,31 +49,31 @@ export async function getBalance(account) {
   }
 }
 
-// Get the token factory address
-export async function getTokenFactory() {
-  try {
-    const contractInstance = new ethers.Contract(
-      center_Address,
-      center_ABI,
-      provider
-    );
-    const result = await contractInstance.tokenFactory().then((result) => {
-      return result;
-    });
-    console.log(result);
-    return result;
-  } catch (error) {
-    console.log("Error:", error.message);
-    throw new Error(error.message);
-  }
-}
+// // Get the token factory address
+// export async function getTokenFactory() {
+//   try {
+//     const contractInstance = new ethers.Contract(
+//       ERC20TokenCenterAddress,
+//       ERC20TokenCenterABI,
+//       provider
+//     );
+//     const result = await contractInstance.tokenFactory().then((result) => {
+//       return result;
+//     });
+//     console.log(result);
+//     return result;
+//   } catch (error) {
+//     console.log("Error:", error.message);
+//     throw new Error(error.message);
+//   }
+// }
 
 // Get total supply
 export async function getTotalSupply() {
   try {
     const contractInstance = new ethers.Contract(
-      center_Address,
-      center_ABI,
+      ERC20TokenCenterAddress,
+      ERC20TokenCenterABI,
       provider
     );
     const result = await contractInstance.totalSupply().then((result) => {
@@ -95,7 +94,7 @@ export async function getApprovalEvent(singer, caller) {
       "event Approval(address indexed owner, address indexed spender, uint256 value)",
     ];
     const contractInstance = new ethers.Contract(
-      center_Address,
+      ERC20TokenCenterAddress,
       event_ABI,
       singer
     );
@@ -135,20 +134,22 @@ export async function getApprovalEvent(singer, caller) {
 // Get full allowance record event
 export async function getAllowanceRecordEvent(singer, caller) {
   try {
+    console.log("Debug: getAllowanceRecordEvent")
     const event_ABI = [
-      "event AllowanceRecord(address indexed owner, address indexed spender, uint256 lastAmount, uint256 amount)",
+      "event AllowanceRecord(address indexed owner, address indexed spender, uint256 prevAmount, uint256 currAmount)",
     ];
     const contractInstance = new ethers.Contract(
-      center_Address,
+      ERC20TokenCenterAddress,
       event_ABI,
       singer
     );
-
+    console.log("Debug: getAllowanceRecordEvent filters.AllowanceRecord","\ncaller=",caller,"\nowner,",contractSettings.owner)
     const filter = contractInstance.filters.AllowanceRecord(
       caller,
-      PolygonNetwork.wallet.carbonCredit
+      contractSettings.owner
     );
     const result = await contractInstance.queryFilter(filter);
+    console.log("Debug: getAllowanceRecordEvent queryFilter=",result)
     var resultArray = [];
     for (const index in result) {
       const blockData = await provider.getBlock(result[index].blockNumber);
@@ -185,36 +186,35 @@ export async function getCurrentTransferEvent(singer, caller) {
   try {
     //Get the latest approve event
     const event_ABI_allowance = [
-      "event AllowanceRecord(address indexed owner, address indexed spender, uint256 lastAmount, uint256 amount)",
+      "event AllowanceRecord(address indexed owner, address indexed spender, uint256 prevAmount, uint256 currAmount)",
     ];
     const contractInstance_allowance = new ethers.Contract(
-      center_Address,
+      ERC20TokenCenterAddress,
       event_ABI_allowance,
       singer
     );
 
     const filter_allowance = contractInstance_allowance.filters.AllowanceRecord(
       caller,
-      PolygonNetwork.wallet.carbonCredit
+      contractSettings.owner
     );
+
     const result_allowance = await contractInstance_allowance.queryFilter(
       filter_allowance
     );
-
     //Get the current transfer event from the latest approve
     const event_ABI_transfer = [
       "event TransferByPlatform(address indexed from, address indexed spender ,address to,uint256 amount)",
     ];
     const contractInstance_transfer = new ethers.Contract(
-      center_Address,
+      ERC20TokenCenterAddress,
       event_ABI_transfer,
       singer
     );
-
     const filter_transfer =
       contractInstance_transfer.filters.TransferByPlatform(
         caller,
-        PolygonNetwork.wallet.carbonCredit
+        contractSettings.owner
       );
     // console.log("result_allowance[result_allowance.length-1].blockNumber",result_allowance[result_allowance.length-1].blockNumber);
     // console.log("result_allowance",result_allowance);
@@ -222,7 +222,6 @@ export async function getCurrentTransferEvent(singer, caller) {
       filter_transfer,
       result_allowance[result_allowance.length - 1].blockNumber
     );
-
     // console.log("result_transfer",result_transfer);
     var currentTransfer = 0;
     for (const index in result_transfer) {
@@ -247,7 +246,7 @@ export async function getAllTransferEvent(singer, caller) {
       "event TransferByPlatform(address indexed from, address indexed spender ,address to,uint256 amount)",
     ];
     const contractInstance_transfer = new ethers.Contract(
-      center_Address,
+      ERC20TokenCenterAddress,
       event_ABI_transfer,
       singer
     );
@@ -255,7 +254,7 @@ export async function getAllTransferEvent(singer, caller) {
     const filter_transfer =
       contractInstance_transfer.filters.TransferByPlatform(
         caller,
-        PolygonNetwork.wallet.carbonCredit
+        contractSettings.owner
       );
     const result_transfer = await contractInstance_transfer.queryFilter(
       filter_transfer
@@ -305,12 +304,12 @@ export async function getAllTransferEvent(singer, caller) {
 export async function setERC20Approval(singer, amount) {
   try {
     const contractInstance = new ethers.Contract(
-      center_Address,
-      center_ABI,
+      ERC20TokenCenterAddress,
+      ERC20TokenCenterABI,
       singer
     );
     const result = await contractInstance
-      .approve(PolygonNetwork.wallet.carbonCredit, amount)
+      .approve(contractSettings.owner, amount)
       .then((result) => {
         return result;
       });
@@ -326,12 +325,12 @@ export async function setERC20Approval(singer, amount) {
 export async function increaseAllowance(singer, addValue) {
   try {
     const contractInstance = new ethers.Contract(
-      center_Address,
-      center_ABI,
+      ERC20TokenCenterAddress,
+      ERC20TokenCenterABI,
       singer
     );
     const result = await contractInstance
-      .increaseAllowance(PolygonNetwork.wallet.carbonCredit, addValue)
+      .increaseAllowance(contractSettings.owner, addValue)
       .then((result) => {
         return result;
       });
@@ -347,12 +346,12 @@ export async function increaseAllowance(singer, addValue) {
 export async function decreaseAllowance(singer, subtractedValue) {
   try {
     const contractInstance = new ethers.Contract(
-      center_Address,
-      center_ABI,
+      ERC20TokenCenterAddress,
+      ERC20TokenCenterABI,
       singer
     );
     const result = await contractInstance
-      .decreaseAllowance(PolygonNetwork.wallet.carbonCredit, subtractedValue)
+      .decreaseAllowance(contractSettings.owner, subtractedValue)
       .then((result) => {
         return result;
       });
@@ -365,15 +364,15 @@ export async function decreaseAllowance(singer, subtractedValue) {
 }
 
 // Burn ERC20 token
-export async function burnERC20token(curator, amount) {
+export async function burnERC20token(from, amount) {
   try {
     const contractInstance = new ethers.Contract(
-      center_Address,
-      center_ABI,
+      ERC20TokenCenterAddress,
+      ERC20TokenCenterABI,
       provider
     );
     const result = await contractInstance
-      .burn(curator, amount)
+      .burnToken(from, amount)
       .then((result) => {
         return result;
       });
@@ -385,16 +384,16 @@ export async function burnERC20token(curator, amount) {
   }
 }
 
-// Burn ERC20 token
+// set NFT Vault Factory
 export async function setTokenFactory(token_factory_address) {
   try {
     const contractInstance = new ethers.Contract(
-      center_Address,
-      center_ABI,
+      ERC20TokenCenterAddress,
+      ERC20TokenCenterABI,
       provider
     );
     const result = await contractInstance
-      .setTokenFactory(token_factory_address)
+      .setERC721VaultFactory(token_factory_address)
       .then((result) => {
         return result;
       });
@@ -410,15 +409,15 @@ export async function setTokenFactory(token_factory_address) {
 export async function getPermitSignature(signer,amount,deadline){
   try{
     const contractInstance = new ethers.Contract(
-        center_Address,
-        center_ABI,
+        ERC20TokenCenterAddress,
+        ERC20TokenCenterABI,
         provider
     );
 
     const domain = {
       name: await contractInstance.name(),
       version: '1',
-      chainId: PolygonNetwork.chainId,
+      chainId: contractSettings.chainId,
       verifyingContract: contractInstance.address,
     };
 
@@ -449,7 +448,7 @@ export async function getPermitSignature(signer,amount,deadline){
     };
 
     const value = {
-      spender:PolygonNetwork.wallet.carbonCredit,
+      spender:contractSettings.owner,
       owner: await signer.getAddress(),
       value: amount,
       nonce: await contractInstance.nonces(await signer.getAddress()),
