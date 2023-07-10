@@ -53,7 +53,7 @@ function TempPointRecord() {
         throw new Error(externalParty.message);
       }
     } catch (e) {
-      console.log("Debug: getTempPointsRecord error=", e.message);
+      console.log("Debug: getExternalParty error=", e.message);
       return;
     }
   };
@@ -67,6 +67,8 @@ function TempPointRecord() {
           var tmp = new Date(element.timestamp);
           element.timestamp = tmp.toLocaleString();
         });
+        // resultArr = resultArr.sort((a, b) => b.timestamp - a.timestamp);
+        resultArr.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
         console.log("Debug: getTempPointsRecord=", resultArr);
         setTempPointResult(resultArr);
       } else {
