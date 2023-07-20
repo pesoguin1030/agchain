@@ -11,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale, setDefaultLocale } from "react-datepicker";
 import cn from "date-fns/locale/zh-CN";
 import { AuthContext } from "../../appContext";
+import { AcquireCard } from "../../components/Card/AcquireCard/index";
 registerLocale("cn", cn);
 
 function Acquire() {
@@ -36,26 +37,6 @@ function Acquire() {
     />
   );
   console.log("date", startDate);
-  const items = [
-    {
-      id: 1,
-      image: "image1.jpg",
-      date: "2023-04-26",
-      price: 29.99,
-    },
-    {
-      id: 2,
-      image: "image2.jpg",
-      date: "2023-04-27",
-      price: 39.99,
-    },
-    {
-      id: 3,
-      image: "image3.jpg",
-      date: "2023-04-28",
-      price: 49.99,
-    },
-  ];
 
   useEffect(() => {
     const handleFetchAcquire = async () => {
@@ -354,7 +335,7 @@ function Acquire() {
           <section id="blog" className="block blog-block">
             <Container fluid>
               <Row>
-                {acquire.map((blog) => {
+                {/* {acquire.map((blog) => {
                   return (
                     <Col sm={4} key={blog.id}>
                       <div className="holder">
@@ -405,7 +386,35 @@ function Acquire() {
                       </div>
                     </Col>
                   );
-                })}
+                })} */}
+
+                {acquire.map(
+                  ({
+                    id,
+                    publish_time,
+                    description,
+                    acquire_amount,
+                    has_amount,
+                    min,
+                    multiplier,
+                    price,
+                    image,
+                    enable,
+                  }) => (
+                    <AcquireCard
+                      acquireid={id}
+                      publish_time={publish_time}
+                      acquire_amount={acquire_amount}
+                      description={description}
+                      price={price}
+                      has_amount={has_amount}
+                      min={min}
+                      multiplier={multiplier}
+                      enable={enable}
+                      image={image}
+                    />
+                  )
+                )}
               </Row>
             </Container>
           </section>
