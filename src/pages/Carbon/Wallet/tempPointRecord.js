@@ -86,47 +86,17 @@ function TempPointRecord() {
     }
   };
 
-  const handleTempPoint = async (data_id, party_id) => {
-    try {
-      console.log("handleTempPoint!!!", data_id, party_id);
-      // if (bindWallet) {
-      // Donate
-      if (party_id) {
-        setEditingShow(false);
-      } else {
-        // Draw
-        var yes = window.confirm("您確定要領取該點數嗎？");
-        if (!yes) return;
-      }
-      alert("請稍候一下");
-      const handleTempPointResult = await ExternalApi.handleTempPoint(
-        data_id,
-        party_id
-      );
-      if (handleTempPointResult.code === 200) {
-        console.log("Debug: handleTempPoint=", handleTempPointResult.message);
-        if (party_id) {
-          alert("您已成功捐贈！");
-        } else {
-          alert("您已成功領取，可至碳權存摺進行查閱！");
-        }
-        //Reload
-        getTempPointsRecord();
-      } else {
-        throw new Error(handleTempPointResult.message);
-      }
-      // } else {
-      //   alert("請先綁定錢包才可以領取點數");
-      // }
-    } catch (e) {
-      console.log("Debug: handleTempPoint error=", e.message);
-      return;
-    }
-  };
-
   const handleMultiTempPoint = async (party_id, data_id) => {
     try {
-      console.log("handleMultiTempPoint!!!", checkList);
+      console.log(
+        "handleMultiTempPoint!!!",
+        "checkList",
+        checkList,
+        "data_id",
+        data_id,
+        "party_id",
+        party_id
+      );
 
       // Donate
       if (party_id) {
@@ -142,9 +112,11 @@ function TempPointRecord() {
           return;
         }
       }
-      if (checkList.length == 0) var dataIds = [selectedDateId.toString()];
+      if (checkList.length == 0 && data_id == "")
+        var dataIds = [selectedDateId.toString()];
+      else if (data_id != "") dataIds = [data_id.toString()];
       else dataIds = checkList;
-      console.log(dataIds, party_id);
+      console.log("最終確定", dataIds, party_id);
       alert("請稍候一下");
       var txFail = false;
 
