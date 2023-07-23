@@ -30,10 +30,15 @@ export async function handleTempPoint(data_id, party_id) {
   }
 }
 
-export async function getExternalParty() {
+export async function getExternalParty(approved) {
   try {
     const { data } = await request.get(
-      `/carbonExternal/external/getExternalParty`
+      `/carbonExternal/external/getExternalParty`,
+        {
+          params: {
+            approved,
+          },
+        }
     );
     return data;
   } catch (error) {
