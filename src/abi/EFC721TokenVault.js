@@ -3,7 +3,7 @@ import contractSettings from './ContractSettings.json'
 import ERC20TokenCenter from "./artifacts/contracts/fractional/ERC20TokenCenter.sol/ERC20TokenCenter.json"
 
 const center_ABI = ERC20TokenCenter.abi
-const center_Address = contractSettings.contracts.ERC20TokenCenter
+const center_Address = contractSettings.contracts.ERC20TokenCenter.address
 const provider = new ethers.providers.JsonRpcProvider(
     contractSettings.rpcProvider
 )

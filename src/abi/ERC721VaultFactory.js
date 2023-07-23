@@ -8,7 +8,7 @@ const provider = new ethers.providers.JsonRpcProvider(
 );
 
 const ERC721VaultFactoryABI = ERC721VaultFactory.abi;
-const ERC721VaultFactoryAddress = contractSettings.contracts.ERC721VaultFactory;
+const ERC721VaultFactoryAddress = contractSettings.contracts.ERC721VaultFactory.address;
 
 const CarbonCreditNFTABI = CarbonCreditNFT.abi;
 const CarbonCreditNFTAddress = contractSettings.contracts.CarbonCreditNFT;

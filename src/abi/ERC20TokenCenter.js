@@ -3,7 +3,8 @@ import contractSettings from'./ContractSettings.json'
 import ERC20TokenCenter from "./artifacts/contracts/fractional/ERC20TokenCenter.sol/ERC20TokenCenter.json"
 
 const ERC20TokenCenterABI = ERC20TokenCenter.abi;
-const ERC20TokenCenterAddress = contractSettings.contracts.ERC20TokenCenter;
+const ERC20TokenCenterAddress = contractSettings.contracts.ERC20TokenCenter.address;
+const ERC20TokenCenterTransaction = contractSettings.contracts.ERC20TokenCenter.transaction;
 const provider = new ethers.providers.JsonRpcProvider(
     contractSettings.rpcProvider
 );
@@ -100,7 +101,11 @@ export async function getApprovalEvent(singer, caller) {
     );
 
     const filter = contractInstance.filters.Approval(caller);
-    const result = await contractInstance.queryFilter(filter);
+
+    console.log("Debug: getApprovalEvent queryFilter")
+    const result = await filterEventsSinceContractCreate(contractInstance,filter)
+    console.log("Debug: getApprovalEvent queryFilter=",result)
+
     var resultArray = [];
     for (const index in result) {
       const blockData = await provider.getBlock(result[index].blockNumber);
@@ -148,30 +153,33 @@ export async function getAllowanceRecordEvent(singer, caller) {
       caller,
       contractSettings.owner
     );
-    const result = await contractInstance.queryFilter(filter);
+    console.log("Debug: getAllowanceRecordEvent queryFilter")
+    const result = await filterEventsSinceContractCreate(contractInstance,filter)
     console.log("Debug: getAllowanceRecordEvent queryFilter=",result)
     var resultArray = [];
     for (const index in result) {
-      const blockData = await provider.getBlock(result[index].blockNumber);
-      var date = new Date(blockData.timestamp * 1000);
-      const dateFormat =
-        date.getFullYear() +
-        "/" +
-        (date.getMonth() + 1) +
-        "/" +
-        date.getDate() +
-        " " +
-        date.getHours() +
-        ":" +
-        date.getMinutes() +
-        ":" +
-        date.getSeconds();
-      var data = {
-        time: dateFormat,
-        lastAmount: result[index].args[2].toString(),
-        amount: result[index].args[3].toString(),
-      };
-      resultArray.push(data);
+      if(result[index]){
+        const blockData = await provider.getBlock(result[index].blockNumber);
+        var date = new Date(blockData.timestamp * 1000);
+        const dateFormat =
+            date.getFullYear() +
+            "/" +
+            (date.getMonth() + 1) +
+            "/" +
+            date.getDate() +
+            " " +
+            date.getHours() +
+            ":" +
+            date.getMinutes() +
+            ":" +
+            date.getSeconds();
+        var data = {
+          time: dateFormat,
+          lastAmount: result[index].args[2].toString(),
+          amount: result[index].args[3].toString(),
+        };
+        resultArray.push(data);
+      }
     }
     console.log("final answer:", resultArray);
     return resultArray;
@@ -199,9 +207,10 @@ export async function getCurrentTransferEvent(singer, caller) {
       contractSettings.owner
     );
 
-    const result_allowance = await contractInstance_allowance.queryFilter(
-      filter_allowance
-    );
+    console.log("Debug: getCurrentTransferEvent queryFilter1")
+    const result_allowance = await filterEventsSinceContractCreate(contractInstance_allowance,filter_allowance)
+    console.log("Debug: getCurrentTransferEvent queryFilter1=",result_allowance)
+
     //Get the current transfer event from the latest approve
     const event_ABI_transfer = [
       "event TransferByPlatform(address indexed from, address indexed spender ,address to,uint256 amount)",
@@ -218,10 +227,14 @@ export async function getCurrentTransferEvent(singer, caller) {
       );
     // console.log("result_allowance[result_allowance.length-1].blockNumber",result_allowance[result_allowance.length-1].blockNumber);
     // console.log("result_allowance",result_allowance);
-    const result_transfer = await contractInstance_transfer.queryFilter(
-      filter_transfer,
-      result_allowance[result_allowance.length - 1].blockNumber
-    );
+    // const result_transfer = await contractInstance_transfer.queryFilter(
+    //   filter_transfer,
+    //   result_allowance[result_allowance.length - 1].blockNumber
+    // );
+    const start = result_allowance[result_allowance.length - 1].blockNumber
+    console.log("Debug: getCurrentTransferEvent queryFilter2")
+    const result_transfer = await filterEventsSinceContractCreate(contractInstance_transfer,filter_transfer,start)
+    console.log("Debug: getCurrentTransferEvent queryFilter2=",result_allowance)
     // console.log("result_transfer",result_transfer);
     var currentTransfer = 0;
     for (const index in result_transfer) {
@@ -256,16 +269,15 @@ export async function getAllTransferEvent(singer, caller) {
         caller,
         contractSettings.owner
       );
-    const result_transfer = await contractInstance_transfer.queryFilter(
-      filter_transfer
-    );
 
-    // console.log("result_transfer",result_transfer);
+    console.log("Debug: getAllTransferEvent queryFilter")
+    const allEvents_transfer = await filterEventsSinceContractCreate(contractInstance_transfer,filter_transfer)
+    console.log("Debug: getAllTransferEvent queryFilter=",allEvents_transfer)
 
     var resultArray = [];
-    for (const index in result_transfer) {
+    for (const index in allEvents_transfer) {
       const blockData = await provider.getBlock(
-        result_transfer[index].blockNumber
+          allEvents_transfer[index].blockNumber
       );
       var date = new Date(blockData.timestamp * 1000);
       const dateFormat =
@@ -282,9 +294,9 @@ export async function getAllTransferEvent(singer, caller) {
         date.getSeconds();
       var data = {
         time: dateFormat,
-        from: result_transfer[index].args[0].toString(),
-        to: result_transfer[index].args[2].toString(),
-        amount: result_transfer[index].args[3].toString(),
+        from: allEvents_transfer[index].args[0].toString(),
+        to: allEvents_transfer[index].args[2].toString(),
+        amount: allEvents_transfer[index].args[3].toString(),
       };
       resultArray.push(data);
     }
@@ -462,4 +474,27 @@ export async function getPermitSignature(signer,amount,deadline){
     console.log("Error : offChainPermit=", error.message);
     throw new Error(error.message);
   }
+}
+
+async function filterEventsSinceContractCreate(contractInstance,filter,start,end){
+  // Have to fetch 3000 block once
+  // https://ethereum.stackexchange.com/questions/107590/contract-queryfilterfilter-giving-me-errors-in-ethers-js
+  // Ftech the blocks after the contract create
+  console.log("Debug: Start filterEventsSinceContractCreate")
+
+  const txn = await provider.getTransactionReceipt(ERC20TokenCenterTransaction)
+  const startBlock = (start?start:await txn.blockNumber)
+  const endBlock = (end?end:await provider.getBlockNumber())
+  console.log("Start Block=",startBlock,"\nEnd Block=",endBlock,"\nInternal=",(endBlock-startBlock));
+  let allEvents=[]
+  for(let i = startBlock; i < endBlock; i += 3000) {
+    const _startBlock = i;
+    const _endBlock = Math.min(endBlock, i + 2999);
+    console.log("Start Block=",_startBlock,"\nEnd Block=",_endBlock,"\nInternal=",(_endBlock-_startBlock),"\nremain",(endBlock-_endBlock));
+    const events = await contractInstance.queryFilter(filter, _startBlock, _endBlock);
+    allEvents = [...allEvents, ...events]
+  }
+
+  console.log("Debug: Finish filterEventsSinceContractCreate","\nResult=",allEvents)
+  return allEvents
 }
