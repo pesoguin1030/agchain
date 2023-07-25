@@ -11,7 +11,7 @@ const ERC721VaultFactoryABI = ERC721VaultFactory.abi;
 const ERC721VaultFactoryAddress = contractSettings.contracts.ERC721VaultFactory.address;
 
 const CarbonCreditNFTABI = CarbonCreditNFT.abi;
-const CarbonCreditNFTAddress = contractSettings.contracts.CarbonCreditNFT;
+const CarbonCreditNFTAddress = contractSettings.contracts.CarbonCreditNFT.address;
 
 // Read---------
 

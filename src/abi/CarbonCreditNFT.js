@@ -3,7 +3,7 @@ import contractSettings from'./ContractSettings.json'
 import CarbonCreditNFT from "./artifacts/contracts/nft/CarbonCreditNFT.sol/CarbonCreditNFT.json"
 
 const CarbonCreditABI = CarbonCreditNFT.abi
-const CarbonCreditAddress = contractSettings.contracts.CarbonCreditNFT
+const CarbonCreditAddress = contractSettings.contracts.CarbonCreditNFT.address
 const provider = new ethers.providers.JsonRpcProvider(
     contractSettings.rpcProvider
 )
