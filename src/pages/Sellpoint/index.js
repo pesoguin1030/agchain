@@ -1,6 +1,5 @@
 import React from "react";
 import { AuthContext, CartContext } from "../../appContext";
-import { Big } from "big.js";
 import { useEffect, useState, useContext } from "react";
 import { UserfetchAcquire, getMatchId, fetchAcquire } from "../../api/product";
 import { Dropdown, DropdownButton } from "react-bootstrap";
@@ -16,25 +15,13 @@ const Sellpoint = () => {
   const [list, setList] = useState(0);
   const [products, setProducts] = useState(list);
   let [buttonDisable, setButtonDisable] = useState(false);
-  const [carbonAcquireId, setCarbonAcquireId] = useState("");
-  const [carbonAcquireInfo, setCarbonAcquireInfo] = useState(undefined);
   const [walletAddress, setWalletAddress] = useState("");
   const [walletBalance, setWalletBalance] = useState(0);
 
-  const GetInfo = async () => {
-    if (!carbonAcquireId) {
-      return;
-    }
-
-    const result = await CarbonAcquireApi.getCarbonAcquire(carbonAcquireId);
-    console.log("getCarbonAcquire result=", result);
-    setCarbonAcquireInfo(result.message);
-  };
-
   const fetchList = async () => {
     try {
-      const result = await fetchAcquire(375);
-      // const result = await UserfetchAcquire();
+      // const result = await fetchAcquire(375);
+      const result = await UserfetchAcquire();
       setList(result.message);
       setProducts(result.message);
       console.log("result", result);
@@ -56,7 +43,7 @@ const Sellpoint = () => {
     try {
       await getWallet();
       const matchID = await getMatchId(walletBalance);
-      handleBuy(matchID);
+      handleBuy(matchID, walletBalance);
     } catch (e) {
       console.log(e);
     }
@@ -91,12 +78,11 @@ const Sellpoint = () => {
     }
   };
 
-  const handleBuy = async (productId) => {
+  const handleBuy = async (productId, amount) => {
     //出售點數
-    if (!carbonAcquireInfo || !productId) {
+    if (!productId || !amount) {
       return;
     }
-    GetInfo();
     setButtonDisable(true);
 
     // 獲取用戶錢包地址
@@ -184,7 +170,7 @@ const Sellpoint = () => {
     try {
       signature = await TokenCenter.getPermitSignature(
         signer,
-        productId,
+        amount,
         deadline
       );
       console.log("Debug: signature=", signature);
@@ -200,8 +186,8 @@ const Sellpoint = () => {
     // sell
     try {
       const result = await CarbonAcquireApi.createCarbonAcquireOrder(
-        carbonAcquireInfo.id.toString(),
         productId.toString(),
+        amount.toString(),
         deadline.toString(),
         v.toString(),
         r.toString(),
@@ -222,10 +208,7 @@ const Sellpoint = () => {
   };
 
   const SearchBar = () => {
-    let searchTimeout = null;
-
     const [searchText, setSearchText] = useState("");
-    const [sortBy, setSortBy] = useState("");
 
     const handleSearch = (event) => {
       event.preventDefault();
@@ -241,7 +224,6 @@ const Sellpoint = () => {
     };
 
     const handleSortChange = (sortOption) => {
-      setSortBy(sortOption);
       // 排序商品
       const sortedProducts = [...products];
       if (sortOption === "price") {
@@ -323,7 +305,7 @@ const Sellpoint = () => {
                     </p>
                     <button
                       className="btn btn-primary"
-                      onClick={() => handleBuy(item.id)}
+                      onClick={() => handleBuy(item.id, item.min)}
                       disabled={buttonDisable}
                     >
                       販售點數
