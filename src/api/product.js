@@ -57,6 +57,20 @@ const fetchAcquire = async (id) => {
   }
 };
 
+const UserfetchAcquire = async () => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.get(`carbon/acquire/order/list`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
 const fetchStore = async (id) => {
   const userToken = storage.getAccessToken();
   try {
@@ -135,6 +149,27 @@ const findFeeProduct = async (farmId) => {
   }
 };
 
+const getMatchId = async (walletBalance) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.post(`carbon/acquire/order/match`, {
+      amount: walletBalance.toString(),
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+
+    console.log("data", data.message);
+    if (data.code === 405) {
+      alert("沒有可以販售的碳權餘額");
+    } else {
+      return data.message;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchProducts,
   ProductDetail,
@@ -145,4 +180,6 @@ export {
   fetchownercarbon,
   fetchStore,
   fetchAcquire,
+  UserfetchAcquire,
+  getMatchId,
 };

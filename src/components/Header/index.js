@@ -401,6 +401,11 @@ const Header = () => {
               <div id="navBar" className="collapse navbar-collapse">
                 <ul className="navbar-nav">
                   <li className="navbar-nav-item">
+                    <Link to="/sellpoint" className="nav-link">
+                      販賣點數
+                    </Link>
+                  </li>
+                  <li className="navbar-nav-item">
                     <Link to="/shop" className="nav-link">
                       選購商品
                     </Link>

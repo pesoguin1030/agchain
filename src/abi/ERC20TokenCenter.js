@@ -405,3 +405,60 @@ export async function setTokenFactory(token_factory_address) {
     throw new Error(error.message);
   }
 }
+
+// get off-chain signature
+export async function getPermitSignature(signer, amount, deadline) {
+  try {
+    const contractInstance = new ethers.Contract(
+      center_Address,
+      center_ABI,
+      provider
+    );
+
+    const domain = {
+      name: await contractInstance.name(),
+      version: "1",
+      chainId: PolygonNetwork.chainId,
+      verifyingContract: contractInstance.address,
+    };
+
+    const types = {
+      Permit: [
+        {
+          name: "owner",
+          type: "address",
+        },
+        {
+          name: "spender",
+          type: "address",
+        },
+        {
+          name: "value",
+          type: "uint256",
+        },
+        {
+          name: "nonce",
+          type: "uint256",
+        },
+        {
+          name: "deadline",
+          type: "uint256",
+        },
+      ],
+    };
+
+    const value = {
+      spender: PolygonNetwork.wallet.carbonCredit,
+      owner: await signer.getAddress(),
+      value: amount,
+      nonce: await contractInstance.nonces(await signer.getAddress()),
+      deadline: deadline,
+    };
+
+    const signature = await signer._signTypedData(domain, types, value);
+    return ethers.utils.splitSignature(signature);
+  } catch (error) {
+    console.log("Error : offChainPermit=", error.message);
+    throw new Error(error.message);
+  }
+}

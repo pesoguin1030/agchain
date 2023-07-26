@@ -39,6 +39,7 @@ import EnterpriseProduct from "./pages/Enterprise/index";
 import Store from "./pages/Store/index";
 import External from "./pages/external";
 import Acquire from "./pages/acquire";
+import Sellpoint from "./pages/Sellpoint/index";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -174,6 +175,10 @@ function App() {
                   </Route>
                   {/* TODO */}
                 </Switch>
+              </Route>
+              <Route path="/sellpoint">
+                <Header />
+                <Sellpoint />
               </Route>
               <Route path="/shop">
                 <Header />
