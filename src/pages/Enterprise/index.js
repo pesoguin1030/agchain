@@ -184,14 +184,9 @@ function EnterpriseProduct() {
 
   useEffect(() => {
     const handleFetchProducts = async () => {
-      // if (render) {
       const { message, code } = await fetch2Products(storeId);
       setProducts(message);
       console.log("products", products);
-      //   if (storeId != 0) {
-      //     setrender(false);
-      //   }
-      // }
     };
 
     searchstoreid();
@@ -278,10 +273,10 @@ function EnterpriseProduct() {
       return;
     }
     createProduct();
-    if (!BalanceInsufficient && !creditInsufficient) {
-      //window.location.reload();
-      console.log("little bitch");
-    }
+    // if (!BalanceInsufficient && !creditInsufficient) {
+    //   //window.location.reload();
+    //   console.log("little bitch");
+    // }
   }
 
   return (
@@ -318,9 +313,9 @@ function EnterpriseProduct() {
           <i className="fas fa-plus" /> 新增商品
         </a>
       </div>
-      {BalanceInsufficient || creditInsufficient ? (
+      {/* {BalanceInsufficient || creditInsufficient ? (
         <AlertModal A={BalanceInsufficient} B={creditInsufficient} />
-      ) : null}
+      ) : null} */}
       <div
         className="modal fade"
         id="exampleModal"

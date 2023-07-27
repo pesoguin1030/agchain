@@ -295,9 +295,7 @@ function StoreInfo(props) {
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                           碳權餘額
                         </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                          {200}
-                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
                       </div>
                     </div>
                   </div>
