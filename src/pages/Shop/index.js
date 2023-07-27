@@ -130,6 +130,7 @@ function Shop() {
                   ({ id, name, description, price,carbon_amount, photo_url }) => (
                     <div className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5" key={id}>
                       <ProductCard
+                        key={id}
                         product_id={id}
                         title={name}
                         description={description}

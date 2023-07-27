@@ -3,12 +3,12 @@ import Constants from "./constants";
 import storage from "../utils/storage";
 
 const fetchProducts = async () => {
-  const userToken = storage.getAccessToken()
+  const userToken = storage.getAccessToken();
   try {
     const { data } = await request.get("/productsv2/list");
     const result = {
-      items:data.message
-    }
+      items: data.message,
+    };
 
     return result;
   } catch (err) {
@@ -16,10 +16,96 @@ const fetchProducts = async () => {
   }
 };
 
-const ProductDetail = async (id) => {
-  const userToken = storage.getAccessToken()
+const fetch2Products = async (id) => {
   try {
-    const { data } = await request.get(`/productsv2/info?productId=`+id);
+    const { data } = await request.get(
+      `/productsv2/list?storeId=${id}&page=0&limit=40&order=desc`
+    );
+
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const fetch3Products = async () => {
+  try {
+    const { data } = await request.get(
+      `/productsv2/list?storeId=&page=0&limit=40&order=desc`
+    );
+
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const fetchAcquire = async (id) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.get(
+      `/carbon/acquire/list?userId=${id}&page=&limit=&order`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const UserfetchAcquire = async () => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.get(`carbon/acquire/order/list`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const fetchStore = async (id) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.get(`farmsv2/info?farm_id=${id}`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const fetchownercarbon = async (id) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.get(
+      `farmsv2/carbonCreditAllowanceByStoreOwner?storeId=${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+const ProductDetail = async (id) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.get(`/productsv2/info?productId=` + id);
     return data.message;
   } catch (err) {
     return err;
@@ -63,4 +149,37 @@ const findFeeProduct = async (farmId) => {
   }
 };
 
-export { fetchProducts, ProductDetail, FarmInfo, findFeeProduct };
+const getMatchId = async (walletBalance) => {
+  const userToken = storage.getAccessToken();
+  try {
+    const { data } = await request.post(`carbon/acquire/order/match`, {
+      amount: walletBalance.toString(),
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+
+    console.log("data", data.message);
+    if (data.code === 405) {
+      alert("沒有可以販售的碳權餘額");
+    } else {
+      return data.message;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
+export {
+  fetchProducts,
+  ProductDetail,
+  FarmInfo,
+  findFeeProduct,
+  fetch2Products,
+  fetch3Products,
+  fetchownercarbon,
+  fetchStore,
+  fetchAcquire,
+  UserfetchAcquire,
+  getMatchId,
+};
