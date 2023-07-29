@@ -48,6 +48,11 @@ function Acquire() {
     handleFetchAcquire();
   }, []);
 
+  useEffect(() => {
+    var button = document.getElementById("card-tab");
+    button.click();
+  }, []);
+
   async function createacquire() {
     try {
       const userToken = storage.getAccessToken();
@@ -95,6 +100,15 @@ function Acquire() {
     // window.location.reload();
   }
 
+  // const updateAcqurie = (acquire,amount,price,min,multiplier,description,picture) => {
+  //   setacquire(acquire);
+  //   setamount(amount);
+  //   setprice(price);
+  //   setmin(min);
+  //   setmultiplier(multiplier);
+  //   setdescription(description);
+  // };
+
   return (
     <div className="container py-5 py-sm-7">
       <div className="row align-items-start align-items-center latestArticles">
@@ -141,8 +155,8 @@ function Acquire() {
             </Modal.Header>
             <Modal.Body>
               <form>
-                <div class="form-row">
-                  <div class="form-group col-md-6">
+                <div className="form-row">
+                  <div className="form-group col-md-6">
                     <label
                       for="input1"
                       style={{
@@ -155,14 +169,14 @@ function Acquire() {
                     </label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       onChange={(e) => {
                         setprice(e.target.value);
                       }}
                       placeholder="請填寫收購點數單價"
                     />
                   </div>
-                  <div class="form-group col-md-6">
+                  <div className="form-group col-md-6">
                     <label
                       for="inputnumber"
                       style={{
@@ -175,7 +189,7 @@ function Acquire() {
                     </label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       id="inputnumber"
                       placeholder="數量"
                       onChange={(e) => {
@@ -184,8 +198,8 @@ function Acquire() {
                     />
                   </div>
                 </div>
-                <div class="form-row">
-                  <div class="form-group col-md-6">
+                <div className="form-row">
+                  <div className="form-group col-md-6">
                     <label
                       for="inputvalue"
                       style={{
@@ -198,7 +212,7 @@ function Acquire() {
                     </label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       id="inputvalue"
                       placeholder="每份邀約最小收購份數"
                       onChange={(e) => {
@@ -206,7 +220,7 @@ function Acquire() {
                       }}
                     />
                   </div>
-                  <div class="form-group col-md-6">
+                  <div className="form-group col-md-6">
                     <label
                       for="inputvalue"
                       style={{
@@ -219,7 +233,7 @@ function Acquire() {
                     </label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       id="inputvalue"
                       placeholder="每份邀約收購點數倍數"
                       onChange={(e) => {
@@ -228,7 +242,7 @@ function Acquire() {
                     />
                   </div>
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                   <label
                     for="inputvalue"
                     style={{ fontSize: 20, fontWeight: "700", color: "black" }}
@@ -237,7 +251,7 @@ function Acquire() {
                   </label>
                   <input
                     type="text"
-                    class="form-control"
+                    className="form-control"
                     id="carbonvalue"
                     placeholder="邀約描述"
                     onChange={(e) => {
@@ -246,7 +260,7 @@ function Acquire() {
                   />
                 </div>
 
-                <div class="form-group">
+                <div className="form-group">
                   <label
                     for="inputtext"
                     style={{ fontSize: 20, fontWeight: "700", color: "black" }}
@@ -262,7 +276,7 @@ function Acquire() {
                     customTimeInput={<ExampleCustomTimeInput />}
                   />
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                   <label
                     for="exampleFormControlFile1"
                     style={{ fontSize: 20, fontWeight: "700", color: "black" }}
@@ -271,14 +285,14 @@ function Acquire() {
                   </label>
                   <input
                     type="file"
-                    class="form-control-file"
+                    className="form-control-file"
                     id="exampleFormControlFile1"
                     // onChange={(e) => {
                     //   setPicture(e.target.value);
                     // }}
                   />
                 </div>
-                <div class="form-group"></div>
+                <div className="form-group"></div>
               </form>
             </Modal.Body>
             <Modal.Footer>
@@ -302,7 +316,7 @@ function Acquire() {
           >
             <li className="list-group-item border-0  p-1 p-sm-2 ">
               <a
-                class="nav-link"
+                className="nav-link"
                 id="card-tab"
                 data-toggle="tab"
                 href="#card"
@@ -315,7 +329,7 @@ function Acquire() {
             </li>
             <li className="list-group-item border-0 p-1 p-sm-2">
               <a
-                class="nav-link"
+                classna="nav-link"
                 id="list-tab"
                 data-toggle="tab"
                 href="#list"
@@ -331,63 +345,10 @@ function Acquire() {
       </div>
 
       <div className="tab-content" id="nav-tabContent">
-        <div role="tabpanel" class="tab-pane fade in active" id="card">
+        <div role="tabpanel" className="tab-pane fade in active" id="card">
           <section id="blog" className="block blog-block">
             <Container fluid>
               <Row>
-                {/* {acquire.map((blog) => {
-                  return (
-                    <Col sm={4} key={blog.id}>
-                      <div className="holder">
-                        <Card>
-                          <img
-                            src={require("../../themes/sell1.jpg")}
-                            alt="Background"
-                          />
-                          <Card.Body>
-                            發佈時間:{" "}
-                            <time style={{ color: "green" }}>
-                              {blog.publish_time}
-                            </time>
-                            <Card.Title
-                              style={{
-                                color: "#f64b4b",
-                                fontWeight: "600",
-                                fontSize: "22px",
-                              }}
-                            >
-                              {blog.description}
-                            </Card.Title>
-                            <Card.Text>
-                              收購點數 {blog.acquire_amount} 已收購點數
-                              {blog.has_amount}
-                            </Card.Text>
-                            <Card.Text>
-                              最小收購量 {blog.min} 收購倍數 {blog.multiplier}
-                            </Card.Text>
-                            <Card.Text>收購單價{blog.price}</Card.Text>
-                            <div className="row">
-                              <div className="col-md-6">
-                                <a
-                                  href={blog.description}
-                                  className="btn btn-primary"
-                                >
-                                  編輯 <i className="fas fa-chevron-right"></i>
-                                </a>
-                              </div>
-                              <div className="col-md-6">
-                                <button type="button" class="btn btn-info">
-                                  開啓
-                                </button>
-                              </div>
-                            </div>
-                          </Card.Body>
-                        </Card>
-                      </div>
-                    </Col>
-                  );
-                })} */}
-
                 {acquire.map(
                   ({
                     id,
@@ -402,6 +363,7 @@ function Acquire() {
                     enable,
                   }) => (
                     <AcquireCard
+                      key={id}
                       acquireid={id}
                       publish_time={publish_time}
                       acquire_amount={acquire_amount}
@@ -419,7 +381,7 @@ function Acquire() {
             </Container>
           </section>
         </div>
-        <div role="tabpanel" class="tab-pane fade" id="list">
+        <div role="tabpanel" className="tab-pane fade" id="list">
           <Container>
             {acquire.map((blog) => (
               <Card key={blog.id} className="my-3">

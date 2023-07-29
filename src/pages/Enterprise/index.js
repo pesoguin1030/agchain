@@ -274,7 +274,7 @@ function EnterpriseProduct() {
     }
     createProduct();
     // if (!BalanceInsufficient && !creditInsufficient) {
-    //   //window.location.reload();
+    window.location.reload();
     //   console.log("little bitch");
     // }
   }
