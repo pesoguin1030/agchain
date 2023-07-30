@@ -7,9 +7,9 @@ import * as CarbonWalletApi from "../../api/carbon/wallet";
 import * as TokenCenter from "../../abi/ERC20TokenCenter";
 import * as CarbonAcquireApi from "../../api/carbon/acquire";
 import { ethers } from "ethers";
-import PolygonNetwork from "../../abi/PolygonNetwork.json";
+import ContractSettings from "../../abi/ContractSettings.json";
 
-const chainId = PolygonNetwork.chainId;
+const chainId = ContractSettings.chainId;
 
 const Sellpoint = () => {
   const [list, setList] = useState(0);

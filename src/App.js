@@ -40,7 +40,7 @@ import CarbonTempPointRecord from "./pages/Carbon/Wallet/tempPointRecord";
 import CarbonApplyOrgan from "./pages/External/applyPage";
 import EnterpriseProduct from "./pages/Enterprise/index";
 import Store from "./pages/Store/index";
-import External from "./pages/external";
+import External from "./pages/External/index";
 import Acquire from "./pages/acquire";
 import Sellpoint from "./pages/Sellpoint/index";
 
