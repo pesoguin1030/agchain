@@ -34,8 +34,8 @@ const MegaMenu = ({ children, title }) => {
       className="hs-has-mega-menu navbar-nav-item"
     >
       <a
-        onClick={() => setIsOpen((prev) => !prev)}
-        onMouseEnter={() => {
+        // onClick={() => setIsOpen((prev) => !prev)}
+        onMouseDown={() => {
           setIsOpen(true);
         }}
         className="nav-link nav-link-toggle"
