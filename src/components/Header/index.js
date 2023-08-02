@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,6 +23,7 @@ import { AuthContext, CartContext } from "../../appContext";
 import * as firebase from "firebase";
 import { oauthSignIn, emailSignIn } from "../../api/user";
 import storage from "../../utils/storage";
+import request from "../../utils/request";
 
 const Header = () => {
   const { authState, authDispatch } = useContext(AuthContext);
@@ -31,6 +32,7 @@ const Header = () => {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [editingShow, setEditingShow] = useState(false);
+  const [roleid, setroleid] = useState("");
   const history = useHistory();
 
   const googleSignIn = () => {
@@ -116,11 +118,31 @@ const Header = () => {
       });
       console.log(access_token);
       setIsSidebarVisible(false);
+      // console.log("authState.user:",authState.user)
     } catch (error) {
       alert("帳號或密碼有誤");
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const searchroleid = async () => {
+      try {
+        const userToken = storage.getAccessToken();
+        const response = await request.get(`users/info`, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        setroleid(response.data.role.id);
+      } catch (err) {
+        console.log("faile", err);
+        alert("查找失败");
+        return false;
+      }
+    };
+    searchroleid();
+  }, []);
 
   return (
     <>
@@ -410,23 +432,28 @@ const Header = () => {
                       選購商品
                     </Link>
                   </li>
-                  <MegaMenu title="企業">
-                    <MegaMenuItem
-                      icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-29.svg`}
-                      to="/enterprise/product"
-                      title="商品管理"
-                    />
-                    <MegaMenuItem
-                      icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-19.svg`}
-                      to="/enterprise/store"
-                      title="商店管理"
-                    />
-                    <MegaMenuItem
-                      icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-18.svg`}
-                      to="/enterprise/acquire"
-                      title="收購碳權"
-                    />
-                  </MegaMenu>
+                  {roleid == 2 ? (
+                    <MegaMenu title="企業">
+                      <MegaMenuItem
+                        icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-29.svg`}
+                        to="/enterprise/product"
+                        title="商品管理"
+                      />
+                      <MegaMenuItem
+                        icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-19.svg`}
+                        to="/enterprise/store"
+                        title="商店管理"
+                      />
+                      <MegaMenuItem
+                        icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-18.svg`}
+                        to="/enterprise/acquire"
+                        title="收購碳權"
+                      />
+                    </MegaMenu>
+                  ) : (
+                    <div></div>
+                  )}
+
                   <MegaMenu title="區塊鏈服務">
                     <MegaMenuItem
                       icon={`${process.env.PUBLIC_URL}/assets/svg/icons/icon-54.svg`}
