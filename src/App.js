@@ -256,9 +256,9 @@ function App() {
                   <Route exact path="/enterprise/store">
                     {authState.user ? <Store /> : <Login />}
                   </Route>
-                  <Route exact path="/enterprise/gettoken">
+                  {/* <Route exact path="/enterprise/gettoken">
                     {authState.user ? <External /> : <Login />}
-                  </Route>
+                  </Route> */}
                   <Route exact path="/enterprise/acquire">
                     {authState.user ? <Acquire /> : <Login />}
                   </Route>

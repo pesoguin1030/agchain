@@ -9,28 +9,48 @@ function External() {
   const [token, setToken] = useState("");
   const [roleid, setroleid] = useState("");
 
+  const fetchToken = async () => {
+    const userToken = storage.getAccessToken();
+    try {
+      const { data } = await request.get(
+        `carbonExternal/external/generateAPIToken`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      const token = data.message;
+      setToken(token);
+      return data;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  };
+
+  const Setphonenumber = async (phoneNumber) => {
+    try {
+      const { data } = await request.get(
+        `carbonExternal/external/consumerRegistration`,
+        {
+          phone: phoneNumber,
+        }
+      );
+      console.log("data", data);
+      return data;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  };
+
   const handleAuthorization = () => {
-    // 生成token的逻辑，将生成的token存储在state中并显示在页面上
-    const newToken = "YjgwMGUyZDctOWI3Yy00MmViLWI4NjgtY";
-    setToken(newToken);
-  };
-
-  const handlePhoneNumberChange = (e) => {
-    setPhoneNumber(e.target.value);
-  };
-
-  const handleAmountChange = (e) => {
-    setAmount(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // 处理提交表单的逻辑
+    fetchToken();
   };
 
   const handleConfirmation = () => {
     // 这里实现确认按钮的逻辑
-    alert("您已确认授权");
+    Setphonenumber(phoneNumber);
+    // alert("您提交");
   };
 
   useEffect(() => {
@@ -52,13 +72,12 @@ function External() {
         return false;
       }
     };
-
     searchroleid();
-  }, []);
+  }, [token]);
 
   return (
     <div className="container py-5 py-sm-7">
-      {roleid == 1 ? (
+      {roleid == 2 ? (
         <div className="row justify-content-center">
           <div className="col-md-7 col-lg-7">
             <div className="card card-lg mb-3">
@@ -72,7 +91,9 @@ function External() {
                           <Form.Control
                             type="text"
                             value={phoneNumber}
-                            onChange={handlePhoneNumberChange}
+                            onChange={(e) => {
+                              setPhoneNumber(e.target.value);
+                            }}
                             maxLength="11"
                             placeholder=""
                           />
@@ -83,7 +104,10 @@ function External() {
                   <div className="mt-3 text-center">
                     <p>綁定電話號后，可開通外部平臺功能 。</p>
                   </div>
-                  <button class="btn btn-primary btn-block confirm-button">
+                  <button
+                    class="btn btn-primary btn-block confirm-button"
+                    onClick={handleConfirmation}
+                  >
                     確認
                   </button>
                 </div>
