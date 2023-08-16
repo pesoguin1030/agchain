@@ -28,9 +28,9 @@ const MegaMenu = ({ children, title }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <li
-      onMouseLeave={() => {
-        setIsOpen(false);
-      }}
+      // onMouseLeave={() => {
+      //   setIsOpen(false);
+      // }}
       className="hs-has-mega-menu navbar-nav-item"
     >
       <a
