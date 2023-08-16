@@ -136,8 +136,7 @@ const Header = () => {
         });
         setroleid(response.data.role.id);
       } catch (err) {
-        console.log("faile", err);
-        alert("查找失败");
+        console.log("error", err);
         return false;
       }
     };

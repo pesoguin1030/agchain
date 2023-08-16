@@ -37,6 +37,7 @@ function External() {
         }
       );
       console.log("data", data);
+
       return data;
     } catch (err) {
       return Promise.reject(err);
@@ -50,7 +51,8 @@ function External() {
   const handleConfirmation = () => {
     // 这里实现确认按钮的逻辑
     Setphonenumber(phoneNumber);
-    // alert("您提交");
+    alert("綁定電話成功");
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -77,7 +79,7 @@ function External() {
 
   return (
     <div className="container py-5 py-sm-7">
-      {roleid == 2 ? (
+      {roleid == 1 ? (
         <div className="row justify-content-center">
           <div className="col-md-7 col-lg-7">
             <div className="card card-lg mb-3">
