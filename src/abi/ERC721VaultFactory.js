@@ -1,49 +1,29 @@
-import ERC721VaultFactory from "./abi/fractional-art/ERC721VaultFactory.sol/ERC721VaultFactory.json";
-import CarbonCredit from "./abi/nft/CarbonCreditNFT.sol/CarbonCreditNFT.json";
-import PolygonNetwork from "./PolygonNetwork.json";
 import { ethers } from "ethers";
+import contractSettings from './ContractSettings.json'
+import CarbonCreditNFT from "./artifacts/contracts/nft/CarbonCreditNFT.sol/CarbonCreditNFT.json"
+import ERC721VaultFactory from './artifacts/contracts/fractional/ERC721VaultFactory.sol/ERC721VaultFactory.json'
 
-const factory_ABI = ERC721VaultFactory.abi;
-const factory_Address = PolygonNetwork.contracts.erc721VaultFactory;
 const provider = new ethers.providers.JsonRpcProvider(
-  PolygonNetwork.polygonProvider
+    contractSettings.rpcProvider
 );
 
-const nft_ABI = CarbonCredit.abi;
-const nft_Address = PolygonNetwork.contracts.carbonCredit;
+const ERC721VaultFactoryABI = ERC721VaultFactory.abi;
+const ERC721VaultFactoryAddress = contractSettings.contracts.ERC721VaultFactory.address;
+
+const CarbonCreditNFTABI = CarbonCreditNFT.abi;
+const CarbonCreditNFTAddress = contractSettings.contracts.CarbonCreditNFT.address;
 
 // Read---------
-
-// check TokenVault Address if create by our factory contract
-export async function checkTokenVaultAddress(tokenVault_address) {
-  try {
-    const contractInstance = new ethers.Contract(
-      factory_Address,
-      factory_ABI,
-      provider
-    );
-    const result = await contractInstance
-      .checkTokenVaultAddress(tokenVault_address)
-      .then((result) => {
-        return result;
-      });
-    console.log(result);
-    return result;
-  } catch (error) {
-    console.log("Error:", error.message);
-    throw new Error(error.message);
-  }
-}
 
 // Get NFT contract address
 export async function getNFTcontract() {
   try {
     const contractInstance = new ethers.Contract(
-      factory_Address,
-      factory_ABI,
+      ERC721VaultFactoryAddress,
+      ERC721VaultFactoryABI,
       provider
     );
-    const result = await contractInstance.hsnlNFT().then((result) => {
+    const result = await contractInstance.authorizedNFT().then((result) => {
       return result;
     });
     console.log(result);
@@ -58,11 +38,11 @@ export async function getNFTcontract() {
 export async function getTokenCenter() {
   try {
     const contractInstance = new ethers.Contract(
-      factory_Address,
-      factory_ABI,
+      ERC721VaultFactoryAddress,
+      ERC721VaultFactoryABI,
       provider
     );
-    const result = await contractInstance.tokenCenter().then((result) => {
+    const result = await contractInstance.erc20TokenCenter().then((result) => {
       return result;
     });
     console.log(result);
@@ -77,11 +57,11 @@ export async function getTokenCenter() {
 export async function getTokenVaultAmount() {
   try {
     const contractInstance = new ethers.Contract(
-      factory_Address,
-      factory_ABI,
+      ERC721VaultFactoryAddress,
+      ERC721VaultFactoryABI,
       provider
     );
-    const result = await contractInstance.vaultCount().then((result) => {
+    const result = await contractInstance.maxVaultId().then((result) => {
       return result;
     });
     console.log(result);
@@ -96,8 +76,8 @@ export async function getTokenVaultAmount() {
 export async function getTokenVaultId(token_vault_address) {
   try {
     const contractInstance = new ethers.Contract(
-      factory_Address,
-      factory_ABI,
+      ERC721VaultFactoryAddress,
+      ERC721VaultFactoryABI,
       provider
     );
     const result = await contractInstance
@@ -119,19 +99,19 @@ export async function getTokenVaultId(token_vault_address) {
 export async function fractionalizeNFT(singer, token_id) {
   try {
     const contract_factory = new ethers.Contract(
-      factory_Address,
-      factory_ABI,
+      ERC721VaultFactoryAddress,
+      ERC721VaultFactoryABI,
       singer
     );
-    const contract_NFT = new ethers.Contract(nft_Address, nft_ABI, singer);
+    const contract_NFT = new ethers.Contract(CarbonCreditNFTAddress, CarbonCreditNFTABI, singer);
 
     // Approve the `Vault Factory` as the NFT `token_id` operator
     var txn_response, txn_receipt;
-    txn_response = await contract_NFT.approve(factory_Address, token_id);
+    txn_response = await contract_NFT.approve(ERC721VaultFactoryAddress, token_id);
     txn_receipt = await txn_response.wait();
 
     // Invoke the `mint()` function of `Vault Factory`
-    txn_response = await contract_factory.mint(token_id);
+    txn_response = await contract_factory.fractionalization(token_id);
     txn_receipt = await txn_response.wait();
 
     if (txn_receipt && txn_receipt.status === 1) {

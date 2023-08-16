@@ -36,6 +36,13 @@ import CarbonNft from "./pages/Carbon/Nft/index";
 import CarbonNftList from "./pages/Carbon/Nft/list";
 import CarbonApprovalRecord from "./pages/Carbon/Wallet/approvalRecord";
 import CarbonConsumeRecord from "./pages/Carbon/Wallet/consumeRecord";
+import CarbonTempPointRecord from "./pages/Carbon/Wallet/tempPointRecord";
+import CarbonApplyOrgan from "./pages/External/applyPage";
+import EnterpriseProduct from "./pages/Enterprise/index";
+import Store from "./pages/Store/index";
+import External from "./pages/External/index";
+import Acquire from "./pages/acquire";
+import Sellpoint from "./pages/Sellpoint/index";
 
 // Stylesheets
 import "@fortawesome/fontawesome-svg-core";
@@ -172,6 +179,10 @@ function App() {
                   {/* TODO */}
                 </Switch>
               </Route>
+              <Route path="/sellpoint">
+                <Header />
+                <Sellpoint />
+              </Route>
               <Route path="/shop">
                 <Header />
                 <Switch>
@@ -224,6 +235,32 @@ function App() {
                   </Route>
                   <Route exact path="/carbon/acquire/demo">
                     {authState.user ? <CarbonAcquireDemo /> : <Login />}
+                  </Route>
+                  <Route exact path="/carbon/tempPointRecord">
+                    {authState.user ? <CarbonTempPointRecord /> : <Login />}
+                  </Route>
+                  <Route exact path="/carbon/applyOrgan">
+                    {authState.user ? <CarbonApplyOrgan /> : <Login />}
+                  </Route>
+                  <Route exact path="/carbon/external">
+                    <External />
+                  </Route>
+                </Switch>
+              </Route>
+              <Route path="/enterprise">
+                <Header />
+                <Switch>
+                  <Route exact path="/enterprise/product">
+                    {authState.user ? <EnterpriseProduct /> : <Login />}
+                  </Route>
+                  <Route exact path="/enterprise/store">
+                    {authState.user ? <Store /> : <Login />}
+                  </Route>
+                  <Route exact path="/enterprise/gettoken">
+                    {authState.user ? <External /> : <Login />}
+                  </Route>
+                  <Route exact path="/enterprise/acquire">
+                    {authState.user ? <Acquire /> : <Login />}
                   </Route>
                 </Switch>
               </Route>

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import * as CarbonWalletApi from "../../../api/carbon/wallet";
 import * as TokenCenter from "../../../abi/ERC20TokenCenter";
-import PolygonNetwork from "../../../abi/PolygonNetwork.json";
-const polygonscan = PolygonNetwork.polygonscan;
+import ContractSettings from "../../../abi/ContractSettings.json";
+const polygonscan = ContractSettings.etherscan;
 
 function CarbonWallet() {
   // const INVALID_WALLET_ADDRESS = "使用者未綁定存摺"
@@ -23,8 +23,8 @@ function CarbonWallet() {
       } else {
         console.log("MetaMask is installed!");
 
-        getWallet();
-        getCurrentTransferEvent();
+        getWallet()
+        getCurrentTransferEvent()
       }
     },
     [walletAddress]
@@ -182,8 +182,7 @@ function CarbonWallet() {
             "\namount",
             amount
           );
-          if (walletAllowance.gte(amount)) {
-            //Bignumber>=other
+          if (walletAllowance>=amount) {
             const provider = new ethers.providers.Web3Provider(
               window.ethereum,
               "any"
@@ -302,6 +301,7 @@ function CarbonWallet() {
           <div className="mb-3 row">
             <h1>碳權存摺管理</h1>
           </div>
+
           <div className="mb-3 row">
             <label htmlFor="inputAddress" className="col-sm-2 col-form-label">
               存摺地址
@@ -361,6 +361,15 @@ function CarbonWallet() {
               兌換
             </button>
           </div>
+          <button
+            className="btn btn-primary col-sm-12"
+            type="button"
+            onClick={() => {
+              window.location.replace("/carbon/tempPointRecord");
+            }}
+          >
+            查看暫存點數
+          </button>
           <hr />
           <div className="mb-3 row">
             <h1>碳權點數授權</h1>

@@ -6,10 +6,10 @@ import * as CarbonNftApi from "../../../api/carbon/nft";
 import * as CarbonCredit from "../../../abi/CarbonCreditNFT";
 import * as CarbonWalletApi from "../../../api/carbon/wallet";
 import * as TokenFactory from "../../../abi/ERC721VaultFactory";
-import PolygonNetwork from "../../../abi/PolygonNetwork.json";
-const chainId = PolygonNetwork.chainId;
-const polygonscan = PolygonNetwork.polygonscan;
-const carbonCreditWallet = PolygonNetwork.wallet.carbonCredit;
+import ContractSettings from "../../../abi/ContractSettings.json";
+const chainId = ContractSettings.chainId;
+const polygonscan = ContractSettings.etherscan;
+const carbonCreditWallet = ContractSettings.owner;
 function CarbonNftList() {
   const history = useHistory();
   let [rowData, setRowData] = useState([]);
@@ -74,8 +74,8 @@ function CarbonNftList() {
         return;
       }
       const provider = new ethers.providers.Web3Provider(
-          window.ethereum,
-          "any"
+        window.ethereum,
+        "any"
       );
       console.log("Debug: provider=", provider);
       signer = provider.getSigner();
@@ -122,16 +122,16 @@ function CarbonNftList() {
       return;
     }
 
-    try{
-      const action = window.confirm("確定將您的NFT兌換成碳權點數？")
-      if(action){
+    try {
+      const action = window.confirm("確定將您的NFT兌換成碳權點數？");
+      if (action) {
         await TokenFactory.fractionalizeNFT(signer, tokenId);
         alert("兌換成功！您可至碳權存摺確認您的碳權點數！");
       }
-    }catch (error) {
+    } catch (error) {
       console.log("Error: NFT Fragmentation=", error.message);
-      alert("兌換失敗！\n原因："+error.message)
-    }finally {
+      alert("兌換失敗！\n原因：" + error.message);
+    } finally {
       //重新載入頁面
       getUserNftList();
       setButtonDisable(false);
@@ -414,10 +414,7 @@ function CarbonNftList() {
             <h1>管理碳權NFT</h1>
           </div>
           <div className="mb-3 row">
-            <button
-                className="btn btn-primary"
-                onClick={buttonBackToNftPage}
-            >
+            <button className="btn btn-primary" onClick={buttonBackToNftPage}>
               返回
             </button>
           </div>
@@ -435,76 +432,76 @@ function CarbonNftList() {
                 </tr>
               </thead>
               <tbody>
-                {rowData
-                  ? rowData.map(
-                  (
-                    { tokenId, certId, source, issueBy, weight, date },
-                    index
-                  ) => {
-                    return (
-                      <tr key={index}>
-                        <th scope="row">{index + 1}</th>
-                        <td>{certId}</td>
-                        <td>{source}</td>
-                        <td>{issueBy}</td>
-                        <td>{weight} 公噸</td>
-                        <td>{new Date(date * 1000).toLocaleString()}</td>
-                        <td>
-                          <button
-                            className="btn btn-success mr-2 mb-2"
-                            onClick={() => {
-                              buttonNftView(tokenId);
-                            }}
-                            disabled={buttonDisable}
-                          >
-                            查看
-                          </button>
+                {rowData ? (
+                  rowData.map(
+                    (
+                      { tokenId, certId, source, issueBy, weight, date },
+                      index
+                    ) => {
+                      return (
+                        <tr key={index}>
+                          <th scope="row">{index + 1}</th>
+                          <td>{certId}</td>
+                          <td>{source}</td>
+                          <td>{issueBy}</td>
+                          <td>{weight} 公噸</td>
+                          <td>{new Date(date * 1000).toLocaleString()}</td>
+                          <td>
+                            <button
+                              className="btn btn-success mr-2 mb-2"
+                              onClick={() => {
+                                buttonNftView(tokenId);
+                              }}
+                              disabled={buttonDisable}
+                            >
+                              查看
+                            </button>
 
-                          <button
-                            className="btn btn-primary mr-2 mb-2"
-                            onClick={() => {
-                              buttonNftFragmentation(tokenId);
-                            }}
-                            disabled={buttonDisable}
-                          >
-                            兌換
-                          </button>
+                            <button
+                              className="btn btn-primary mr-2 mb-2"
+                              onClick={() => {
+                                buttonNftFragmentation(tokenId);
+                              }}
+                              disabled={buttonDisable}
+                            >
+                              兌換
+                            </button>
 
-                          <button
-                            className="btn btn-warning mr-2 mb-2"
-                            onClick={() => {
-                              buttonNftTransfer(tokenId);
-                            }}
-                            disabled={buttonDisable}
-                          >
-                            轉賬
-                          </button>
+                            <button
+                              className="btn btn-warning mr-2 mb-2"
+                              onClick={() => {
+                                buttonNftTransfer(tokenId);
+                              }}
+                              disabled={buttonDisable}
+                            >
+                              轉賬
+                            </button>
 
-                          <button
-                            className="btn btn-danger mr-2 mb-2"
-                            onClick={() => {
-                              buttonNftRetrieve(tokenId);
-                            }}
-                            disabled={buttonDisable}
-                          >
-                            取回
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  }
-                )
-                : (
-                        <tr key={0}>
-                          <th>#</th>
-                          <td>{"網頁更新中，請稍等一下"}</td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                            <button
+                              className="btn btn-danger mr-2 mb-2"
+                              onClick={() => {
+                                buttonNftRetrieve(tokenId);
+                              }}
+                              disabled={buttonDisable}
+                            >
+                              取回
+                            </button>
+                          </td>
                         </tr>
-                    )}
+                      );
+                    }
+                  )
+                ) : (
+                  <tr key={0}>
+                    <th>#</th>
+                    <td>{"網頁中，請稍等一下"}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

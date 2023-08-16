@@ -2,33 +2,32 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import storage from "../../utils/storage";
-import { getOrderItem,dummyPurchase } from "../../api/order";
-
+import { getOrderItem, dummyPurchase } from "../../api/order";
 
 function Payment(props) {
   const history = useHistory();
   const [orderInfo, setOrderInfo] = useState([]);
   const [total_price, setTotalPrice] = useState(0);
-  const [totalCarbon,setTotalCarbon] = useState(0);
+  const [totalCarbon, setTotalCarbon] = useState(0);
   const [buttonDisable, setButtonDisable] = useState(false);
 
-  const html = localStorage.getItem('payHtml');
-  const orderNumber = localStorage.getItem('orderNumber')
-  const total_fee = localStorage.getItem('totalFee')
-  let sumCarbon = 0
+  const html = localStorage.getItem("payHtml");
+  const orderNumber = localStorage.getItem("orderNumber");
+  const total_fee = localStorage.getItem("totalFee");
+  let sumCarbon = 0;
   var decode_html = html.replaceAll("-", "/");
   // decode_html = html.replaceAll('value="submit"', 'value="結帳"');
   useEffect(() => {
     (async (orderNumber) => {
       const userToken = storage.getAccessToken();
       const orderItem = await getOrderItem(orderNumber, userToken);
-      console.log('Debug: orderItem=',orderItem)
+      console.log("Debug: orderItem=", orderItem);
       var sum = 0;
       for (let index = 0; index < orderItem.length; index++) {
-        console.log('Debug: item=',orderItem[index])
+        console.log("Debug: item=", orderItem[index]);
         const item = orderItem[index];
         sum += item["amount"] * item["price"];
-        sumCarbon += item["carbon_amount_total"]// 該項物品獲得碳點數
+        sumCarbon += item["carbon_amount_total"]; // 該項物品獲得碳點數
       }
       sum += Number(total_fee);
       setTotalPrice(sum);
@@ -38,34 +37,33 @@ function Payment(props) {
     return () => {};
   }, []);
 
-  const doDummyPurchase = async() =>{
+  const doDummyPurchase = async () => {
+    try {
+      setButtonDisable(true);
 
-    try{
-      setButtonDisable(true)
-
-      const orderNumber = localStorage.getItem('orderNumber')
-      const purchaseStatus = await dummyPurchase(orderNumber)
-      console.log('Debug: purchaseStatus=',purchaseStatus)
-      if(purchaseStatus.status==200){
-        alert('購買成功！')
+      const orderNumber = localStorage.getItem("orderNumber");
+      const purchaseStatus = await dummyPurchase(orderNumber);
+      console.log("Debug: purchaseStatus=", purchaseStatus);
+      if (purchaseStatus.status == 200) {
+        alert("購買成功！");
         // 刪除訂單相關資料
-        localStorage.setItem('shopping_cart',[])
-        localStorage.setItem('totalFee',null)
-        localStorage.setItem('orderNumber',null)
-        localStorage.setItem('payHtml',null)
+        localStorage.setItem("shopping_cart", []);
+        localStorage.setItem("totalFee", null);
+        localStorage.setItem("orderNumber", null);
+        localStorage.setItem("payHtml", null);
         history.push({
           pathname: "/order",
         });
-      }else{
-        alert('購買失敗！\n原因：'+purchaseStatus.statusText)
+      } else {
+        alert("購買失敗！\n原因：" + purchaseStatus.statusText);
       }
-    }catch (error) {
-      console.log('Error in doDummyPurchase:',error.message)
-      alert("購買發生錯誤！\n原因："+error.message)
-    }finally {
-      setButtonDisable(false)
+    } catch (error) {
+      console.log("Error in doDummyPurchase:", error.message);
+      alert("購買發生錯誤！\n原因：" + error.message);
+    } finally {
+      setButtonDisable(false);
     }
-  }
+  };
 
   return (
     <div className="container space-2 space-lg-3 mt-10">
@@ -86,12 +84,16 @@ function Payment(props) {
                   <th>單品項總額</th>
                   {/*<th>獲得點數總額</th>*/}
                 </tr>
-                {orderInfo.map((item,index) => {
+                {orderInfo.map((item, index) => {
                   return (
                     <tr key={index}>
                       <td>{item["name"]}</td>
-                      <td>{'$ ' + item["price"]}</td>
-                      <td>{item["carbon_amount"]?item["carbon_amount"]:0 + ' 點'}</td>
+                      <td>{"$ " + item["price"]}</td>
+                      <td>
+                        {item["carbon_amount"]
+                          ? item["carbon_amount"]
+                          : 0 + " 點"}
+                      </td>
                       <td>{item["amount"]}</td>
                       <td>{item["amount"] * item["price"]}</td>
                       {/*<td>{item["carbon_amount_total"]}</td>*/}
@@ -100,15 +102,18 @@ function Payment(props) {
                 })}
               </thead>
             </Table>
-            <span>運費：{total_fee}</span>
+            <h3>運費：{total_fee}</h3>
           </div>
           <h3>價格總計：{total_price}</h3>
           <h3>獲得點數：{totalCarbon}</h3>
+          <h5>
+            提醒您：由於您尚未綁定錢包，因此會將您的點數進行暫存，您可至碳權存摺頁面進行查看
+          </h5>
           {/*<div dangerouslySetInnerHTML={{ __html: decode_html }} />*/}
           <button
-              className='btn btn-primary'
-              onClick={()=>doDummyPurchase()}
-              disabled={buttonDisable}
+            className="btn btn-primary"
+            onClick={() => doDummyPurchase()}
+            disabled={buttonDisable}
           >
             立即購買
           </button>

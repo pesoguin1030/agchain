@@ -39,6 +39,7 @@ function CarbonWallet() {
 
   const listenToApprovalEvent = async () => {
     try {
+      console.log("Debug: listenToApprovalEvent")
       const provider = new ethers.providers.Web3Provider(
         window.ethereum,
         "any"
