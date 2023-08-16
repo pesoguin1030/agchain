@@ -366,7 +366,7 @@ function CarbonWallet() {
               className="btn btn-primary col-sm-12"
               type="button"
               onClick={() => {
-                window.location.replace("/carbon/tempPointRecord");
+                window.location.replace("/carbon/wallet/tempPointRecord");
               }}
           >
             查看暫存點數
@@ -431,7 +431,7 @@ function CarbonWallet() {
                   className="btn btn-primary col-sm-4"
                   type="button"
                   onClick={() => {
-                    window.location.replace("/carbon/approvalRecord");
+                    window.location.replace("/carbon/wallet/approvalRecord");
                   }}
                 >
                   查看授權歷史紀錄
@@ -468,7 +468,7 @@ function CarbonWallet() {
                   className="btn btn-primary col-sm-4"
                   type="button"
                   onClick={() => {
-                    window.location.replace("/carbon/consumeRecord");
+                    window.location.replace("/carbon/wallet/consumeRecord");
                   }}
                 >
                   查看轉移歷史紀錄

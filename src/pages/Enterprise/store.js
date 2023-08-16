@@ -368,7 +368,7 @@ function StoreInfo(props) {
                       </div>
                       <div class="col-auto">
                         <a
-                          href="/carbon/wallet"
+                          href="/Carbon/Wallet"
                           class="col-md-auto d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
                         >
                           {/* <i class="fas fa-download fa-sm text-white-50"> </i>  */}
