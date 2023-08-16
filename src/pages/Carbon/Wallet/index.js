@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import * as CarbonWalletApi from "../../../api/carbon/wallet";
 import * as TokenCenter from "../../../abi/ERC20TokenCenter";
 import ContractSettings from "../../../abi/ContractSettings.json";
+import { AuthContext } from "../../../appContext";
 const polygonscan = ContractSettings.etherscan;
 
 function CarbonWallet() {
