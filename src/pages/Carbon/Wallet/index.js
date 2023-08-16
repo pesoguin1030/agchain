@@ -372,7 +372,6 @@ function CarbonWallet() {
           </button>
 
           {authState.user.role.id == "2" ? (
-              <hr />
               <div>
               <hr />
               <div className="mb-3 row">
