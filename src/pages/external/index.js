@@ -87,8 +87,8 @@ function External() {
                 <div className="text-center">
                   <div className="mb-5">
                     <h4 className="text-center">綁定電話</h4>
-                    <div class="row">
-                      <div class="col-sm-12">
+                    <div className="row">
+                      <div className="col-sm-12">
                         <Form.Group controlId="phoneNumber">
                           <Form.Control
                             type="text"
@@ -107,7 +107,7 @@ function External() {
                     <p>綁定電話號后，可開通外部平臺功能 。</p>
                   </div>
                   <button
-                    class="btn btn-primary btn-block confirm-button"
+                    className="btn btn-primary btn-block confirm-button"
                     onClick={handleConfirmation}
                   >
                     確認
