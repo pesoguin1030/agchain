@@ -78,7 +78,7 @@ const fetchAcquire = async (id) => {
 const UserfetchAcquire = async () => {
   const userToken = storage.getAccessToken();
   try {
-    const { data } = await request.get(`carbon/acquire/order/list`, {
+    const { data } = await request.get(`carbon/acquire/list`, {
       headers: {
         Authorization: `Bearer ${userToken}`,
       },
