@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { ethers } from "ethers";
 import * as CarbonWalletApi from "../../../api/carbon/wallet";
 import * as TokenCenter from "../../../abi/ERC20TokenCenter";
 import ContractSettings from "../../../abi/ContractSettings.json";
+import { AuthContext } from "../../../appContext";
 const polygonscan = ContractSettings.etherscan;
 
 function CarbonWallet() {
@@ -12,6 +13,7 @@ function CarbonWallet() {
   const [walletAllowance, setWalletAllowance] = useState(0);
   const [currentConsume, setCurrentConsume] = useState(0);
   const [buttonDisable, setButtonDisable] = useState(false);
+  const { authState, authDispatch } = useContext(AuthContext);
 
   useEffect(
     function () {
@@ -301,7 +303,6 @@ function CarbonWallet() {
           <div className="mb-3 row">
             <h1>碳權存摺管理</h1>
           </div>
-
           <div className="mb-3 row">
             <label htmlFor="inputAddress" className="col-sm-2 col-form-label">
               存摺地址
@@ -362,108 +363,119 @@ function CarbonWallet() {
             </button>
           </div>
           <button
-            className="btn btn-primary col-sm-12"
-            type="button"
-            onClick={() => {
-              window.location.replace("/carbon/tempPointRecord");
-            }}
+              className="btn btn-primary col-sm-12"
+              type="button"
+              onClick={() => {
+                window.location.replace("/carbon/wallet/tempPointRecord");
+              }}
           >
             查看暫存點數
           </button>
-          <hr />
-          <div className="mb-3 row">
-            <h1>碳權點數授權</h1>
-          </div>
-          <div className="mb-3 row">
-            <label htmlFor="inputAllowance" className="col-sm-2 col-form-label">
-              授權額度
-            </label>
-            <div className="col-sm-6">
-              {walletAllowance ? (
-                <input
-                  value={walletAllowance + "  點"}
-                  type="text"
-                  className="form-control-plaintext"
-                  id="inputAllowance"
-                  readOnly
-                />
-              ) : (
-                <input
-                  value={0}
-                  type="text"
-                  className="form-control-plaintext"
-                  id="inputAllowance"
-                  readOnly
-                />
-              )}
-            </div>
-            <button
-              className="col-sm-2 btn btn-primary"
-              disabled={buttonDisable}
-              onClick={() => {
-                var amount = prompt("請輸入您要增加的授權數量");
-                increaseAllowance(amount);
-              }}
-            >
-              增加
-            </button>
-            <button
-              className="col-sm-2 btn btn-danger"
-              disabled={buttonDisable}
-              onClick={() => {
-                var amount = prompt("請輸入您要減少的授權數量");
-                decreaseAllowance(amount);
-              }}
-            >
-              減少
-            </button>
-          </div>
-          <div className="mb-3 row">
-            <div className="col-sm-8"></div>
-            <button
-              className="btn btn-primary col-sm-4"
-              type="button"
-              onClick={() => {
-                window.location.replace("/carbon/approvalRecord");
-              }}
-            >
-              查看授權歷史紀錄
-            </button>
-          </div>
 
-          <div className="mb-3 row">
-            <label htmlFor="inputAllowance" className="col-sm-4 col-form-label">
-              上次授權後到目前消耗
-            </label>
-            <div className="col-sm-4">
-              {currentConsume ? (
-                <input
-                  value={currentConsume + "  點"}
-                  type="text"
-                  className="form-control-plaintext"
-                  id="inputCurrentConsume"
-                  readOnly
-                />
-              ) : (
-                <input
-                  value={0}
-                  type="text"
-                  className="form-control-plaintext"
-                  id="inputCurrentConsume"
-                  readOnly
-                />
-              )}
+          {authState.user.role.id == "2" ? (
+              <div>
+              <hr />
+              <div className="mb-3 row">
+                <h1>碳權點數授權</h1>
+              </div>
+              <div className="mb-3 row">
+                <label
+                  htmlFor="inputAllowance"
+                  className="col-sm-2 col-form-label"
+                >
+                  授權額度
+                </label>
+                <div className="col-sm-6">
+                  {walletAllowance ? (
+                    <input
+                      value={walletAllowance + "  點"}
+                      type="text"
+                      className="form-control-plaintext"
+                      id="inputAllowance"
+                      readOnly
+                    />
+                  ) : (
+                    <input
+                      value={0}
+                      type="text"
+                      className="form-control-plaintext"
+                      id="inputAllowance"
+                      readOnly
+                    />
+                  )}
+                </div>
+                <button
+                  className="col-sm-2 btn btn-primary"
+                  disabled={buttonDisable}
+                  onClick={() => {
+                    var amount = prompt("請輸入您要增加的授權數量");
+                    increaseAllowance(amount);
+                  }}
+                >
+                  增加
+                </button>
+                <button
+                  className="col-sm-2 btn btn-danger"
+                  disabled={buttonDisable}
+                  onClick={() => {
+                    var amount = prompt("請輸入您要減少的授權數量");
+                    decreaseAllowance(amount);
+                  }}
+                >
+                  減少
+                </button>
+              </div>
+              <div className="mb-3 row">
+                <div className="col-sm-8"></div>
+                <button
+                  className="btn btn-primary col-sm-4"
+                  type="button"
+                  onClick={() => {
+                    window.location.replace("/carbon/wallet/approvalRecord");
+                  }}
+                >
+                  查看授權歷史紀錄
+                </button>
+              </div>
+
+              <div className="mb-3 row">
+                <label
+                  htmlFor="inputAllowance"
+                  className="col-sm-4 col-form-label"
+                >
+                  上次授權後到目前消耗
+                </label>
+                <div className="col-sm-4">
+                  {currentConsume ? (
+                    <input
+                      value={currentConsume + "  點"}
+                      type="text"
+                      className="form-control-plaintext"
+                      id="inputCurrentConsume"
+                      readOnly
+                    />
+                  ) : (
+                    <input
+                      value={0}
+                      type="text"
+                      className="form-control-plaintext"
+                      id="inputCurrentConsume"
+                      readOnly
+                    />
+                  )}
+                </div>
+                <button
+                  className="btn btn-primary col-sm-4"
+                  type="button"
+                  onClick={() => {
+                    window.location.replace("/carbon/wallet/consumeRecord");
+                  }}
+                >
+                  查看轉移歷史紀錄
+                </button>
+              </div>
             </div>
-            <button
-              className="btn btn-primary col-sm-4"
-              type="button"
-              onClick={() => {
-                window.location.replace("/carbon/consumeRecord");
-              }}
-            >
-              查看轉移歷史紀錄
-            </button>
-          </div>
+          ) : null}
         </div>
       </div>
     </div>

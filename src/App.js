@@ -39,9 +39,9 @@ import CarbonConsumeRecord from "./pages/Carbon/Wallet/consumeRecord";
 import CarbonTempPointRecord from "./pages/Carbon/Wallet/tempPointRecord";
 import CarbonApplyOrgan from "./pages/External/applyPage";
 import EnterpriseProduct from "./pages/Enterprise/index";
-import Store from "./pages/Store/index";
+import Store from "./pages/Enterprise/store";
 import External from "./pages/External/index";
-import Acquire from "./pages/acquire";
+import Acquire from "./pages/Acquire";
 import Sellpoint from "./pages/Sellpoint/index";
 
 // Stylesheets
@@ -227,16 +227,16 @@ function App() {
                   <Route exact path="/carbon/nftlist">
                     {authState.user ? <CarbonNftList /> : <Login />}
                   </Route>
-                  <Route exact path="/carbon/approvalRecord">
+                  <Route exact path="/carbon/wallet/approvalRecord">
                     {authState.user ? <CarbonApprovalRecord /> : <Login />}
                   </Route>
-                  <Route exact path="/carbon/consumeRecord">
+                  <Route exact path="/carbon/wallet/consumeRecord">
                     {authState.user ? <CarbonConsumeRecord /> : <Login />}
                   </Route>
                   <Route exact path="/carbon/acquire/demo">
                     {authState.user ? <CarbonAcquireDemo /> : <Login />}
                   </Route>
-                  <Route exact path="/carbon/tempPointRecord">
+                  <Route exact path="/carbon/wallet/tempPointRecord">
                     {authState.user ? <CarbonTempPointRecord /> : <Login />}
                   </Route>
                   <Route exact path="/carbon/applyOrgan">
@@ -256,9 +256,9 @@ function App() {
                   <Route exact path="/enterprise/store">
                     {authState.user ? <Store /> : <Login />}
                   </Route>
-                  <Route exact path="/enterprise/gettoken">
+                  {/* <Route exact path="/enterprise/gettoken">
                     {authState.user ? <External /> : <Login />}
-                  </Route>
+                  </Route> */}
                   <Route exact path="/enterprise/acquire">
                     {authState.user ? <Acquire /> : <Login />}
                   </Route>

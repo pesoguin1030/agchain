@@ -97,7 +97,7 @@ function Acquire() {
 
   function buttonCreateAcquire() {
     createacquire();
-    // window.location.reload();
+    window.location.reload();
   }
 
   // const updateAcqurie = (acquire,amount,price,min,multiplier,description,picture) => {

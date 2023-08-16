@@ -18,7 +18,7 @@ const AcquireCard = ({
   has_amount,
   min,
   multiplier,
-  // enable,
+  enable,
   image,
 }) => {
   const [toggle, settoggle] = useState();
@@ -34,7 +34,12 @@ const AcquireCard = ({
   const [picture, setPicture] = useState("https://imgur.com/gallery/TSO1SX1");
   const [Adescription, setdescription] = useState(description);
   const [expire_time, setexpire_time] = useState("2024-05-16 00:00:00");
-  const enable = "true";
+  const options = [
+    { value: "false", text: "關閉" },
+    { value: "true", text: "開啓" },
+  ];
+  const [selected, setSelected] = useState(options[0].value);
+
   const pic = "https://imgur.com/gallery/TSO1SX1";
 
   async function toggleAcquire(id) {
@@ -148,7 +153,8 @@ const AcquireCard = ({
           price: Aprice.toString(),
           description: Adescription.toString(),
           expire_time: "2024-05-16 00:00:00",
-          enable: enable.toString(),
+          // enable: enable == "1" ? "true" : "false",
+          enable: selected,
           multiplier: Amultiplier.toString(),
           image: "https://imgur.com/gallery/TSO1SX1",
         },
@@ -187,6 +193,10 @@ const AcquireCard = ({
   function buttonupdateAcquire() {
     updateAcqurie(acquireid);
   }
+
+  const handleChange = (event) => {
+    setSelected(event.target.value);
+  };
 
   return (
     <Col sm={4} key={acquireid}>
@@ -291,6 +301,21 @@ const AcquireCard = ({
                             setdescription(e.target.value);
                           }}
                         />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="inputState">邀約設置</label>
+                        <select
+                          id="inputType"
+                          className="form-control"
+                          value={selected}
+                          onChange={handleChange}
+                        >
+                          {options.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.text}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </Form>
                   </Modal.Body>

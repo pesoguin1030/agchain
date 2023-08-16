@@ -20,7 +20,6 @@ function Signup(props) {
   const [countyMessage, setCountyMessage] = useState(null);
   const [addressStatus, setAddressStatus] = useState("basic");
   const [addressMessage, setAddressMessage] = useState(null);
-  const [isSignupInProgress, setIsSignupInProgress] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
   const [selectedCounty, setSelectedCounty] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
@@ -75,11 +74,9 @@ function Signup(props) {
   };
 
   async function userSignup() {
-    setIsSignupInProgress(true);
     if (name.length > 32 || name.length < 2) {
       setNameStatus("danger");
       setNameMessage("名字長度不符，請使用2到32個字元");
-      setIsSignupInProgress(false);
       return;
     } else {
       setNameStatus("success");
@@ -88,7 +85,6 @@ function Signup(props) {
     if (!validator.isEmail(email) || email.length > 32) {
       setEmailStatus("danger");
       setEmailMessage("電子郵件格式不符");
-      setIsSignupInProgress(false);
       return;
     } else {
       setEmailStatus("success");
@@ -97,7 +93,6 @@ function Signup(props) {
     if (password.length < 8 || password.length > 32) {
       setPasswordStatus("danger");
       setPasswordMessage("密碼長度不符，請使用8到32個字元");
-      setIsSignupInProgress(false);
       return;
     } else {
       setPasswordStatus("success");
@@ -106,7 +101,7 @@ function Signup(props) {
     // const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
     // const address = selectedCounty + selectedAddress;
     // await createDestination(address, coordinates);
-    if (isSignupInProgress) {
+
       try {
         const response = await request.post(
           `/users/signup`,
@@ -134,22 +129,21 @@ function Signup(props) {
           //navigation.navigate('Login');
         } else {
           alert("發生錯誤");
-          setIsSignupInProgress(false);
+          return
         }
       } catch (error) {
         alert(error.response.data);
-        setIsSignupInProgress(false);
-        return false;
+        return
       }
-    }
+
   }
 
   async function EenterpriseSignup() {
-    setIsSignupInProgress(true);
+
     if (name.length > 32 || name.length < 2) {
       setNameStatus("danger");
       setNameMessage("名字長度不符，請使用2到32個字元");
-      setIsSignupInProgress(false);
+
       return;
     } else {
       setNameStatus("success");
@@ -158,7 +152,7 @@ function Signup(props) {
     if (!validator.isEmail(email) || email.length > 32) {
       setEmailStatus("danger");
       setEmailMessage("電子郵件格式不符");
-      setIsSignupInProgress(false);
+
       return;
     } else {
       setEmailStatus("success");
@@ -167,7 +161,7 @@ function Signup(props) {
     if (password.length < 8 || password.length > 32) {
       setPasswordStatus("danger");
       setPasswordMessage("密碼長度不符，請使用8到32個字元");
-      setIsSignupInProgress(false);
+
       return;
     } else {
       setPasswordStatus("success");
@@ -177,7 +171,7 @@ function Signup(props) {
     if (store.length > 32) {
       setstoreStatus("danger");
       setstoreMesssage("商店名稱長度不符，請使用小於32個字元");
-      setIsSignupInProgress(false);
+
       return;
     } else {
       setstoreStatus("success");
@@ -187,7 +181,7 @@ function Signup(props) {
     if (storedescription.length > 32) {
       setstoredescriptionStatus("danger");
       setstoredescriptionMessage("商店描述長度不符，請使用小於到32個字元");
-      setIsSignupInProgress(false);
+
       return;
     } else {
       setstoredescriptionStatus("success");
@@ -197,7 +191,7 @@ function Signup(props) {
     if (brand.length > 32) {
       setbrandStatus("danger");
       setbrandMessage("品牌描述長度不符，請使用小於32個字元");
-      setIsSignupInProgress(false);
+
       return;
     } else {
       setbrandStatus("success");
@@ -207,7 +201,6 @@ function Signup(props) {
     // const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
     // const address = selectedCounty + selectedAddress;
     // await createDestination(address, coordinates);
-    if (isSignupInProgress) {
       try {
         const response = await request.post(
           `/users/signup`,
@@ -235,14 +228,12 @@ function Signup(props) {
           //navigation.navigate('Login');
         } else {
           alert("發生錯誤");
-          setIsSignupInProgress(false);
+          return
         }
       } catch (error) {
         alert(error.response.data);
-        setIsSignupInProgress(false);
-        return false;
+        return
       }
-    }
   }
 
   return isSignup ? (
@@ -264,13 +255,13 @@ function Signup(props) {
                 <div className="text-center">
                   <div className="mb-5">
                     <ul
-                      class="nav nav-pills nav-fill"
+                      className="nav nav-pills nav-fill"
                       id="myTab"
                       role="tablist"
                     >
-                      <li class="nav-item">
+                      <li className="nav-item">
                         <a
-                          class="nav-link"
+                          className="nav-link"
                           id="consumer-tab"
                           data-toggle="tab"
                           href="#consumer"
@@ -281,9 +272,9 @@ function Signup(props) {
                           消費者
                         </a>
                       </li>
-                      <li class="nav-item">
+                      <li className="nav-item">
                         <a
-                          class="nav-link"
+                          className="nav-link"
                           id="enterprise-tab"
                           data-toggle="tab"
                           href="#enterprise"
@@ -295,10 +286,10 @@ function Signup(props) {
                         </a>
                       </li>
                     </ul>
-                    <div class="tab-content">
+                    <div className="tab-content">
                       <div
                         role="tabpanel"
-                        class="tab-pane fade in active"
+                        className="tab-pane fade in active"
                         id="consumer"
                       >
                         <h1 className="display-4">註冊</h1>
@@ -334,7 +325,7 @@ function Signup(props) {
                           />
                           {nameStatus === "danger" ? (
                             <div>
-                              <small id="name" class="text-danger">
+                              <small id="name" className="text-danger">
                                 {nameMessage}
                               </small>
                             </div>
@@ -366,7 +357,7 @@ function Signup(props) {
                           />
                           {emailStatus === "danger" ? (
                             <div>
-                              <small id="name" class="text-danger">
+                              <small id="name" className="text-danger">
                                 {emailMessage}
                               </small>
                             </div>
@@ -424,7 +415,7 @@ function Signup(props) {
                           </div>
                           {passwordStatus === "danger" ? (
                             <div>
-                              <small id="name" class="text-danger">
+                              <small id="name" className="text-danger">
                                 {passwordMessage}
                               </small>
                             </div>
@@ -442,7 +433,7 @@ function Signup(props) {
 
                       <div
                         role="tabpanel"
-                        class="tab-pane fade"
+                        className="tab-pane fade"
                         id="enterprise"
                       >
                         <h1 className="display-4">註冊</h1>
@@ -478,7 +469,7 @@ function Signup(props) {
                           />
                           {nameStatus === "danger" ? (
                             <div>
-                              <small id="name" class="text-danger">
+                              <small id="name" className="text-danger">
                                 {nameMessage}
                               </small>
                             </div>
@@ -510,7 +501,7 @@ function Signup(props) {
                           />
                           {emailStatus === "danger" ? (
                             <div>
-                              <small id="name" class="text-danger">
+                              <small id="name" className="text-danger">
                                 {emailMessage}
                               </small>
                             </div>
@@ -568,7 +559,7 @@ function Signup(props) {
                           </div>
                           {passwordStatus === "danger" ? (
                             <div>
-                              <small id="name" class="text-danger">
+                              <small id="name" className="text-danger">
                                 {passwordMessage}
                               </small>
                             </div>
@@ -601,7 +592,7 @@ function Signup(props) {
                           />
                           {storeStatus === "danger" ? (
                             <div>
-                              <small id="name" class="text-danger">
+                              <small id="name" className="text-danger">
                                 {storeMesssage}
                               </small>
                             </div>
@@ -632,7 +623,7 @@ function Signup(props) {
                           />
                           {storedescriptionStatus === "danger" ? (
                             <div>
-                              <small id="name" class="text-danger">
+                              <small id="name" className="text-danger">
                                 {storedescriptionMessage}
                               </small>
                             </div>
@@ -663,7 +654,7 @@ function Signup(props) {
                           />
                           {brandStatus === "danger" ? (
                             <div>
-                              <small id="name" class="text-danger">
+                              <small id="name" className="text-danger">
                                 {brandMessage}
                               </small>
                             </div>
@@ -701,7 +692,7 @@ function Signup(props) {
                   </select>
                   {countyStatus === "danger" ? (
                     <div>
-                      <small id="name" class="text-danger">
+                      <small id="name" className="text-danger">
                         {countyMessage}
                       </small>
                     </div>
@@ -719,7 +710,7 @@ function Signup(props) {
                   ></input>
                   {addressStatus === "danger" ? (
                     <div>
-                      <small id="name" class="text-danger">
+                      <small id="name" className="text-danger">
                         {addressMessage}
                       </small>
                     </div>

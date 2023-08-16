@@ -28,6 +28,24 @@ const fetch2Products = async (id) => {
   }
 };
 
+const fetchShippinginfo = async (id) => {
+  try {
+    const { data } = await request.get(`/farmsv2/shipping/info?farm_id=${id}`);
+
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+const getCounty = async () => {
+  try {
+    const { data } = await request.get(`county/list`);
+    return data;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
 const fetch3Products = async () => {
   try {
     const { data } = await request.get(
@@ -182,4 +200,6 @@ export {
   fetchAcquire,
   UserfetchAcquire,
   getMatchId,
+  fetchShippinginfo,
+  getCounty,
 };

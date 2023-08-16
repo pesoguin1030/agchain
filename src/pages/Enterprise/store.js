@@ -2,7 +2,12 @@ import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../appContext";
 import axios from "axios";
 import storage from "../../utils/storage";
-import { fetchownercarbon, fetchStore } from "../../api/product";
+import {
+  fetchownercarbon,
+  fetchStore,
+  fetchShippinginfo,
+  getCounty,
+} from "../../api/product";
 import request from "../../utils/request";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -11,6 +16,7 @@ import * as TokenCenter from "../../abi/ERC20TokenCenter";
 import * as CarbonWalletApi from "../../api/carbon/wallet";
 
 import validator from "validator";
+import { Select } from "@material-ui/core";
 
 // TODO: 修改所有javascript:;
 
@@ -26,10 +32,23 @@ function StoreInfo(props) {
   const [walletAllowance, setWalletAllowance] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
   const [walletAddress, setWalletAddress] = useState("");
+  const [shipping, setshipping] = useState([]);
+  const [Store, setStore] = useState([]);
+  const [county, setcounty] = useState([]);
+
+  const [selected, setSelected] = useState(shipping.county);
+
+  const [Same_city, setsame_city] = useState(shipping.same_city);
+  const [Different_city, setDifferent_city] = useState(shipping.different_city);
+  const [Remote_city, setremote_city] = useState(shipping.remote_city);
+  const [Free_threshold, setfree_threshold] = useState(shipping.free_threshold);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const handleChange = (event) => {
+    setSelected(event.target.value);
+  };
 
   useEffect(() => {
     const searchstoreid = async () => {
@@ -56,62 +75,98 @@ function StoreInfo(props) {
       }
     };
 
-    const getWallet = async () => {
-      try {
-        console.log("Debug: CarbonWalletApi.getWallet");
-        const result = await CarbonWalletApi.getWallet();
-        console.log("Debug: getWallet=", result);
-        if (result.code !== 200) {
-          setWalletAddress("");
-        } else {
-          setWalletAddress(result.message);
-          getBalance(result.message);
-          getAllowance(result.message);
-        }
-      } catch (error) {
-        console.log("Error: getWallet=", error);
-      }
-    };
-
-    const getBalance = async (address) => {
-      try {
-        console.log("Debug: CarbonWallet.getBalance");
-        const result = await TokenCenter.getBalance(
-          address ? address : walletAddress
-        );
-        console.log("Debug: CarbonWallet.getBalance=", result);
-        setWalletBalance(result);
-      } catch (error) {
-        console.log("Error: getBalance=", error);
-      }
-    };
-
-    const getAllowance = async (address) => {
-      try {
-        console.log("Debug: CarbonWallet.getAllowance");
-        const result = await TokenCenter.getAllowance(
-          address ? address : walletAddress
-        );
-        console.log("Debug: CarbonWallet.getAllowance=", result);
-        // alert(result);
-        setWalletAllowance(result);
-      } catch (error) {
-        // console.log("Error: getAllowance=", error);
-      }
-    };
-
     const handleOwnerCarbon = async () => {
-      console.log("car1", storeId);
       const { message, code } = await fetchownercarbon(storeId);
       setownercarbon(message);
     };
+
+    const getshippingInfo = async () => {
+      const { message, code } = await fetchShippinginfo(storeId);
+      console.log("shipping", message.county);
+      setshipping(message);
+    };
+
+    const getStoreInfo = async () => {
+      const { message, code } = await fetchStore(storeId);
+      console.log("Store", message);
+      setStore(message);
+    };
+
+    const getCountycity = async () => {
+      const { message, code } = await getCounty();
+      console.log("county", message);
+      setcounty(message);
+    };
+
     searchstoreid();
     handleOwnerCarbon();
-    // getWallet();
-    // getBalance();
+    getStoreInfo();
+    getshippingInfo();
+    getCountycity();
 
     console.log("User from authState.user:", authState.user);
   }, [storeId]);
+
+  async function updateShipping(id) {
+    try {
+      // setmin(document.getElementById("Acquiremin").value);
+      // setdescription(document.getElementById("Acquiredescription").value);
+      // setamount(document.getElementById("Acquireamount").value);
+      // setmultiplier(document.getElementById("Acquiremutiplier").value);
+
+      const userToken = storage.getAccessToken();
+      console.log(document.getElementById("same_city").value);
+      console.log(document.getElementById("different_city").value);
+      console.log(document.getElementById("remote_city").value);
+      console.log(document.getElementById("free_threshold").value);
+      console.log(document.getElementById("city").value);
+
+      const response = await request.post(
+        "farmsv2/shipping/info/update",
+        {
+          farm_id: id,
+          county: selected,
+          same_city: document.getElementById("same_city").value,
+          different_city: document.getElementById("different_city").value,
+          remote_city: document.getElementById("remote_city").value,
+          free_threshold: document.getElementById("free_threshold").value,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      console.log(response.data.code);
+      if (response.data.code === 200) {
+        alert("編輯成功");
+        window.location.reload();
+        return true;
+      } else if (response.data.code === 405) {
+        alert("參數不合法");
+        console.log("error:", response);
+        return false;
+      } else if (response.data.code === 403) {
+        alert("並非該商店成員");
+        return false;
+      } else if (response.data.code === 404) {
+        alert("找不到商品");
+        return false;
+      } else if (response.data.code === 500) {
+        alert("伺服器錯誤1");
+        console.log(response);
+        return false;
+      }
+    } catch (err) {
+      alert("發生問題，編輯失敗");
+      console.log(err);
+      return false;
+    }
+  }
+
+  function buttonupdateshipping() {
+    updateShipping(storeId);
+  }
 
   return (
     <div>
@@ -189,73 +244,110 @@ function StoreInfo(props) {
               </Modal.Header>
               <Modal.Body>
                 <Form>
-                  <Form.Group
-                    className="mb-1"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>縣市</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="新竹市"
-                      autoFocus
-                      defaultValue={"新竹市"}
-                    />
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-1"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>同縣市運費</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="同縣市運費"
-                      autoFocus
-                      defaultValue={10}
-                    />
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-1"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>不同縣市運費</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="不同縣市運費"
-                      autoFocus
-                      defaultValue={20}
-                    />
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-1"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>離島運費</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="離島運費"
-                      autoFocus
-                      defaultValue={30}
-                    />
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-1"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>免運門檻</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="免運門檻"
-                      autoFocus
-                      defaultValue={100}
-                    />
-                  </Form.Group>
+                  <div className="form-row">
+                    <div className="form-group col-md-12">
+                      <label htmlFor="input2">
+                        {" "}
+                        當前縣市 :{shipping.county}
+                      </label>
+
+                      <select
+                        id="city"
+                        className="form-control"
+                        onChange={handleChange}
+                      >
+                        {county.map((option) => (
+                          <option key={option.id} value={option.name}>
+                            {option.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group col-md-12">
+                      <label htmlFor="input2">同縣市運費</label>
+                      <input
+                        type="text"
+                        id="same_city"
+                        defaultValue={shipping.same_city}
+                        className="form-control"
+                        placeholder="同縣市運費"
+                        onChange={(e) => {
+                          setsame_city(
+                            document.getElementById("same_city").value
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group col-md-12">
+                      <label htmlFor="input2">不同縣市運費</label>
+                      <input
+                        type="text"
+                        id="different_city"
+                        defaultValue={shipping.different_city}
+                        className="form-control"
+                        placeholder="不同縣市運費"
+                        onChange={(e) => {
+                          setDifferent_city(
+                            document.getElementById("different_city").value
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group col-md-12">
+                      <label htmlFor="input2">離島運費</label>
+                      <input
+                        type="text"
+                        id="remote_city"
+                        defaultValue={shipping.remote_city}
+                        className="form-control"
+                        placeholder="離島運費"
+                        onChange={(e) => {
+                          setremote_city(
+                            document.getElementById("remote_city").value
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group col-md-12">
+                      <label htmlFor="input2">免運門檻</label>
+                      <input
+                        type="text"
+                        id="free_threshold"
+                        defaultValue={shipping.free_threshold}
+                        className="form-control"
+                        placeholder="免運門檻"
+                        onChange={(e) => {
+                          setfree_threshold(
+                            document.getElementById("free_threshold").value
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
                 </Form>
               </Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
                   關閉
                 </Button>
-                <Button variant="primary" onClick={handleClose}>
+                <Button
+                  variant="primary"
+                  onClick={(event) => {
+                    handleClose();
+                    buttonupdateshipping();
+                  }}
+                >
                   保存
                 </Button>
               </Modal.Footer>
@@ -276,7 +368,7 @@ function StoreInfo(props) {
                       </div>
                       <div class="col-auto">
                         <a
-                          href="/carbon/wallet"
+                          href="/Carbon/Wallet"
                           class="col-md-auto d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
                         >
                           {/* <i class="fas fa-download fa-sm text-white-50"> </i>  */}
@@ -418,7 +510,7 @@ function StoreInfo(props) {
                       type="address"
                       class="form-control"
                       name="email"
-                      id="emailLabel"
+                      id="Storeaddress"
                       placeholder="商店地址"
                       aria-label="clarice@example.com"
                     />
@@ -437,7 +529,7 @@ function StoreInfo(props) {
                       type="address"
                       class="form-control"
                       name="email"
-                      id="emailLabel"
+                      id="Storefeature"
                       placeholder="商店特色"
                       aria-label="clarice@example.com"
                     />
@@ -456,7 +548,7 @@ function StoreInfo(props) {
                       type="address"
                       class="form-control"
                       name="email"
-                      id="emailLabel"
+                      id="Storename"
                       placeholder="商店名稱"
                       aria-label="clarice@example.com"
                     />
