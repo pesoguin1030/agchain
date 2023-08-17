@@ -12,6 +12,7 @@ import { registerLocale, setDefaultLocale } from "react-datepicker";
 import cn from "date-fns/locale/zh-CN";
 import { AuthContext } from "../../appContext";
 import { AcquireCard } from "../../components/Card/AcquireCard/index";
+import { Clipboard2 } from "react-bootstrap-icons";
 registerLocale("cn", cn);
 
 function Acquire() {
@@ -349,33 +350,42 @@ function Acquire() {
           <section id="blog" className="block blog-block">
             <Container fluid>
               <Row>
-                {acquire.map(
-                  ({
-                    id,
-                    publish_time,
-                    description,
-                    acquire_amount,
-                    has_amount,
-                    min,
-                    multiplier,
-                    price,
-                    image,
-                    enable,
-                  }) => (
-                    <AcquireCard
-                      key={id}
-                      acquireid={id}
-                      publish_time={publish_time}
-                      acquire_amount={acquire_amount}
-                      description={description}
-                      price={price}
-                      has_amount={has_amount}
-                      min={min}
-                      multiplier={multiplier}
-                      enable={enable}
-                      image={image}
-                    />
+                {acquire.lengrh > 0 ? (
+                  acquire.map(
+                    ({
+                      id,
+                      publish_time,
+                      description,
+                      acquire_amount,
+                      has_amount,
+                      min,
+                      multiplier,
+                      price,
+                      image,
+                      enable,
+                    }) => (
+                      <AcquireCard
+                        key={id}
+                        acquireid={id}
+                        publish_time={publish_time}
+                        acquire_amount={acquire_amount}
+                        description={description}
+                        price={price}
+                        has_amount={has_amount}
+                        min={min}
+                        multiplier={multiplier}
+                        enable={enable}
+                        image={image}
+                      />
+                    )
                   )
+                ) : (
+                  <div className="col-md-12 text-center">
+                    <Clipboard2 size={64} color="lightgray" />
+                    <p className="text-muted" style={{ opacity: 0.7 }}>
+                      您目前沒有發佈任何邀約
+                    </p>
+                  </div>
                 )}
               </Row>
             </Container>
