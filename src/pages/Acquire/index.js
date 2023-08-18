@@ -350,7 +350,7 @@ function Acquire() {
           <section id="blog" className="block blog-block">
             <Container fluid>
               <Row>
-                {acquire.lengrh > 0 ? (
+                {acquire.length > 0 ? (
                   acquire.map(
                     ({
                       id,
