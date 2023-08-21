@@ -220,7 +220,7 @@ function CarbonWallet() {
   const buttonBind = async () => {
     /*
     1. 客戶端點擊綁定后，首先請求nonce
-    2. 服務端產生nonce（放在session），並傳回
+    2. 服務端產生nonce，並傳回
     3. 客戶端獲取MetaMask錢包address，並根據address與nonce產生signature，發回服務端
     4. 服務的驗證signature，返回是否成功，並更新db記錄
     5. 客戶端顯示綁定結果

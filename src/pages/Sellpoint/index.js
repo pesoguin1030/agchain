@@ -1,14 +1,14 @@
 import React from "react";
-import { AuthContext, CartContext } from "../../appContext";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState, useContext } from "react";
 import { UserfetchAcquire, getMatchId, fetchAcquire } from "../../api/product";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Dropdown, DropdownButton, Modal, Button } from "react-bootstrap";
 import * as CarbonWalletApi from "../../api/carbon/wallet";
 import * as TokenCenter from "../../abi/ERC20TokenCenter";
 import * as CarbonAcquireApi from "../../api/carbon/acquire";
 import { ethers } from "ethers";
 import ContractSettings from "../../abi/ContractSettings.json";
-
+import { Search } from "react-bootstrap-icons";
 const chainId = ContractSettings.chainId;
 
 const Sellpoint = () => {
@@ -17,6 +17,8 @@ const Sellpoint = () => {
   let [buttonDisable, setButtonDisable] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const [walletBalance, setWalletBalance] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   const fetchList = async () => {
     try {
@@ -38,12 +40,15 @@ const Sellpoint = () => {
   //     console.log("List:",list);
   // },[list])
 
-  const handleSellAll = async () => {
+  const handleSellAll = async (sellamount) => {
     //一鍵售出
     try {
+      if (sellamount > walletBalance) {
+        alert("沒有足夠的點數");
+      }
       await getWallet();
       const matchID = await getMatchId(walletBalance);
-      handleBuy(matchID, walletBalance);
+      handleBuy(matchID, sellamount);
     } catch (e) {
       console.log(e);
     }
@@ -287,7 +292,7 @@ const Sellpoint = () => {
       <SearchBar />
       <div className="container">
         <div className="row">
-          {products &&
+          {products ?
             products.map((item) => (
               <div key={item.id} className="col-md-4 mb-4">
                 <div className="card">
@@ -313,12 +318,43 @@ const Sellpoint = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            )) : (
+            <div className="col-md-12 text-center">
+              <Search size={64} color="lightgray" />
+              <p className="text-muted" style={{ opacity: 0.7 }}>
+                抱歉，目前似乎沒有商家在收購碳權
+              </p>
+            </div>
+          )}
           <div className="col-md-12 text-center mt-4">
-            <button className="btn btn-primary" onClick={handleSellAll}>
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowModal(true)}
+            >
               一鍵販賣
             </button>
           </div>
+          <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>請填入需要售出的數量</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <input
+                type="number"
+                className="form-control"
+                value={quantity}
+                onChange={(e) => setQuantity(parseInt(e.target.value))}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowModal(false)}>
+                取消
+              </Button>
+              <Button variant="primary" onClick={() => handleSellAll(quantity)}>
+                確認
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
       </div>
     </div>

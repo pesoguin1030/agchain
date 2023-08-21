@@ -7,6 +7,7 @@ import Toast from "react-bootstrap/Toast";
 import { AuthContext } from "../../appContext";
 import * as TokenCenter from "../../abi/ERC20TokenCenter";
 import * as CarbonWalletApi from "../../api/carbon/wallet";
+import { Box2 } from "react-bootstrap-icons";
 import { ethers } from "ethers";
 
 import { EnterpriseCard } from "../../components/Card/EnterpriceCard/index";
@@ -477,39 +478,48 @@ function EnterpriseProduct() {
       </div>
 
       <div className="row mx-n2 mx-sm-n3 mb-3">
-        {products.map(
-          ({
-            id,
-            name,
-            description,
-            price,
-            photo_url,
-            limit_amount,
-            carbon_amount,
-            weight,
-            shelf,
-            type,
-          }) => (
-            <div
-              key={id}
-              className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
-            >
-              <EnterpriseCard
-                // key={id}
-                store={storeId}
-                product_id={id}
-                title={name}
-                description={description}
-                price={price}
-                amount={limit_amount}
-                img={photo_url}
-                carbon={carbon_amount}
-                weight={weight}
-                Shelf={shelf}
-                Ptype={type}
-              />
-            </div>
+        {products.length > 0 ? (
+          products.map(
+            ({
+              id,
+              name,
+              description,
+              price,
+              photo_url,
+              limit_amount,
+              carbon_amount,
+              weight,
+              shelf,
+              type,
+            }) => (
+              <div
+                key={id}
+                className="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5"
+              >
+                <EnterpriseCard
+                  // key={id}
+                  store={storeId}
+                  product_id={id}
+                  title={name}
+                  description={description}
+                  price={price}
+                  amount={limit_amount}
+                  img={photo_url}
+                  carbon={carbon_amount}
+                  weight={weight}
+                  Shelf={shelf}
+                  Ptype={type}
+                />
+              </div>
+            )
           )
+        ) : (
+          <div className="col-md-12 text-center">
+            <Box2 size={64} color="lightgray" />
+            <p className="text-muted" style={{ opacity: 0.7 }}>
+              看來您還沒有要販售的商品呢
+            </p>
+          </div>
         )}
       </div>
     </div>
