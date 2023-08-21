@@ -114,7 +114,7 @@ function CarbonNftList() {
       return;
     }
 
-    const nowChain = await signer.getChainId();
+    const nowChain = await signer.geFtChainId();
     console.log("Debug: nowChain=", nowChain);
     if (nowChain.toString() !== chainId.toString()) {
       alert("請允許將MetaMask錢包切換到Polygon network");
