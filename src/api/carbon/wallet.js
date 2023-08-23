@@ -48,12 +48,18 @@ export async function unbindWallet() {
   }
 }
 
-export async function getBalance() {
+export async function exchangeNFT(amount,deadline,v,r,s) {
   try {
-    const { data } = await request.get(`/carbon/wallet/getBalance`);
+    const { data } = await request.post(`/carbon/wallet/exchangeNFT`, {
+      amount,
+      deadline,
+      v,
+      r,
+      s
+    });
     return data;
   } catch (error) {
-    const errorMessage = `getBalance error=${error.message}`;
+    const errorMessage = `bindWallet error=${error.message}`;
     console.log(errorMessage);
     throw new Error(errorMessage);
   }

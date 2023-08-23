@@ -4,10 +4,15 @@ import * as CarbonWalletApi from "../../../api/carbon/wallet";
 import * as TokenCenter from "../../../abi/ERC20TokenCenter";
 import ContractSettings from "../../../abi/ContractSettings.json";
 import { AuthContext } from "../../../appContext";
+import * as CarbonAcquireApi from "../../../api/carbon/acquire";
+import {exchangeNFT} from "../../../api/carbon/wallet";
+import {useHistory} from "react-router-dom";
 const polygonscan = ContractSettings.etherscan;
+const chainId = ContractSettings.chainId;
 
 function CarbonWallet() {
   // const INVALID_WALLET_ADDRESS = "使用者未綁定存摺"
+  const history = useHistory();
   const [walletAddress, setWalletAddress] = useState("");
   const [walletBalance, setWalletBalance] = useState(0);
   const [walletAllowance, setWalletAllowance] = useState(0);
@@ -296,6 +301,154 @@ function CarbonWallet() {
     }
   };
 
+  const buttonExchangeNFT = async () => {
+      const amount = prompt("請輸入兌換的點數量，以1000爲單位：\n（兌換碳權NFT比例：1000點兌換1公噸）")
+      await handleExchangeToken(parseInt(amount))
+  };
+
+  // 點數兌換NFT
+  const handleExchangeToken = async(amount)=>{
+    console.log("Debug handleExchangeToken: amount=",amount)
+    if (!amount || amount > walletBalance) {
+      alert("沒有足夠的點數");
+      return
+    }
+
+    const multiplier = 1000
+    if (amount<1000 || amount % multiplier !== 0) {
+      alert("兌換的點數量不是1000的倍數");
+      return
+    }
+
+    setButtonDisable(true);
+    // 獲取用戶錢包地址
+    let walletAddress = "";
+    try {
+      const getWalletResult = await CarbonWalletApi.getWallet();
+      console.log("Debug: getWallet=", getWalletResult);
+      if (getWalletResult.code === 200) {
+        walletAddress = getWalletResult.message;
+      } else {
+        throw new Error(getWalletResult.message);
+      }
+    } catch (e) {
+      alert("獲取錢包地址出錯！", e.message);
+      console.log("Debug: getWallet error=", e.message);
+      setButtonDisable(false);
+      return;
+    }
+
+    // 獲取signer
+    let signer;
+    let fromAddress;
+    try {
+      if (!window.ethereum) {
+        alert("請安裝MetaMask錢包");
+        setButtonDisable(false);
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+          "any"
+      );
+      console.log("Debug: provider=", provider);
+      signer = provider.getSigner();
+      console.log("Debug: signer=", signer);
+
+      // 確認address
+      await provider.send("eth_requestAccounts", []);
+      fromAddress = await signer.getAddress();
+      console.log("Debug: fromAddress=", fromAddress.toLowerCase());
+      if (fromAddress.toLowerCase() !== walletAddress.toLowerCase()) {
+        console.log("Debug: walletAddress=", walletAddress.toLowerCase());
+        alert("請使用在本平臺綁定的錢包");
+        setButtonDisable(false);
+        return;
+      }
+    } catch (e) {
+      alert("請允許網站連接到MetaMask錢包");
+      console.log("Debug: wallet_switchEthereumChain error=", e.message);
+      setButtonDisable(false);
+      return;
+    }
+
+    // 切換network
+    const polygonChainId = "0x" + chainId.toString(16);
+    console.log("Debug: polygonChainId=", polygonChainId);
+
+    try {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: polygonChainId }], // chainId must be in hexadecimal numbers
+      });
+    } catch (e) {
+      alert("請允許將MetaMask錢包切換到Polygon network");
+      console.log("Debug: wallet_switchEthereumChain error=", e.message);
+      setButtonDisable(false);
+      return;
+    }
+
+    const nowChain = await signer.getChainId();
+    console.log("Debug: nowChain=", nowChain);
+    if (nowChain.toString() !== chainId.toString()) {
+      alert("請允許將MetaMask錢包切換到Polygon network");
+      setButtonDisable(false);
+      return;
+    }
+
+    // permit
+    let signature;
+    const limit = 5 * 60; // 簽名具有5分鐘有效期
+    const deadline = ethers.BigNumber.from(
+        Math.floor(Date.now() / 1000) + limit
+    );
+
+    try {
+      signature = await TokenCenter.getPermitSignature(
+          signer,
+          amount,
+          deadline
+      );
+      console.log("Debug: signature=", signature);
+    } catch (e) {
+      alert("請允許MetaMask產生簽名");
+      console.log("Debug: getPermitSignature error=", e.message);
+      setButtonDisable(false);
+      return;
+    }
+
+    const { v, r, s } = signature;
+
+    // sell
+    try {
+      const result = await await CarbonWalletApi.exchangeNFT(
+          amount.toString(),
+          deadline.toString(),
+          v.toString(),
+          r.toString(),
+          s.toString()
+      );
+      console.log("Debug: exchangeNFT=", result);
+      if (result.code == 200) {
+        const confirmResult =  window.confirm("NFT兌換成功！\n是否轉到NFT管理頁面查看？");
+        if(confirmResult)
+        {
+          history.push({
+            pathname: "/carbon/nftlist",
+          });
+        }
+      } else {
+        alert("NFT兌換失敗！\n" + result.message);
+        setButtonDisable(false);
+      }
+    } catch (e) {
+      alert("NFT兌換失敗！\n" + e.message);
+      console.log("Debug: exchangeNFT error=", e.message);
+      setButtonDisable(false);
+      return;
+    }
+  }
+
   return (
     <div className="container space-top-1 space-top-sm-2 mt-11">
       <div className="row pb-5 border-bottom">
@@ -358,7 +511,10 @@ function CarbonWallet() {
             >
               更新
             </button>
-            <button className="col-sm-2 btn btn-danger" onClick={getBalance}>
+            <button className="col-sm-2 btn btn-danger"
+                    onClick={buttonExchangeNFT}
+                    disabled={buttonDisable}
+            >
               兌換
             </button>
           </div>
