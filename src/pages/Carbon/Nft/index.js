@@ -116,25 +116,12 @@ function CarbonNft() {
                 className="form-control"
               />
             </div>
-
-            {/* <div className="col-sm-2"></div> */}
-            <button
-              className="col-sm-2 btn btn-danger"
-              onClick={buttonReset}
-              style={{ order: "1" }}
-            >
+            <button className="col-sm-2 btn btn-danger" onClick={buttonReset}>
               重選
             </button>
           </div>
 
-          {/* <div className="col-sm-2"> <!-- 使用 col-sm-2 来保持按钮在中等屏幕尺寸上的宽度 -->
-            <button className="btn btn-danger" onClick={buttonReset}>
-                重選
-            </button>
-          </div> */}
-
           <div className="mb-3 row">
-            <div className="col-sm-2"></div>
             <button
               className="col-sm-5 btn btn-danger"
               onClick={buttonCreateToken}
@@ -142,9 +129,6 @@ function CarbonNft() {
             >
               鑄造碳權NFT
             </button>
-          </div>
-
-          <div className="mb-3 row">
             <div className="col-sm-2"></div>
             <button
               className="col-sm-5 btn btn-primary"
