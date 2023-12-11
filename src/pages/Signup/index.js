@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import validator from "validator";
 import request from "../../utils/request";
 import { createDestination } from "../../api/destination";
+import Constants from "../../api/constants";
 // import "../../themes/sign.css"
 
 function Signup(props) {
@@ -102,44 +103,42 @@ function Signup(props) {
     // const address = selectedCounty + selectedAddress;
     // await createDestination(address, coordinates);
 
-      try {
-        const response = await request.post(
-          `/users/signup`,
-          {
-            name: name,
-            email: email,
-            password: password,
-            role: "1",
-            store: store,
-            description: storedescription,
-            brand: brand,
+    try {
+      const response = await request.post(
+        `/users/signup`,
+        {
+          name: name,
+          email: email,
+          password: password,
+          role: "1",
+          store: store,
+          description: storedescription,
+          brand: brand,
+        },
+        {
+          headers: {
+            "Cache-Control": "no-cache, no-store",
           },
-          {
-            headers: {
-              "Cache-Control": "no-cache, no-store",
-            },
-          }
-        );
-
-        console.log(response);
-        const { data } = response;
-        if (data === "success") {
-          setIsSignup(true);
-          alert("注冊成功");
-          //navigation.navigate('Login');
-        } else {
-          alert("發生錯誤");
-          return
         }
-      } catch (error) {
-        alert(error.response.data);
-        return
-      }
+      );
 
+      console.log(response);
+      const { data } = response;
+      if (data === "success") {
+        setIsSignup(true);
+        alert("註冊成功");
+        //navigation.navigate('Login');
+      } else {
+        alert("發生錯誤");
+        return;
+      }
+    } catch (error) {
+      alert(error.response.data);
+      return;
+    }
   }
 
   async function EenterpriseSignup() {
-
     if (name.length > 32 || name.length < 2) {
       setNameStatus("danger");
       setNameMessage("名字長度不符，請使用2到32個字元");
@@ -201,39 +200,39 @@ function Signup(props) {
     // const coordinates = { latitude: 24.8527315, longitude: 121.0842217 };
     // const address = selectedCounty + selectedAddress;
     // await createDestination(address, coordinates);
-      try {
-        const response = await request.post(
-          `/users/signup`,
-          {
-            name: name,
-            email: email,
-            password: password,
-            role: "2",
-            store: store,
-            description: storedescription,
-            brand: brand,
+    try {
+      const response = await request.post(
+        `/users/signup`,
+        {
+          name: name,
+          email: email,
+          password: password,
+          role: "2",
+          store: store,
+          description: storedescription,
+          brand: brand,
+        },
+        {
+          headers: {
+            "Cache-Control": "no-cache, no-store",
           },
-          {
-            headers: {
-              "Cache-Control": "no-cache, no-store",
-            },
-          }
-        );
-
-        console.log(response);
-        const { data } = response;
-        if (data === "success") {
-          setIsSignup(true);
-          alert("注冊成功");
-          //navigation.navigate('Login');
-        } else {
-          alert("發生錯誤");
-          return
         }
-      } catch (error) {
-        alert(error.response.data);
-        return
+      );
+
+      console.log(response);
+      const { data } = response;
+      if (data === "success") {
+        setIsSignup(true);
+        alert("註冊成功");
+        //navigation.navigate('Login');
+      } else {
+        alert("發生錯誤");
+        return;
       }
+    } catch (error) {
+      alert(error.response.data);
+      return;
+    }
   }
 
   return isSignup ? (

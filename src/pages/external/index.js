@@ -104,7 +104,7 @@ function External() {
                     </div>
                   </div>
                   <div className="mt-3 text-center">
-                    <p>綁定電話號后，可開通外部平臺功能 。</p>
+                    <p>綁定電話號碼後，可開通外部平臺功能 。</p>
                   </div>
                   <button
                     className="btn btn-primary btn-block confirm-button"

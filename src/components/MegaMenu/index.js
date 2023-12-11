@@ -34,34 +34,36 @@ const MegaMenu = ({ children, title }) => {
       className="hs-has-mega-menu navbar-nav-item"
     >
       <a
-        // onClick={() => setIsOpen((prev) => !prev)}
-        onMouseDown={() => {
-          setIsOpen(true);
-        }}
+        onClick={() => setIsOpen((prev) => !prev)}
+        // onMouseDown={() => {
+        //   setIsOpen(true);
+        // }}
         className="nav-link nav-link-toggle"
       >
         {title}
       </a>
-      <motion.div
-        animate={isOpen ? "open" : "closed"}
-        variants={{
-          open: { opacity: 10, y: 0, visibility: "visible" },
-          closed: { opacity: 0, y: 10, visibility: "hidden" },
-        }}
-        onMouseLeave={() => {
-          setIsOpen(false);
-        }}
-        transition={{ duration: 0.3 }}
-        style={{
-          minWidth: 330,
-          left: "auto",
-          right: 0,
-          display: "block",
-        }}
-        className="hs-mega-menu dropdown-menu hs-mega-menu-desktop-lg hs-position-right"
-      >
-        {children}
-      </motion.div>
+      {isOpen && (
+        <motion.div
+          animate={isOpen ? "open" : "closed"}
+          variants={{
+            open: { opacity: 10, y: 0, visibility: "visible" },
+            closed: { opacity: 0, y: 10, visibility: "hidden" },
+          }}
+          onMouseLeave={() => {
+            setIsOpen(false);
+          }}
+          transition={{ duration: 0.3 }}
+          style={{
+            minWidth: 330,
+            left: "auto",
+            right: 0,
+            display: "block",
+          }}
+          className="hs-mega-menu dropdown-menu hs-mega-menu-desktop-lg hs-position-right"
+        >
+          {children}
+        </motion.div>
+      )}
     </li>
   );
 };

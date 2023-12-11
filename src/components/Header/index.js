@@ -368,7 +368,7 @@ const Header = () => {
                         className="btn btn-xs btn-ghost-secondary"
                         onClick={() => setIsSidebarVisible(true)}
                       >
-                        <span>註冊會員</span>
+                        <span>註冊/登入</span>
                         <i className="fas fa-user-circle" />
                       </a>
                     )}
@@ -578,7 +578,7 @@ const Header = () => {
                   <span className="d-flex justify-content-center align-items-center">
                     <img
                       className="mr-2"
-                      src="/assets/img/160x160/img17.png"
+                      src="/assets/img/32x32/img17.png"
                       alt="Image Description"
                       width="14"
                       height="14"

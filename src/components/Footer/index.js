@@ -3,7 +3,7 @@ import React from "react";
 const Footer = () => (
   <footer className="border-top">
     <div className="container">
-      <div className="row justify-content-lg-between space-top-2 space-bottom-lg-2">
+      <div className="row justify-content-lg-between space-top-1 space-bottom-1">
         <div className="col-lg-3 mb-5">
           <div className="d-flex align-items-start flex-column h-100">
             <a
@@ -26,7 +26,7 @@ const Footer = () => (
             </p>
           </div>
         </div>
-        <div className="col-6 col-md-4 col-lg-3 ml-lg-auto mb-5 mb-lg-0">
+        <div className="col-4 col-md-4 col-lg-3 ml-lg-auto mb-5 mb-lg-0">
           <h5>使用者相關</h5>
           <ul className="nav nav-sm nav-x-0 flex-column">
             <li className="nav-item">
@@ -51,7 +51,7 @@ const Footer = () => (
             </li>
           </ul>
         </div>
-        <div className="col-6 col-md-4 col-lg-3 mb-5 mb-lg-0">
+        <div className="col-4 col-md-4 col-lg-3 mb-5 mb-lg-0">
           <h5>平台相關</h5>
           <ul className="nav nav-sm nav-x-0 flex-column">
             <li className="nav-item">
@@ -79,7 +79,7 @@ const Footer = () => (
             </li>
           </ul>
         </div>
-        <div className="col-md-4 col-lg-2 mb-5 mb-lg-0">
+        <div className="col-4 col-md-4 col-lg-2 mb-5 mb-lg-0">
           <h5>所在地</h5>
           <ul className="nav nav-sm nav-x-0 flex-column">
             <li className="nav-item">

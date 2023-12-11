@@ -41,12 +41,15 @@ function CarbonNft() {
       weight: carbonCreditCertWeight,
     };
 
-    jsonFile.GenerateJsonFileFromJsonObject(carbonCreditCertId,carbonCreditCert);
+    jsonFile.GenerateJsonFileFromJsonObject(
+      carbonCreditCertId,
+      carbonCreditCert
+    );
   };
 
   const buttonCreateToken = async () => {
     try {
-      if (!carbonCreditCertFile || carbonCreditCertFile.length===0) {
+      if (!carbonCreditCertFile || carbonCreditCertFile.length === 0) {
         alert("未選擇碳權證書檔案");
         return;
       }
@@ -64,7 +67,9 @@ function CarbonNft() {
       console.log("buttonCreateToken result=", result);
 
       if (result && result.code === 200) {
-        alert("碳權NFT鑄造成功！\n請進入【管理碳權NFT】頁面，將碳權NFT兌換為碳權點數");
+        alert(
+          "碳權NFT鑄造成功！\n請進入【管理碳權NFT】頁面，將碳權NFT兌換為碳權點數"
+        );
       } else {
         alert("碳權NFT鑄造失敗，錯誤：\n" + result.message);
       }
@@ -83,6 +88,13 @@ function CarbonNft() {
 
   const buttonReset = async () => {
     setCarbonCreditCertFile(undefined);
+
+    // 獲取文件選擇 input 元素
+    const fileInput = document.getElementById("carbonCreditFileInput");
+    // 重置 input 元素，清空選擇的文件
+    if (fileInput) {
+      fileInput.value = "";
+    }
   };
 
   return (
@@ -96,6 +108,7 @@ function CarbonNft() {
             <label className="col-sm-2 col-form-label">選擇碳權證書</label>
             <div className="col-sm-8">
               <input
+                id="carbonCreditFileInput" // 添加一個唯一的 ID
                 onChange={(e) => {
                   setCarbonCreditCertFile(e.target.files);
                 }}
@@ -103,11 +116,25 @@ function CarbonNft() {
                 className="form-control"
               />
             </div>
-            <button className="col-sm-2 btn btn-danger" onClick={buttonReset}>
+
+            {/* <div className="col-sm-2"></div> */}
+            <button
+              className="col-sm-2 btn btn-danger"
+              onClick={buttonReset}
+              style={{ order: "1" }}
+            >
               重選
             </button>
           </div>
+
+          {/* <div className="col-sm-2"> <!-- 使用 col-sm-2 来保持按钮在中等屏幕尺寸上的宽度 -->
+            <button className="btn btn-danger" onClick={buttonReset}>
+                重選
+            </button>
+          </div> */}
+
           <div className="mb-3 row">
+            <div className="col-sm-2"></div>
             <button
               className="col-sm-5 btn btn-danger"
               onClick={buttonCreateToken}
@@ -115,6 +142,9 @@ function CarbonNft() {
             >
               鑄造碳權NFT
             </button>
+          </div>
+
+          <div className="mb-3 row">
             <div className="col-sm-2"></div>
             <button
               className="col-sm-5 btn btn-primary"

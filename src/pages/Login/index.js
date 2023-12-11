@@ -46,7 +46,7 @@ function Login(props) {
 
   const defaultSignIn = async () => {
     try {
-      const { access_token,user } = await emailSignIn({
+      const { access_token, user } = await emailSignIn({
         username,
         password,
       });
@@ -55,8 +55,8 @@ function Login(props) {
         user,
         accessToken: access_token,
       });
-      console.log('access_token:',access_token);
-      console.log('user:',user);
+      console.log("access_token:", access_token);
+      console.log("user:", user);
     } catch (error) {
       setLoggingStatus(false);
       console.error(error);
@@ -67,7 +67,11 @@ function Login(props) {
     <main id="content" role="main" className="main">
       <div className="container py-5 py-sm-7">
         <a className="d-flex justify-content-center mb-5" href="/">
-          <img className="z-index-2" src="logo.png" style={{ width: "8rem" }} />
+          <img
+            className="z-index-2"
+            src="/logo.jpg"
+            style={{ width: "8rem" }}
+          />
         </a>
 
         <div className="row justify-content-center">
@@ -78,8 +82,7 @@ function Login(props) {
                   <div className="mb-5">
                     <h1 className="h3">會員登入</h1>
                     <p>
-                      還沒有帳號？{" "}
-                      <a href="/signup">註冊</a>
+                      還沒有帳號？ <a href="/signup">註冊</a>
                     </p>
                   </div>
 
@@ -90,7 +93,7 @@ function Login(props) {
                     <span className="d-flex justify-content-center align-items-center">
                       <img
                         className="avatar avatar-xss mr-2"
-                        src="./assets/svg/brands/google.svg"
+                        src="../../../assets/svg/brands/google.svg"
                         alt="Image Description"
                       />
                       Sign in with Google
